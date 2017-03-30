@@ -1,4 +1,52 @@
-﻿<form>
-    <label for="username">Username</label>
-    <input id="username" name="username" type="text" />
-</form>
+﻿@model ASACS5.Models.Account.LoginViewModel
+
+@{
+    ViewBag.Title = "Login";
+}
+
+<h1>ASACS Login</h1>
+
+@if (Model.LoginSuccess)
+{
+    <h4>
+        <span>Welcome @Model.FirstName! </span>
+        <span>@Html.ActionLink("Click here to go home", "Index", "Home")</span>
+    </h4>
+} else if (Model.AlreadyLoggedIn)
+{
+    <h4>
+        <span>You are already logged in! </span>
+        <span>@Html.ActionLink("Logout", "Logout", "Account") </span>
+        <span>@Html.ActionLink("Home", "Index", "Home")</span>
+    </h4>
+}
+else
+{
+    using (Html.BeginForm("Login", "Account", FormMethod.Post, new { id = "frmLogin", @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Username, new { @class = "col-md-2", @for = "txtUsername" })
+            <div class="col-md-6">
+                @Html.TextBoxFor(model => model.Username, new { @class = "form-control", @id = "txtUsername" })
+                @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Password, new { @class = "col-md-2", @for = "txtPassword" })
+            <div class="col-md-6">
+                @Html.TextBoxFor(model => model.Password, new { @class = "form-control", @id = "txtPassword" })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div>
+            <input type="submit" value="Login" class="btn btn-default" /> 
+            @if (!String.IsNullOrWhiteSpace(Model.ErrorMessage))
+            {
+            <div class="text-danger"><b> @Model.ErrorMessage</b></div>
+            }
+        </div>
+    }
+    <div>@Html.ActionLink("Back", "Index", "Home")</div>
+}
