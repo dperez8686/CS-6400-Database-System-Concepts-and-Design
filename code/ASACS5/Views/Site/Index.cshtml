@@ -1,0 +1,41 @@
+﻿@model ASACS5.Models.Site.SiteIndexViewModel
+
+@{
+    ViewBag.Title = "Site Details";
+}
+
+<h1>Site Details for Site @Model.SiteID</h1>
+
+<ul>
+    <li>
+        Food Bank
+        @if (Model.HasFoodBank)
+        { <a href="/Site/FoodBank">Delete</a> }
+        else
+        { <a href="#">Add</a> }
+    </li>
+    <li>
+        Food Pantry
+        @if (Model.HasFoodPantry) { <a href="#">View/Update</a> <a href="#">Delete</a> }
+        else
+        { <a href="/Site/FoodPantry">Add</a> }
+    </li>
+    <li>
+        Shelter
+        @if (Model.HasShelter)
+        { <a href="/Site/Shelter">View/Update</a> <a href="#">Delete</a> }
+        else
+        { <a href="#">Add</a> }
+    </li>
+    <li>
+        Soup Kitchen
+        @if (Model.HasSoupKitchen)
+        { <a href="/Site/SoupKitchen">View/Update</a> <a href="#">Delete</a> }
+        else
+        { <a href="#">Add</a> }
+    </li>
+</ul>
+
+<div>
+    @Html.ActionLink("Back", "Index", "Home")
+</div>

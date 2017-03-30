@@ -1,0 +1,51 @@
+﻿@model ASACS5.Models.Site.SoupKitchenViewModel
+
+@{
+    ViewBag.Title = "Soup Kitchen : Site " + @Model.SiteID;
+}
+
+<h1>Soup Kitchen : Site @Model.SiteID</h1>
+
+@using (Html.BeginForm("SoupKitchen", "Site", FormMethod.Post, new { id = "frmSoupKitchen", @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.SiteID)
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.HoursOfOperation, new { @class = "col-md-3", @for = "txtHoursOfOperation" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.HoursOfOperation, new { @class = "form-control", @id = "txtHoursOfOperation" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.ConditionsForUse, new { @class = "col-md-3", @for = "txtConditionsForUse" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.ConditionsForUse, new { @class = "form-control", @id = "txtConditionsForUse" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.TotalSeatsAvailable, new { @class = "col-md-3", @for = "txtTotalSeatsAvailable" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.TotalSeatsAvailable, new { @class = "form-control", @id = "txtTotalSeatsAvailable", @type = "number" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.RemainingSeatsAvailable, new { @class = "col-md-3", @for = "txtRemainingSeatsAvailable" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.RemainingSeatsAvailable, new { @class = "form-control", @id = "txtRemainingSeatsAvailable", @type = "number" })
+        </div>
+    </div>
+
+    <div>
+        <input type="submit" value="Save changes" class="btn btn-default" /> 
+        @if (!String.IsNullOrWhiteSpace(Model.StatusMessage))
+        {
+            <span class="text-success"><b> @Model.StatusMessage</b></span>
+        }
+    </div>
+    <div>
+        @Html.ActionLink("Back", "Index", "Site")
+    </div>
+
+}
