@@ -77,23 +77,27 @@ namespace ASACS5.Controllers
         {
             if (ModelState.IsValid)
             {
+                // this is needed for some reason.. come back to it
+                // http://stackoverflow.com/questions/4837744/hiddenfor-not-getting-correct-value-from-view-model
+                ModelState.Remove("SiteID");
+
                 // find out if the soup kitchen exists for this SiteID already
                 // and set up the SQL to INSERT or UPDATE accordingly
 
                 if (vm.SiteID.Equals(0))
                 {
                     // we didn't find an existing soup kitchen. so insert a new one based on the logged in users Site ID
-                    int SiteID = 2; // make sure to find it from the session
+                    int? SiteID = Session["SiteID"] as int?;
 
                     string sql = String.Format(
                         "INSERT INTO soupkitchen (SiteID, TotalSeatsAvailable, RemainingSeatsAvailable, HoursOfOperaion, ConditionsForUse) " +
                         "VALUES ({0}, {1}, {2}, '{3}', '{4}'); ",
-                        SiteID.ToString(), vm.TotalSeatsAvailable, vm.RemainingSeatsAvailable, vm.HoursOfOperation, vm.ConditionsForUse
+                        SiteID.Value.ToString(), vm.TotalSeatsAvailable, vm.RemainingSeatsAvailable, vm.HoursOfOperation, vm.ConditionsForUse
                     );
 
                     SqlHelper.ExecuteNonQuery(sql);
 
-                    vm.SiteID = SiteID; // set the ID since it now exists
+                    vm.SiteID = SiteID.Value; // set the ID since it now exists
                     vm.StatusMessage = "Succesfully added!";
                 }
                 else
@@ -119,5 +123,84 @@ namespace ASACS5.Controllers
             return View(vm);
         }
 
+        [Route("Site/DeleteService/{serviceType}")]
+        public ActionResult DeleteService(string serviceType)
+        {
+            // Get the logged in Site ID from the session
+            int? SiteID = Session["SiteID"] as int?;
+
+            // if there is none, they can't do anything so redirect to the login page
+            if (!SiteID.HasValue) return RedirectToAction("Login", "Account");
+
+            // start setting up the view model
+            DeleteServiceViewModel vm = new DeleteServiceViewModel();
+            vm.SiteID = SiteID.Value;
+
+            // now find out if this siteID has a service of the specified type
+            string sql = null;
+
+            switch (serviceType.ToLower())
+            {
+                case "foodbank":
+                    sql = String.Format("SELECT COUNT(SiteID) FROM foodbank WHERE SiteID = {0}", SiteID.Value);
+                    vm.ServiceType = "Food Bank";
+                    break;
+                case "foodpantry":
+                    sql = String.Format("SELECT COUNT(SiteID) FROM foodpantry WHERE SiteID = {0}", SiteID.Value);
+                    vm.ServiceType = "Food Pantry";
+                    break;
+                case "shelter":
+                    sql = String.Format("SELECT COUNT(SiteID) FROM shelter WHERE SiteID = {0}", SiteID.Value);
+                    vm.ServiceType = "Shelter";
+                    break;
+                case "soupkitchen":
+                    sql = String.Format("SELECT COUNT(SiteID) FROM soupkitchen WHERE SiteID = {0}", SiteID.Value);
+                    vm.ServiceType = "Soup Kitchen";
+                    break;
+                default:
+                    throw new Exception("SiteController.DeleteService: non-supported serviceType");
+            }
+
+            int count = int.Parse(SqlHelper.ExecuteScalar(sql).ToString());
+
+            if (count > 0)
+            {
+                vm.ServiceExists = true;
+            }
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("Site/DeleteService/{serviceType}")]
+        public ActionResult DeleteService(string serviceType, DeleteServiceViewModel vm)
+        {
+            string sql = null;
+
+            switch (serviceType.ToLower())
+            {
+                case "foodbank":
+                    sql = String.Format("DELETE FROM foodbank WHERE SiteID = {0}", vm.SiteID);
+                    break;
+                case "foodpantry":
+                    sql = String.Format("DELETE FROM foodpantry WHERE SiteID = {0}", vm.SiteID);
+                    break;
+                case "shelter":
+                    sql = String.Format("DELETE FROM shelter WHERE SiteID = {0}", vm.SiteID);
+                    break;
+                case "soupkitchen":
+                    sql = String.Format("DELETE FROM soupkitchen WHERE SiteID = {0}", vm.SiteID);
+                    break;
+                default:
+                    throw new Exception("SiteController.DeleteService: non-supported serviceType");
+            }
+
+            SqlHelper.ExecuteNonQuery(sql);
+
+            vm.DeleteCompleted = true;
+
+            return View(vm);
+        }
     }
 }

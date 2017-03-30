@@ -130,5 +130,33 @@ namespace ASACS5.Services
             conn.Close();
         }
 
+        /// <summary>
+        /// Run a query that returns a single value
+        /// </summary>
+        /// <param name="sql">The SQL statement to execute</param>
+        public static object ExecuteScalar(string sql)
+        {
+            object result = null;
+
+            MySqlConnection conn = new MySqlConnection(connStr);
+            try
+            {
+                conn.Open();
+
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+
+                result = cmd.ExecuteScalar();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("SqlHelper.ExecuteScalar: " + ex.ToString());
+                throw ex;
+            }
+
+            conn.Close();
+
+            return result;
+        }
+
     }
 }

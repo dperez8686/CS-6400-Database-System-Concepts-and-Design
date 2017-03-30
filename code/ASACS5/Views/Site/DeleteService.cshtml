@@ -1,0 +1,40 @@
+﻿@model ASACS5.Models.Site.DeleteServiceViewModel
+
+@{
+    ViewBag.Title = "Delete Service Prompt";
+}
+
+<h1>Delete @Model.ServiceType Service for SiteID @Model.SiteID</h1>
+
+@if (Model.DeleteCompleted)
+{
+    <h4>Service succesfully deleted!</h4>
+    <div>
+        @Html.ActionLink("Back", "Index", "Site")
+    </div>
+}
+else if (!Model.ServiceExists)
+{
+    <h4>No Service of this type exists for your site.</h4>
+    <div>
+        @Html.ActionLink("Back", "Index", "Site")
+    </div>
+}
+else
+{
+    using (Html.BeginForm("DeleteService", "Site", FormMethod.Post, new { id = "frmDeleteService", @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.SiteID)
+
+        <p>Are you sure you want to delete this service?</p>
+
+        <div>
+            <input type="submit" value="Confirm Service Deletion" class="btn btn-default" />
+        </div>
+        <div>
+            @Html.ActionLink("Back", "Index", "Site")
+        </div>
+    }
+}
