@@ -50,6 +50,7 @@ namespace ASACS5.Controllers
 
                     Session["SiteID"] = int.Parse(result[1].ToString()); // set the SiteID properties in the session
                     Session["SiteName"] = result[2].ToString();
+                    Session["Username"] = vm.Username;
                 }
                 else
                 {

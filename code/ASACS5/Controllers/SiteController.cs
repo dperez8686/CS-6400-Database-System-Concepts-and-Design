@@ -17,11 +17,19 @@ namespace ASACS5.Controllers
         public ActionResult Index()
         {
             // Get the logged in Site ID from the session
+            int? SiteID = Session["SiteID"] as int?;
+
+            // if there is none, redirect to the login page
+            if (!SiteID.HasValue)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             // Run SQL to find the data and populate the view model:
 
             SiteIndexViewModel vm = new SiteIndexViewModel();
 
-            vm.SiteID = 1;
+            vm.SiteID = SiteID.Value;
             vm.HasFoodBank = true;
             vm.HasSoupKitchen = true;
 
@@ -31,7 +39,13 @@ namespace ASACS5.Controllers
         public ActionResult SoupKitchen()
         {
             // Get the logged in Site ID from the session
-            int SiteID = 2; // hardcoded for now
+            int? SiteID = Session["SiteID"] as int?;
+
+            // if there is none, redirect to the login page
+            if (!SiteID.HasValue)
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
             // set up the response object
             SoupKitchenViewModel vm = new SoupKitchenViewModel();
@@ -39,7 +53,7 @@ namespace ASACS5.Controllers
             // set up the sql query
             string sql = String.Format(
                 "SELECT TotalSeatsAvailable, RemainingSeatsAvailable, HoursOfOperaion, ConditionsForUse " +
-                "FROM soupkitchen WHERE SiteID = {0}; ", SiteID.ToString());
+                "FROM soupkitchen WHERE SiteID = {0}; ", SiteID.Value.ToString());
 
             // run the sql against the db
             object[] result = SqlHelper.ExecuteSingleSelect(sql, 4);
@@ -47,7 +61,7 @@ namespace ASACS5.Controllers
             // if we got a result, populate the view model fields
             if (result != null)
             {
-                vm.SiteID = SiteID;
+                vm.SiteID = SiteID.Value;
                 vm.TotalSeatsAvailable = int.Parse(result[0].ToString());
                 vm.RemainingSeatsAvailable = int.Parse(result[1].ToString());
                 vm.HoursOfOperation = result[2].ToString();
