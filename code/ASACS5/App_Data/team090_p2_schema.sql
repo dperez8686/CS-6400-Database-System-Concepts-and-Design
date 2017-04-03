@@ -180,3 +180,9 @@ VALUES ('billybob1', 'admin', 'Billy', 'G', 'Bob', 'billy.g.bob@gmail.com', 2);
 
 INSERT INTO soupkitchen (SiteID, TotalSeatsAvailable, RemainingSeatsAvailable, HoursOfOperation, ConditionsForUse)
 VALUES (1, 30, 18, 'Wednesday to Sunday 7AM to Noon', 'Shirt and shoes required');
+
+INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, StorageType, SiteID)
+VALUES ('Carrots', 5, '2017-08-01', 'Dry Goods', 1);
+
+INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, StorageType, SiteID)
+VALUES ('Beans', 12, '2019-01-03', 'Dry Goods', 1);
