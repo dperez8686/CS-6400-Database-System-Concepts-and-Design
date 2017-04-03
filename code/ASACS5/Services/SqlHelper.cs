@@ -14,6 +14,59 @@ namespace ASACS5.Services
         const string connStr = "server=localhost;user=root;database=cs6400_sp17_team090;port=3306;password=admin;";
 
         /// <summary>
+        /// Run a non-query SQL statement, like INSERT, UPDATE, or DELETE
+        /// </summary>
+        /// <param name="sql">The SQL statement to execute (INSERT, UPDATE, or DELETE)</param>
+        public static void ExecuteNonQuery(string sql)
+        {
+            MySqlConnection conn = new MySqlConnection(connStr);
+            try
+            {
+                conn.Open();
+
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+
+                cmd.ExecuteNonQuery();
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("SqlHelper.ExecuteNonQuery: " + ex.ToString());
+                throw ex;
+            }
+
+            conn.Close();
+        }
+
+        /// <summary>
+        /// Run a query that returns a single value
+        /// </summary>
+        /// <param name="sql">The SQL statement to execute</param>
+        public static object ExecuteScalar(string sql)
+        {
+            object result = null;
+
+            MySqlConnection conn = new MySqlConnection(connStr);
+            try
+            {
+                conn.Open();
+
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+
+                result = cmd.ExecuteScalar();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("SqlHelper.ExecuteScalar: " + ex.ToString());
+                throw ex;
+            }
+
+            conn.Close();
+
+            return result;
+        }
+
+        /// <summary>
         /// Use this method when you expect a single row back from the db.
         /// </summary>
         /// <param name="sql">The SQL SELECT statement to execute</param>
@@ -103,59 +156,6 @@ namespace ASACS5.Services
             conn.Close();
 
             return response;
-        }
-
-        /// <summary>
-        /// Run a non-query SQL statement, like INSERT, UPDATE, or DELETE
-        /// </summary>
-        /// <param name="sql">The SQL statement to execute (INSERT, UPDATE, or DELETE)</param>
-        public static void ExecuteNonQuery(string sql)
-        {
-            MySqlConnection conn = new MySqlConnection(connStr);
-            try
-            {
-                conn.Open();
-
-                MySqlCommand cmd = new MySqlCommand(sql, conn);
-
-                cmd.ExecuteNonQuery();
-
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("SqlHelper.ExecuteNonQuery: " + ex.ToString());
-                throw ex;
-            }
-
-            conn.Close();
-        }
-
-        /// <summary>
-        /// Run a query that returns a single value
-        /// </summary>
-        /// <param name="sql">The SQL statement to execute</param>
-        public static object ExecuteScalar(string sql)
-        {
-            object result = null;
-
-            MySqlConnection conn = new MySqlConnection(connStr);
-            try
-            {
-                conn.Open();
-
-                MySqlCommand cmd = new MySqlCommand(sql, conn);
-
-                result = cmd.ExecuteScalar();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("SqlHelper.ExecuteScalar: " + ex.ToString());
-                throw ex;
-            }
-
-            conn.Close();
-
-            return result;
         }
 
     }
