@@ -20,18 +20,23 @@ namespace ASACS5.Controllers
             int? SiteID = Session["SiteID"] as int?;
 
             // if there is none, redirect to the login page
-            if (!SiteID.HasValue)
-            {
-                return RedirectToAction("Login", "Account");
-            }
+            if (!SiteID.HasValue) return RedirectToAction("Login", "Account");
 
-            // Run SQL to find the data and populate the view model:
+            // Set up the view model and run SQL to populate the properties
+            SiteIndexViewModel vm = new SiteIndexViewModel { SiteID = SiteID.Value };
+            object queryResult = null;
 
-            SiteIndexViewModel vm = new SiteIndexViewModel();
+            queryResult = SqlHelper.ExecuteScalar(String.Format("SELECT COUNT(SiteID) FROM foodbank WHERE SiteID = {0}", SiteID.Value));
+            if (queryResult != null && int.Parse(queryResult.ToString()) > 0) vm.HasFoodBank = true;
 
-            vm.SiteID = SiteID.Value;
-            vm.HasFoodBank = true;
-            vm.HasSoupKitchen = true;
+            queryResult = SqlHelper.ExecuteScalar(String.Format("SELECT COUNT(SiteID) FROM foodpantry WHERE SiteID = {0}", SiteID.Value));
+            if (queryResult != null && int.Parse(queryResult.ToString()) > 0) vm.HasFoodPantry = true;
+
+            queryResult = SqlHelper.ExecuteScalar(String.Format("SELECT COUNT(SiteID) FROM shelter WHERE SiteID = {0}", SiteID.Value));
+            if (queryResult != null && int.Parse(queryResult.ToString()) > 0) vm.HasShelter = true;
+
+            queryResult = SqlHelper.ExecuteScalar(String.Format("SELECT COUNT(SiteID) FROM soupkitchen WHERE SiteID = {0}", SiteID.Value));
+            if (queryResult != null && int.Parse(queryResult.ToString()) > 0) vm.HasSoupKitchen = true;
 
             return View(vm);
         }
@@ -42,17 +47,14 @@ namespace ASACS5.Controllers
             int? SiteID = Session["SiteID"] as int?;
 
             // if there is none, redirect to the login page
-            if (!SiteID.HasValue)
-            {
-                return RedirectToAction("Login", "Account");
-            }
+            if (!SiteID.HasValue) return RedirectToAction("Login", "Account");
 
             // set up the response object
             SoupKitchenViewModel vm = new SoupKitchenViewModel();
 
             // set up the sql query
             string sql = String.Format(
-                "SELECT TotalSeatsAvailable, RemainingSeatsAvailable, HoursOfOperaion, ConditionsForUse " +
+                "SELECT TotalSeatsAvailable, RemainingSeatsAvailable, HoursOfOperation, ConditionsForUse " +
                 "FROM soupkitchen WHERE SiteID = {0}; ", SiteID.Value.ToString());
 
             // run the sql against the db
@@ -90,7 +92,7 @@ namespace ASACS5.Controllers
                     int? SiteID = Session["SiteID"] as int?;
 
                     string sql = String.Format(
-                        "INSERT INTO soupkitchen (SiteID, TotalSeatsAvailable, RemainingSeatsAvailable, HoursOfOperaion, ConditionsForUse) " +
+                        "INSERT INTO soupkitchen (SiteID, TotalSeatsAvailable, RemainingSeatsAvailable, HoursOfOperation, ConditionsForUse) " +
                         "VALUES ({0}, {1}, {2}, '{3}', '{4}'); ",
                         SiteID.Value.ToString(), vm.TotalSeatsAvailable, vm.RemainingSeatsAvailable, vm.HoursOfOperation, vm.ConditionsForUse
                     );
@@ -108,7 +110,7 @@ namespace ASACS5.Controllers
                         "UPDATE soupkitchen " +
                         "SET TotalSeatsAvailable = {0}, " +
                         "RemainingSeatsAvailable = {1}, " +
-                        "HoursOfOperaion = '{2}', " +
+                        "HoursOfOperation = '{2}', " +
                         "ConditionsForUse = '{3}' " +
                         "WHERE SiteID = {4}; ",
                         vm.TotalSeatsAvailable, vm.RemainingSeatsAvailable, vm.HoursOfOperation, vm.ConditionsForUse, vm.SiteID

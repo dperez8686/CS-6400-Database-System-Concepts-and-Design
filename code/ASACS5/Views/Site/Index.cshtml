@@ -4,37 +4,54 @@
     ViewBag.Title = "Site Details";
 }
 
-<h1>Site Details for Site @Model.SiteID</h1>
+<h1>Site Details : Site @Model.SiteID</h1>
 
-<ul>
-    <li>
-        Food Bank
-        @if (Model.HasFoodBank)
-        { <a href="/Site/DeleteService/FoodBank">Delete</a> }
-        else
-        { <a href="/Site/FoodBank">Add</a> }
-    </li>
-    <li>
-        Food Pantry
-        @if (Model.HasFoodPantry) { <a href="/Site/FoodPantry">View/Update</a> <a href="/Site/DeleteService/FoodPantry">Delete</a> }
-        else
-        { <a href="/Site/FoodPantry">Add</a> }
-    </li>
-    <li>
-        Shelter
-        @if (Model.HasShelter)
-        { <a href="/Site/Shelter">View/Update</a> <a href="/Site/DeleteService/Shelter">Delete</a> }
-        else
-        { <a href="/Site/Shelter">Add</a> }
-    </li>
-    <li>
-        Soup Kitchen
-        @if (Model.HasSoupKitchen)
-        { <a href="/Site/SoupKitchen">View/Update</a> <a href="/Site/DeleteService/SoupKitchen">Delete</a> }
-        else
-        { <a href="/Site/SoupKitchen">Add</a> }
-    </li>
-</ul>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Service Type</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Food Bank</td>
+            <td>
+                @if (Model.HasFoodBank)
+                { <a href="/Site/DeleteService/FoodBank">Delete</a> }
+                else
+                { <a href="/Site/FoodBank">Add</a> }
+            </td>
+        </tr>
+        <tr>
+            <td>Food Pantry</td>
+            <td>
+                @if (Model.HasFoodPantry)
+                { <a href="/Site/FoodPantry">View/Update</a> <a href="/Site/DeleteService/FoodPantry">Delete</a> }
+                else
+                { <a href="/Site/FoodPantry">Add</a> }
+            </td>
+        </tr>
+        <tr>
+            <td>Shelter</td>
+            <td>
+                @if (Model.HasShelter)
+                { <a href="/Site/Shelter">View/Update</a> <a href="/Site/DeleteService/Shelter">Delete</a> }
+                else
+                { <a href="/Site/Shelter">Add</a> }
+            </td>
+        </tr>
+        <tr>
+            <td>Soup Kitchen</td>
+            <td>
+                @if (Model.HasSoupKitchen)
+                { <a href="/Site/SoupKitchen">View/Update</a> <a href="/Site/DeleteService/SoupKitchen">Delete</a> }
+                else
+                { <a href="/Site/SoupKitchen">Add</a> }
+            </td>
+        </tr>
+    </tbody>
+</table>
 
 <div>
     @Html.ActionLink("Back", "Index", "Home")
