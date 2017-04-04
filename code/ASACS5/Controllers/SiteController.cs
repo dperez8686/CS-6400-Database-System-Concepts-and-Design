@@ -141,7 +141,7 @@ namespace ASACS5.Controllers
 
             // set up the sql query
             string sql = String.Format(
-                "SELECT MaleBunksAvailable, FemaleBunksAvailable, MixedBunksAvailable, RoomsAvailable, HoursOfOperaion, ConditionsForUse " +
+                "SELECT MaleBunksAvailable, FemaleBunksAvailable, MixedBunksAvailable, RoomsAvailable, HoursOfOperation, ConditionsForUse " +
                 "FROM shelter WHERE SiteID = {0}; ", SiteID.Value.ToString());
 
             // run the sql against the db
@@ -181,8 +181,8 @@ namespace ASACS5.Controllers
                     int? SiteID = Session["SiteID"] as int?;
 
                     string sql = String.Format(
-                        "INSERT INTO shelter (SiteID, MaleBunksAvailable, FemaleBunksAvailable, MixedBunksAvailable, RoomsAvailable, HoursOfOperaion, ConditionsForUse) " +
-                        "VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}, {6}); ",
+                        "INSERT INTO shelter (SiteID, MaleBunksAvailable, FemaleBunksAvailable, MixedBunksAvailable, RoomsAvailable, HoursOfOperation, ConditionsForUse) " +
+                        "VALUES ({0}, {1}, {2}, {3}, {4}, '{5}', '{6}'); ",
                         SiteID.Value.ToString(), vm.MaleBunksAvailable, vm.FemaleBunksAvailable, vm.MixedBunksAvailable, vm.RoomsAvailable, vm.HoursOfOperation, vm.ConditionsForUse
                     );
                     
@@ -201,7 +201,7 @@ namespace ASACS5.Controllers
                         "FemaleBunksAvailable = {1}, " +
                         "MixedBunksAvailable = {2}, " +
                         "RoomsAvailable = {3}, " +
-                        "HoursOfOperaion = '{4}', " +
+                        "HoursOfOperation = '{4}', " +
                         "ConditionsForUse = '{5}'; ",
                         vm.MaleBunksAvailable, vm.FemaleBunksAvailable, vm.MixedBunksAvailable, vm.RoomsAvailable, vm.HoursOfOperation, vm.ConditionsForUse, vm.SiteID
                     );
