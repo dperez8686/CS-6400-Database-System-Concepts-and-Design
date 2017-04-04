@@ -1,0 +1,32 @@
+﻿@model ASACS5.Models.Items.ItemsIndexViewModel
+
+@{
+    ViewBag.Title = "Items";
+}
+
+<h1>Items : Site @Model.SiteID</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Item ID</th>
+            <th>Item Name</th>
+            <th>Number of Units</th>
+            <th>Expiration Date</th>
+            <th>Storage Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>5</td>
+            <td>Carrots</td>
+            <td>6 bags</td>
+            <td>5/5/2018</td>
+            <td>Dry goods</td>
+        </tr>
+    </tbody>
+</table>
+
+<div>
+    @Html.ActionLink("Back", "Index", "Home")
+</div>
