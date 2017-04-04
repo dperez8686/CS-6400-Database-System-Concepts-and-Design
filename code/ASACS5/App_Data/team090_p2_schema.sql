@@ -40,7 +40,7 @@ CREATE TABLE Site (
   PRIMARY KEY (SiteID)
 );
 
-CREATE TABLE FoodBankService (
+CREATE TABLE FoodBank (
   SiteID int(16) unsigned NOT NULL,
   PRIMARY KEY (SiteID)
 );
@@ -51,14 +51,14 @@ CREATE TABLE Shelter (
   FemaleBunksAvailable int(16) unsigned NOT NULL DEFAULT '0',
   MixedBunksAvailable int(16) unsigned NOT NULL DEFAULT '0',
   RoomsAvailable int(16) unsigned NOT NULL DEFAULT '0',
-  HoursOfOperaion varchar(1000) NOT NULL,
+  HoursOfOperation varchar(1000) NOT NULL,
   ConditionsForUse varchar(1000),
   PRIMARY KEY (SiteID)
 );
 
 CREATE TABLE FoodPantry (
   SiteID int(16) unsigned NOT NULL,
-  HoursOfOperaion varchar(1000) NOT NULL,
+  HoursOfOperation varchar(1000) NOT NULL,
   ConditionsForUse varchar(1000),
   PRIMARY KEY (SiteID)
 );
@@ -67,7 +67,7 @@ CREATE TABLE SoupKitchen (
   SiteID int(16) unsigned NOT NULL,
   TotalSeatsAvailable int(16) unsigned NOT NULL DEFAULT '0',
   RemainingSeatsAvailable int(16) unsigned NOT NULL DEFAULT '0',
-  HoursOfOperaion varchar(1000) NOT NULL,
+  HoursOfOperation varchar(1000) NOT NULL,
   ConditionsForUse varchar(1000),
   PRIMARY KEY (SiteID)
 );
@@ -133,8 +133,8 @@ CREATE TABLE ClientLogEntry (
 ALTER TABLE `User`
   ADD CONSTRAINT user_ibfk_1 FOREIGN KEY (SiteID) REFERENCES `Site` (SiteID);
   
-ALTER TABLE `FoodBankService`
-  ADD CONSTRAINT foodbankservice_ibfk_1 FOREIGN KEY (SiteID) REFERENCES `Site` (SiteID);
+ALTER TABLE `FoodBank`
+  ADD CONSTRAINT foodbank_ibfk_1 FOREIGN KEY (SiteID) REFERENCES `Site` (SiteID);
   
 ALTER TABLE `Shelter`
   ADD CONSTRAINT shelter_ibfk_1 FOREIGN KEY (SiteID) REFERENCES `Site` (SiteID);
@@ -164,3 +164,25 @@ ALTER TABLE `WaitList`
   
 ALTER TABLE `ClientLogEntry`
   ADD CONSTRAINT clientlogentry_ibfk_1 FOREIGN KEY (ClientID) REFERENCES `Client` (ClientID);
+
+
+INSERT INTO site (SiteName, StreetAddress, City, State, ZipCode, PrimaryContactNumber)
+VALUES ('Food City #1', '55 Andrews Ave', 'Fort Lauderdale', 'FL', '33301', '9545556783');
+
+INSERT INTO site (SiteName, StreetAddress, City, State, ZipCode, PrimaryContactNumber)
+VALUES ('Main Street Cafe', '123 Main St', 'Fort Lauderdale', 'FL', '33301', '9545556789');
+
+INSERT INTO user (Username, Password, FirstName, MiddleName, LastName, EmailAddress, SiteID)
+VALUES ('jeffro96', 'admin', 'Jeff', 'P', 'Ross', 'jross323@gmail.com', 1);
+
+INSERT INTO user (Username, Password, FirstName, MiddleName, LastName, EmailAddress, SiteID)
+VALUES ('billybob1', 'admin', 'Billy', 'G', 'Bob', 'billy.g.bob@gmail.com', 2);
+
+INSERT INTO soupkitchen (SiteID, TotalSeatsAvailable, RemainingSeatsAvailable, HoursOfOperation, ConditionsForUse)
+VALUES (1, 30, 18, 'Wednesday to Sunday 7AM to Noon', 'Shirt and shoes required');
+
+INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, StorageType, SiteID)
+VALUES ('Carrots', 5, '2017-08-01', 'Dry Goods', 1);
+
+INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, StorageType, SiteID)
+VALUES ('Beans', 12, '2019-01-03', 'Dry Goods', 1);
