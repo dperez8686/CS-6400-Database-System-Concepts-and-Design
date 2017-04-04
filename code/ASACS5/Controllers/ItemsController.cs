@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 
 using System.Diagnostics;
+using System.Text;
 
 namespace ASACS5.Controllers
 {
@@ -32,12 +33,59 @@ namespace ASACS5.Controllers
             List<object[]> queryResponse = SqlHelper.ExecuteMultiSelect(sql, 6);
 
             // Initialize the view model Items list
-            vm.Items = new List<Item>();
+            vm.Items = GetItemListFromQueryResponse(queryResponse);
+
+            vm.SiteSearchOptions = GetSiteNameSelectList(true);
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Index(ItemsIndexViewModel vm)
+        {
+            ModelState.Remove("Items");
+
+            // dynamically build our search query here
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("SELECT ItemID, ItemName, NumberOfUnits, ExpirationDate, StorageType, SiteID FROM item ");
+
+            bool firstWhereLineStarted = false; // need to know to use WHERE or AND..
+
+            if (vm.SiteNameFilterEnabled)
+            {
+                sb.Append(" WHERE SiteID = " + vm.SiteNameFilterValue.ToString() + " ");
+                firstWhereLineStarted = true;
+            }
+
+            if (vm.StorageTypeFilterEnabled && !String.IsNullOrWhiteSpace(vm.StorageTypeFilterValue))
+            {
+                if (!firstWhereLineStarted) sb.Append(" WHERE "); else sb.Append(" AND ");
+                sb.Append(" StorageType like '%" + vm.StorageTypeFilterValue + "%' ");
+                firstWhereLineStarted = true;
+            }
+
+            // run the SQL
+            List<object[]> queryResponse = SqlHelper.ExecuteMultiSelect(sb.ToString(), 6);
+
+            // Initialize the view model Items list
+            vm.Items = GetItemListFromQueryResponse(queryResponse);
+
+            // Re-populate the site name select list
+            vm.SiteSearchOptions = GetSiteNameSelectList(false);
+
+            return View(vm);
+        }
+
+        private List<Item> GetItemListFromQueryResponse(List<object[]> queryResponse)
+        {
+            var response = new List<Item>();
 
             foreach (object[] row in queryResponse)
             {
                 // create a new item and add it to the Items List for each row in the query results
-                vm.Items.Add(new Item
+                response.Add(new Item
                 {
                     ItemID = int.Parse(row[0].ToString()),
                     ItemName = row[1].ToString(),
@@ -48,25 +96,38 @@ namespace ASACS5.Controllers
                 });
             }
 
-            // set up the SQL to get all sites for search options --------------------------
-            sql = String.Format("SELECT SiteID, SiteName from site ORDER BY SiteName asc");
+            return response;
+        }
 
-            queryResponse = SqlHelper.ExecuteMultiSelect(sql, 2);
+        private SelectList GetSiteNameSelectList(bool force = false)
+        {
+            // if it's already in the session and we're not forcing, return the session val
+            if ((Session["Items.SiteNameSelectList"] as SelectList) != null && !force)
+            {
+                return Session["Items.SiteNameSelectList"] as SelectList;
+            }
+            
+            // otherwise grab them from the db
 
-            vm.SiteSearchOptions = new List<SelectListItem>();
+            // set up the SQL to get all sites for search options
+            string sql = String.Format("SELECT SiteID, SiteName from site ORDER BY SiteName asc");
+
+            List<object[]> queryResponse = SqlHelper.ExecuteMultiSelect(sql, 2);
+
+            var selectListItems = new List<SelectListItem>();
 
             foreach (object[] row in queryResponse)
             {
                 // create a new item and add it to the Items List for each row in the query results
-                //vm.SiteSearchOptions.Add(new SelectListItem
-                //    {
-                //        Value = row[0].ToString(),
-                //        Text = row[1].ToString() + " (" + row[0].ToString() + ")"
+                selectListItems.Add(new SelectListItem
+                {
+                    Value = row[0].ToString(),
+                    Text = row[1].ToString() + " (" + row[0].ToString() + ")"
 
-                //});
+                });
             }
 
-            return View(vm);
+            return new SelectList(selectListItems, "Value", "Text");
         }
     }
 }

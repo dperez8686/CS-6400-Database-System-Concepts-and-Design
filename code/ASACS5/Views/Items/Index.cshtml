@@ -9,7 +9,7 @@
 <h1>Items : Site @Model.SiteID</h1>
 
 
-@using (Html.BeginForm("Items", "Index", FormMethod.Post, new { id = "frmItemsIndex" }))
+@using (Html.BeginForm("Index", "Items", FormMethod.Post, new { id = "frmItemsIndex" }))
 {
     @Html.AntiForgeryToken()
 
@@ -20,7 +20,7 @@
         <div class="col-md-8">
             <div class="row">
                 <div class="col-xs-2"><b>Enable</b></div>
-                <div class="col-xs-3"><b>Property Name</b></div>
+                <div class="col-xs-3"><b>Property</b></div>
                 <div class="col-xs-7"><b>Value</b></div>
             </div>
             <div class="row">
@@ -28,7 +28,7 @@
                     @Html.CheckBoxFor(model => model.SiteNameFilterEnabled)
                 </div>
                 <div class="col-xs-3">
-                    <span>Storage Type</span>
+                    <span>Site</span>
                 </div>
                 <div class="col-xs-7">
                     @Html.DropDownListFor(model => model.SiteNameFilterValue, Model.SiteSearchOptions, new { @class = "form-control", @id = "txtStorageType" })

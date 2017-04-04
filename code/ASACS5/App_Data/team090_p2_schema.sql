@@ -182,7 +182,7 @@ INSERT INTO soupkitchen (SiteID, TotalSeatsAvailable, RemainingSeatsAvailable, H
 VALUES (1, 30, 18, 'Wednesday to Sunday 7AM to Noon', 'Shirt and shoes required');
 
 INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, StorageType, SiteID)
-VALUES ('Carrots', 5, '2017-08-01', 'Dry Goods', 1);
+VALUES ('Carrots', 5, '2017-08-01', 'Refrigerated', 1);
 
 INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, StorageType, SiteID)
-VALUES ('Beans', 12, '2019-01-03', 'Dry Goods', 1);
+VALUES ('Beans', 12, '2019-01-03', 'Dry Good', 1);
