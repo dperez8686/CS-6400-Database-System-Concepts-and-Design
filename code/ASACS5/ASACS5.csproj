@@ -129,6 +129,7 @@
     <Compile Include="Models\Home\SiteIndexViewModel.cs" />
     <Compile Include="Models\Items\SiteIndexViewModel.cs" />
     <Compile Include="Models\Site\DeleteServiceViewModel.cs" />
+    <Compile Include="Models\Site\ShelterViewModel.cs" />
     <Compile Include="Models\Site\SoupKitchenViewModel.cs" />
     <Compile Include="Models\Site\SiteIndexViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -147,6 +148,7 @@
     <Content Include="Views\Site\DeleteService.cshtml" />
     <Content Include="Scripts\jquery-1.9.1.min.map" />
     <Content Include="Views\Items\Index.cshtml" />
+    <Content Include="Views\Site\Shelter.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
