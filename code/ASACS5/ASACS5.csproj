@@ -133,6 +133,7 @@
     <Compile Include="Models\Site\SiteIndexViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\SqlHelper.cs" />
+    <Compile Include="Models\Items\Item.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
