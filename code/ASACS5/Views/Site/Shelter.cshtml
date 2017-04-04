@@ -1,0 +1,76 @@
+﻿@model ASACS5.Models.Site.ShelterViewModel
+
+@{
+    ViewBag.Title = "Shelter";
+}
+
+@if (Model.SiteID.Equals(0))
+{
+    <h1>Add Shelter</h1>
+}
+else
+{
+    <h1>Shelter : Site ID @Model.SiteID</h1>
+}
+
+@using (Html.BeginForm("Shelter", "Site", FormMethod.Post, new { id = "frmShelter", @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.SiteID)
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.HoursOfOperation, new { @class = "col-md-3", @for = "txtHoursOfOperation" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.HoursOfOperation, new { @class = "form-control", @id = "txtHoursOfOperation" })
+            @Html.ValidationMessageFor(model => model.HoursOfOperation, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.ConditionsForUse, new { @class = "col-md-3", @for = "txtConditionsForUse" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.ConditionsForUse, new { @class = "form-control", @id = "txtConditionsForUse" })
+            @Html.ValidationMessageFor(model => model.ConditionsForUse, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.MaleBunksAvailable, new { @class = "col-md-3", @for = "txtMaleBunksAvailable" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.MaleBunksAvailable, new { @class = "form-control", @id = "txtMaleBunksAvailable", @type = "number" })
+            @Html.ValidationMessageFor(model => model.MaleBunksAvailable, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.FemaleBunksAvailable, new { @class = "col-md-3", @for = "txtFemaleBunksAvailable" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.FemaleBunksAvailable, new { @class = "form-control", @id = "txtFemaleBunksAvailable", @type = "number" })
+            @Html.ValidationMessageFor(model => model.FemaleBunksAvailable, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.MixedBunksAvailable, new { @class = "col-md-3", @for = "txtMixedBunksAvailable" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.MixedBunksAvailable, new { @class = "form-control", @id = "txtMixedBunksAvailable", @type = "number" })
+            @Html.ValidationMessageFor(model => model.MixedBunksAvailable, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.RoomsAvailable, new { @class = "col-md-3", @for = "txtRoomsAvailable" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.RoomsAvailable, new { @class = "form-control", @id = "txtRoomsAvailable", @type = "number" })
+            @Html.ValidationMessageFor(model => model.RoomsAvailable, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div>
+        <input type="submit" value="Save changes" class="btn btn-default" /> 
+        @if (!String.IsNullOrWhiteSpace(Model.StatusMessage))
+        {
+            <span class="text-success"><b> @Model.StatusMessage</b></span>
+        }
+    </div>
+    <div>
+        @Html.ActionLink("Back", "Index", "Site")
+    </div>
+
+}
