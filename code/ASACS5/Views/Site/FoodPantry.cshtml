@@ -1,0 +1,48 @@
+﻿@model ASACS5.Models.Site.FoodPantryViewModel
+@{
+	ViewBag.Title = "FoodPantry";
+}
+
+@if (Model.SiteID.Equals(0))
+{
+	<h1>Add FoodPantry</h1>
+}
+else
+{
+	<h1>Shelter : Site ID @Model.SiteID</h1>
+}
+
+@using (Html.BeginForm("FoodPantry", "Site", FormMethod.Post, new { id = "frmFoodPantry", @class = "form-horizontal" }))
+{
+	@Html.AntiForgeryToken()
+
+	@Html.HiddenFor(model => model.SiteID)
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.HoursOfOperation, new { @class = "col-md-3", @for = "txtHoursOfOperation" })
+		<div class="col-md-9">
+			@Html.TextBoxFor(model => model.HoursOfOperation, new { @class = "form-control", @id = "txtHoursOfOperation" })
+			@Html.ValidationMessageFor(model => model.HoursOfOperation, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.ConditionsForUse, new { @class = "col-md-3", @for = "txtConditionsForUse" })
+		<div class="col-md-9">
+			@Html.TextBoxFor(model => model.ConditionsForUse, new { @class = "form-control", @id = "txtConditionsForUse" })
+			@Html.ValidationMessageFor(model => model.ConditionsForUse, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+		<div>
+			<input type="submit" value="Save changes" class="btn btn-default" />
+			@if (!String.IsNullOrWhiteSpace(Model.StatusMessage))
+			{
+				<span class="text-success"><b> @Model.StatusMessage</b></span>
+			}
+		</div>
+		<div>
+			@Html.ActionLink("Back", "Index", "Site")
+		</div>
+
+		}

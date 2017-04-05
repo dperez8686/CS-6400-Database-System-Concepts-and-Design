@@ -58,7 +58,7 @@ namespace ASACS5.Services
             catch (Exception ex)
             {
                 Debug.WriteLine("SqlHelper.ExecuteScalar: " + ex.ToString());
-                throw ex;
+				throw ex;
             }
 
             conn.Close();
@@ -106,7 +106,7 @@ namespace ASACS5.Services
             catch (Exception ex)
             {
                 Debug.WriteLine("SqlHelper.RunSingleSelect: " + ex.ToString());
-                throw ex;
+				throw ex;
             }
 
             conn.Close();
@@ -150,7 +150,7 @@ namespace ASACS5.Services
             catch (Exception ex)
             {
                 Debug.WriteLine("SqlHelper.RunMultiSelect: " + ex.ToString());
-                throw ex;
+				throw ex;
             }
 
             conn.Close();
