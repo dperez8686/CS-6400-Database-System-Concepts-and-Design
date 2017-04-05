@@ -181,7 +181,7 @@ namespace ASACS5.Controllers
                     int? SiteID = Session["SiteID"] as int?;
 
                     string sql = String.Format(
-                        "INSERT INTO shelter (SiteID, MaleBunksAvailable, FemaleBunksAvailable, MixedBunksAvailable, RoomsAvailable, HoursOfOperaion, ConditionsForUse) " +
+                        "INSERT INTO shelter (SiteID, MaleBunksAvailable, FemaleBunksAvailable, MixedBunksAvailable, RoomsAvailable, HoursOfOperation, ConditionsForUse) " +
                         "VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}, {6}); ",
                         SiteID.Value.ToString(), vm.MaleBunksAvailable, vm.FemaleBunksAvailable, vm.MixedBunksAvailable, vm.RoomsAvailable, vm.HoursOfOperation, vm.ConditionsForUse
                     );
