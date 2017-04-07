@@ -22,7 +22,7 @@ else
     <div class="form-group">
         @Html.LabelFor(model => model.DescriptiveID, new { @class = "col-md-3", @for = "txtDescriptiveID" })
         <div class="col-md-9">
-            @Html.TextBoxFor(model => model.DescriptiveID, new { @class = "form-control", @id = "txtDescriptiveID", @type = "number" })
+            @Html.TextBoxFor(model => model.DescriptiveID, new { @class = "form-control", @id = "txtDescriptiveID"})
             @Html.ValidationMessageFor(model => model.DescriptiveID, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -50,7 +50,7 @@ else
     <div class="form-group">
         @Html.LabelFor(model => model.PhoneNumber, new { @class = "col-md-3", @for = "txtPhoneNumber" })
         <div class="col-md-9">
-            @Html.TextBoxFor(model => model.PhoneNumber, new { @class = "form-control", @id = "txtPhoneNumber", @type = "number" })
+            @Html.TextBoxFor(model => model.PhoneNumber, new { @class = "form-control", @id = "txtPhoneNumber"})
             @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
         </div>
     </div>

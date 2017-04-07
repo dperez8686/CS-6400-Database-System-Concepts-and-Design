@@ -19,26 +19,25 @@ namespace ASACS5.Models.Site
 
         [DisplayName("Descriptive ID")]
         [Required(ErrorMessage = "Descriptive ID is required")]
-        [MaxLength(1000, ErrorMessage = "Max length is 1000 characters")]
+        [MaxLength(1000, ErrorMessage = "Max length is 250 characters")]
         public string DescriptiveID { get; set; }
 
         [DisplayName("First Name")]
         [Required(ErrorMessage = "First name is required")]
-        [MaxLength(1000, ErrorMessage = "Max length is 1000 characters")]
+        [MaxLength(1000, ErrorMessage = "Max length is 250 characters")]
         public string FirstName { get; set; }
 
         [DisplayName("Middle Name")]
-        [MaxLength(1000, ErrorMessage = "Max length is 1000 characters")]
+        [MaxLength(1000, ErrorMessage = "Max length is 250 characters")]
         public string MiddleName { get; set; }
 
         [DisplayName("Last Name")]
         [Required(ErrorMessage = "Last name is required")]
-        [MaxLength(1000, ErrorMessage = "Max length is 1000 characters")]
+        [MaxLength(1000, ErrorMessage = "Max length is 250 characters")]
         public string LastName { get; set; }
 
         [DisplayName("Phone Number")]
-        [Required(ErrorMessage = "Phone number is required")]
-        [MaxLength(10, ErrorMessage = "Max length is 10 characters")]
+        [MaxLength(10, ErrorMessage = "Max length is 80 characters")]
         public string PhoneNumber { get; set; }
 
     }

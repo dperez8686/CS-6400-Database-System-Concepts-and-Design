@@ -61,9 +61,9 @@ namespace ASACS5.Controllers
 
 
                 object queryResult = null;
-
+                //Determine if DescriptiveID is found within table
                 queryResult = SqlHelper.ExecuteScalar(String.Format("SELECT COUNT(ClientID) FROM client WHERE DescriptiveID = '{0}'", vm.DescriptiveID));
-
+                //If DescriptiveID is not found, update database. If not, display error message.
                 if (queryResult.ToString() == "0")
                 {
                     string sql = String.Format(
