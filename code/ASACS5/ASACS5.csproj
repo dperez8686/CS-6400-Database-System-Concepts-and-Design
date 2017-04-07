@@ -152,6 +152,8 @@
     <Content Include="Views\Items\Index.cshtml" />
     <Content Include="Views\Site\Shelter.cshtml" />
     <Content Include="Views\Site\FoodPantry.cshtml" />
+    <Content Include="Views\Client\AddClient.cshtml" />
+    <Content Include="Views\Client\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
