@@ -125,7 +125,87 @@ namespace ASACS5.Controllers
             return View(vm);
         }
 
-        public ActionResult Shelter()
+		public ActionResult FoodPantry()
+		{
+			// Get the logged in Site ID from the session
+			int? SiteID = Session["SiteID"] as int?;
+
+			// if there is none, redirect to the login page
+			if (!SiteID.HasValue) return RedirectToAction("Login", "Account");
+
+			// set up the response object
+			FoodPantryViewModel vm = new FoodPantryViewModel();
+
+			// set up the sql query
+			string sql = String.Format(
+				"SELECT HoursOfOperation, ConditionsForUse " +
+				"FROM foodpantry WHERE SiteID = {0}; ", SiteID.Value.ToString());
+
+			// run the sql against the db
+			object[] result = SqlHelper.ExecuteSingleSelect(sql, 2);
+
+			// if we got a result, populate the view model fields
+			if (result != null)
+			{
+				vm.SiteID = SiteID.Value;
+				vm.HoursOfOperation = result[0].ToString();
+				vm.ConditionsForUse = result[1].ToString();
+			}
+
+			return View(vm);
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult FoodPantry(FoodPantryViewModel vm)
+		{
+			if (ModelState.IsValid)
+			{
+				// this is needed for some reason.. come back to it
+				// http://stackoverflow.com/questions/4837744/hiddenfor-not-getting-correct-value-from-view-model
+				ModelState.Remove("SiteID");
+
+				// find out if the soup kitchen exists for this SiteID already
+				// and set up the SQL to INSERT or UPDATE accordingly
+
+				if (vm.SiteID.Equals(0))
+				{
+					// we didn't find an existing soup kitchen. so insert a new one based on the logged in users Site ID
+					int? SiteID = Session["SiteID"] as int?;
+
+					string sql = String.Format(
+						"INSERT INTO foodpantry (SiteID, HoursOfOperation, ConditionsForUse) " +
+						"VALUES ({0},'{1}','{2}'); ",
+						SiteID.Value.ToString(), vm.HoursOfOperation, vm.ConditionsForUse
+					);
+
+					SqlHelper.ExecuteNonQuery(sql);
+
+					vm.SiteID = SiteID.Value; // set the ID since it now exists
+					vm.StatusMessage = "Succesfully added!";
+				}
+				else
+				{
+					// update the existing record 
+
+					string sql = String.Format(
+						"UPDATE foodpantry " +
+						"SET HoursOfOperation = '{0}', " +
+						"ConditionsForUse = '{1}' " +
+						"WHERE SiteID = {2}; ",
+						 vm.HoursOfOperation, vm.ConditionsForUse, vm.SiteID
+					);
+
+					SqlHelper.ExecuteNonQuery(sql);
+
+					vm.StatusMessage = "Succesfully updated!";
+				}
+
+			}
+			return View(vm);
+		}
+		
+		public ActionResult Shelter()
         {
             // Get the logged in Site ID from the session
             int? SiteID = Session["SiteID"] as int?;
