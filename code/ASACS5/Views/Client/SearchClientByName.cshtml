@@ -1,4 +1,5 @@
 ﻿@model ASACS5.Models.Site.SearchClientByNameViewModel
+@using ASACS5.Models.Clients;
 
 @{
     ViewBag.Title = "Search Client By Name";
@@ -18,7 +19,9 @@ else
     @Html.AntiForgeryToken()
 
     @Html.HiddenFor(model => model.SiteID)
-    <div class="form-group">
+    if (!Model.DisplayQueryResults)
+    {
+        <div class="form-group">
         @Html.LabelFor(model => model.FirstName, new { @class = "col-md-3", @for = "txtFirstName" })
         <div class="col-md-9">
             @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control", @id = "txtFirstName" })
@@ -28,7 +31,7 @@ else
     <div class="form-group">
         @Html.LabelFor(model => model.LastName, new { @class = "col-md-3", @for = "txtLastName" })
         <div class="col-md-9">
-            @Html.TextBoxFor(model => model.LastName, new { @class = "form-control", @id = "txtLastName"})
+            @Html.TextBoxFor(model => model.LastName, new { @class = "form-control", @id = "txtLastName" })
             @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -47,6 +50,37 @@ else
             }
         }
     </div>
+    }
+    else
+    {
+        <h3>Client results</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Client ID</th>
+                    <th>Description ID</th>
+                    <th>First Name</th>
+                    <th>Middle Name</th>
+                    <th>Last Name</th>
+                    <th>Phone Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Client client in Model.Clients)
+                {
+                    <tr>
+                        <td>@client.ClientID</td>
+                        <td>@client.DescriptionID</td>
+                        <td>@client.FirstName</td>
+                        <td>@client.MiddleName</td>
+                        <td>@client.LastName</td>
+                        <td>@client.PhoneNumber</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
     <div>
         @Html.ActionLink("Back", "Index", "Home")
     </div>

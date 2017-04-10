@@ -1,7 +1,8 @@
-﻿@model ASACS5.Models.Site.OutputClientViewModel
+﻿@using ASACS5.Models.Clients;
+@model ASACS5.Models.Site.OutputClientViewModel
 
 @{
-    ViewBag.Title = "Cient List";
+    ViewBag.Title = "Client List";
 }
 
 <h1>Client Something: Site @Model.SiteID</h1>
@@ -13,63 +14,28 @@
 
     @Html.HiddenFor(model => model.SiteID)
 
-    <h3>Filters</h3>
-    <div class="row">
-        <div class="col-md-8">
-            <div class="row">
-                <div class="col-xs-2"><b>Enable</b></div>
-                <div class="col-xs-3"><b>Property</b></div>
-                <div class="col-xs-7"><b>Value</b></div>
-            </div>
-            <div class="row">
-                <div class="col-xs-2">
-                    @Html.CheckBoxFor(model => model.SiteNameFilterEnabled)
-                </div>
-                <div class="col-xs-3">
-                    <span>Site</span>
-                </div>
-                <div class="col-xs-7">
-                    @Html.DropDownListFor(model => model.SiteNameFilterValue, Model.SiteSearchOptions, new { @class = "form-control", @id = "txtStorageType" })
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-2">
-                    @Html.CheckBoxFor(model => model.StorageTypeFilterEnabled)
-                </div>
-                <div class="col-xs-3">
-                    <span>Storage Type</span>
-                </div>
-                <div class="col-xs-7">
-                    @Html.TextBoxFor(model => model.StorageTypeFilterValue, new { @class = "form-control", @id = "txtStorageType" })
-                </div>
-            </div>
-        </div>
-    </div>
-    <div>
-        <input type="submit" value="Search" class="btn btn-default" />
-    </div>
-}
-
-<h3>Item results</h3>
+<h3>Client results</h3>
 <table class="table">
     <thead>
         <tr>
-            <th>Item ID</th>
-            <th>Item Name</th>
-            <th>Number of Units</th>
-            <th>Expiration Date</th>
-            <th>Storage Type</th>
+            <th>Client ID</th>
+            <th>Description ID</th>
+            <th>First Name</th>
+            <th>Middle Name</th>
+            <th>Last Name</th>
+            <th>Phone Number</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (Item item in Model.Items)
+        @foreach (Client client in Model.Clients)
         {
             <tr>
-                <td>@item.ItemID</td>
-                <td>@item.ItemName</td>
-                <td>@item.NumberOfUnits</td>
-                <td>@item.ExpirationDate.ToShortDateString()</td>
-                <td>@item.StorageType</td>
+                <td>@client.ClientID</td>
+                <td>@client.DescriptionID</td>
+                <td>@client.FirstName</td>
+                <td>@client.MiddleName</td>
+                <td>@client.LastName</td>
+                <td>@client.PhoneNumber</td>
             </tr>
         }
     </tbody>

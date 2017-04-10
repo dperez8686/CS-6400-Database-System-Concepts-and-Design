@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ASACS5.Models.Clients;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -32,6 +33,8 @@ namespace ASACS5.Models.Site
 
         [DisplayName("Phone Number")]
         public string PhoneNumber { get; set; }
+
+        public List<Client> Clients { get; set; }
 
     }
 }

@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 
 using System.Diagnostics;
+using ASACS5.Models.Clients;
 
 namespace ASACS5.Controllers
 {
@@ -97,7 +98,7 @@ namespace ASACS5.Controllers
 
             // set up the response object
             SearchClientByNameViewModel vm = new SearchClientByNameViewModel();
-
+            vm.DisplayQueryResults = false;
 
             return View(vm);
         }
@@ -117,7 +118,7 @@ namespace ASACS5.Controllers
                 //Determine if DescriptiveID is found within table
                 queryResult = SqlHelper.ExecuteScalar(String.Format("SELECT COUNT(ClientID) FROM client WHERE FirstName LIKE '%{0}%' AND LastName LIKE '%{1}%'", vm.FirstName,vm.LastName));
 
-                // IF less than 5 results found in query, display list. If not, display appropiate messages. 
+                // If less than 5 results found in query, display list. If not, display appropiate messages. 
                 if (int.Parse(queryResult.ToString()) < 5)
                 {
                     // set up the sql query
@@ -131,8 +132,9 @@ namespace ASACS5.Controllers
                     // if we got a result, populate the view model fields
                     if (result != null)
                     {
-                        OutputClientViewModel om = new OutputClientViewModel();
-                        return View(om);
+                        vm.DisplayQueryResults = true;
+                        vm.Clients = GetClientListFromQueryResponse(result);
+                        return View(vm);
                     }
 
                 }
@@ -145,6 +147,27 @@ namespace ASACS5.Controllers
 
             
             return View(vm);
+        }
+
+        private List<Client> GetClientListFromQueryResponse(List<object[]> queryResponse)
+        {
+            var response = new List<Client>();
+
+            foreach (object[] row in queryResponse)
+            {
+                // create a new client and add it to the Client List for each row in the query results
+                response.Add(new Client
+                {
+                    ClientID = int.Parse(row[0].ToString()),
+                    DescriptionID = row[1].ToString(),
+                    FirstName = row[2].ToString(),
+                    MiddleName = row[3].ToString(),
+                    LastName = row[4].ToString(),
+                    PhoneNumber = row[5].ToString()
+                });
+            }
+
+            return response;
         }
     }
 }
