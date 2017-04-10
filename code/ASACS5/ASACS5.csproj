@@ -127,6 +127,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Account\LoginViewModel.cs" />
+    <Compile Include="Models\Client\OutputClientViewModel.cs" />
+    <Compile Include="Models\Client\SearchClientByNameViewModel.cs" />
     <Compile Include="Models\Client\AddClientViewModel.cs" />
     <Compile Include="Models\Home\SiteIndexViewModel.cs" />
     <Compile Include="Models\Items\SiteIndexViewModel.cs" />
@@ -154,6 +156,8 @@
     <Content Include="Views\Site\FoodPantry.cshtml" />
     <Content Include="Views\Client\AddClient.cshtml" />
     <Content Include="Views\Client\Index.cshtml" />
+    <Content Include="Views\Client\SearchClientByName.cshtml" />
+    <Content Include="Views\Client\OutputClientViewModel.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

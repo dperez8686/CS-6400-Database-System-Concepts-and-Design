@@ -1,0 +1,54 @@
+﻿@model ASACS5.Models.Site.SearchClientByNameViewModel
+
+@{
+    ViewBag.Title = "Search Client By Name";
+}
+
+@if (Model.SiteID.Equals(0))
+{
+    <h1>Search Client</h1>
+}
+else
+{
+    <h1>Client : Site ID @Model.SiteID</h1>
+}
+
+@using (Html.BeginForm("SearchClientByName", "Client",  FormMethod.Post, new { id = "frmSearchClientByName", @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.SiteID)
+    <div class="form-group">
+        @Html.LabelFor(model => model.FirstName, new { @class = "col-md-3", @for = "txtFirstName" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control", @id = "txtFirstName" })
+            @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.LastName, new { @class = "col-md-3", @for = "txtLastName" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.LastName, new { @class = "form-control", @id = "txtLastName"})
+            @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div>
+        <input type="submit" value="Search" class="btn btn-default" />
+        @if (!String.IsNullOrWhiteSpace(Model.StatusMessage))
+        {
+            if (Model.StatusMessage == "Succesfully added!")
+            {
+                <span class="text-success"><b> @Model.StatusMessage</b></span>
+            }
+            else
+            {
+                <span class="text-danger"><b> @Model.StatusMessage</b></span>
+            }
+        }
+    </div>
+    <div>
+        @Html.ActionLink("Back", "Index", "Home")
+    </div>
+
+}
