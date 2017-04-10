@@ -134,7 +134,7 @@ namespace ASACS5.Controllers
 			if (!SiteID.HasValue) return RedirectToAction("Login", "Account");
 
 			// set up the response object
-			SoupKitchenViewModel vm = new SoupKitchenViewModel();
+			FoodPantryViewModel vm = new FoodPantryViewModel();
 
 			// set up the sql query
 			string sql = String.Format(
@@ -142,14 +142,14 @@ namespace ASACS5.Controllers
 				"FROM foodpantry WHERE SiteID = {0}; ", SiteID.Value.ToString());
 
 			// run the sql against the db
-			object[] result = SqlHelper.ExecuteSingleSelect(sql, 4);
+			object[] result = SqlHelper.ExecuteSingleSelect(sql, 2);
 
 			// if we got a result, populate the view model fields
 			if (result != null)
 			{
 				vm.SiteID = SiteID.Value;
-				vm.HoursOfOperation = result[1].ToString();
-				vm.ConditionsForUse = result[2].ToString();
+				vm.HoursOfOperation = result[0].ToString();
+				vm.ConditionsForUse = result[1].ToString();
 			}
 
 			return View(vm);
@@ -190,9 +190,9 @@ namespace ASACS5.Controllers
 
 					string sql = String.Format(
 						"UPDATE foodpantry " +
-						"SET HoursOfOperation = '{1}' " +
-						"ConditionsForUse = '{2}' " +
-						"WHERE SiteID = {0}; ",
+						"SET HoursOfOperation = '{0}', " +
+						"ConditionsForUse = '{1}' " +
+						"WHERE SiteID = {2}; ",
 						 vm.HoursOfOperation, vm.ConditionsForUse, vm.SiteID
 					);
 
@@ -205,7 +205,6 @@ namespace ASACS5.Controllers
 			return View(vm);
 		}
 		
-
 		public ActionResult Shelter()
         {
             // Get the logged in Site ID from the session

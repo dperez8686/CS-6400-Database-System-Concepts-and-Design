@@ -5,11 +5,11 @@
 
 @if (Model.SiteID.Equals(0))
 {
-	<h1>Add FoodPantry</h1>
+	<h1>Add Food Pantry</h1>
 }
 else
 {
-	<h1>Shelter : Site ID @Model.SiteID</h1>
+	<h1>Food Pantry : Site ID @Model.SiteID</h1>
 }
 
 @using (Html.BeginForm("FoodPantry", "Site", FormMethod.Post, new { id = "frmFoodPantry", @class = "form-horizontal" }))
