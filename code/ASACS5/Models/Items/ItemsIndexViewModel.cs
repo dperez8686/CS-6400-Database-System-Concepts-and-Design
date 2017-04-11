@@ -10,10 +10,12 @@ namespace ASACS5.Models.Items
     public class ItemsIndexViewModel
     {
         public int SiteID { get; set; }
+        public bool HasFoodBank { get; set; }
         public List<Item> Items { get; set; }
         public IEnumerable<SelectListItem> SiteNameFilterOptions { get; set; }
         public IEnumerable<SelectListItem> ExpirationDateFilterOptions { get; set; }
         public IEnumerable<SelectListItem> FoodOrSupplyFilterOptions { get; set; }
+        public IEnumerable<SelectListItem> Category2FilterOptions { get; set; }
         public IEnumerable<SelectListItem> StorageTypeFilterOptions { get; set; }
 
         public bool SiteNameFilterEnabled { get; set; }
@@ -28,6 +30,9 @@ namespace ASACS5.Models.Items
 
         public bool FoodOrSupplyFilterEnabled { get; set; }
         public string FoodOrSupplyFitlerValue { get; set; }
+
+        public bool Category2FilterEnabled { get; set; }
+        public string Category2FitlerValue { get; set; }
 
         public bool ItemNameFilterEnabled { get; set; }
         public string ItemNameFilterValue { get; set; }

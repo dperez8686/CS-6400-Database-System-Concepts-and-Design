@@ -127,7 +127,8 @@
     </Compile>
     <Compile Include="Models\Account\LoginViewModel.cs" />
     <Compile Include="Models\Home\SiteIndexViewModel.cs" />
-    <Compile Include="Models\Items\SiteIndexViewModel.cs" />
+    <Compile Include="Models\Items\AddUpdateItemViewModel.cs" />
+    <Compile Include="Models\Items\ItemsIndexViewModel.cs" />
     <Compile Include="Models\Site\DeleteServiceViewModel.cs" />
     <Compile Include="Models\Site\FoodPantryViewModel.cs" />
     <Compile Include="Models\Site\ShelterViewModel.cs" />
@@ -151,6 +152,9 @@
     <Content Include="Views\Items\Index.cshtml" />
     <Content Include="Views\Site\Shelter.cshtml" />
     <Content Include="Views\Site\FoodPantry.cshtml" />
+    <Content Include="Views\Items\Add.cshtml" />
+    <Content Include="Views\Items\ItemFormContent.cshtml" />
+    <Content Include="Views\Items\Update.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

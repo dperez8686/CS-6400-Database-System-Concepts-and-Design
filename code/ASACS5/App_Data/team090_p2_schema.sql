@@ -181,3 +181,10 @@ VALUES ('Beans', 12, '2019-01-03', 'Food', 'Vegetables', 'Dry Good', 1);
 
 INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID)
 VALUES ('Soap', 100, '9999-01-01', 'Supply', 'Personal hygiene', 'Dry Good', 1);
+
+INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID)
+VALUES ('T-shirts', 35, '9999-01-01', 'Supply', 'Clothing', 'Dry Good', 2);
+
+INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID)
+VALUES ('Ice cream', 2, '2018-03-01', 'Food', 'Dairy/eggs', 'Frozen', 2);
+

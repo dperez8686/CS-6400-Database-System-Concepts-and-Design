@@ -25,6 +25,9 @@ namespace ASACS5.Controllers
 
             ItemsIndexViewModel vm = new ItemsIndexViewModel { SiteID = SiteID.Value };
 
+            // find out if the current Site has a Food Bank or not
+            vm.HasFoodBank = Int32.Parse(SqlHelper.ExecuteScalar("SELECT COUNT(*) FROM foodbank WHERE SiteID = " + SiteID.Value).ToString()) > 0;
+
             // set up the SQL to get all Items
             string sql = String.Format("SELECT ItemID, ItemName, NumberOfUnits, ExpirationDate, StorageType, SiteID, Category1, Category2 FROM item");
 
@@ -36,6 +39,7 @@ namespace ASACS5.Controllers
             vm.ExpirationDateFilterOptions = GetDateFilterOperators();
             vm.FoodOrSupplyFilterOptions = GetFoodOrSupplyFilterOptions();
             vm.StorageTypeFilterOptions = GetStorageTypeFilterOptions();
+            vm.Category2FilterOptions = GetCategory2FilterOptionsAsSelectList(vm.FoodOrSupplyFitlerValue);
 
             return View(vm);
         }
@@ -80,6 +84,13 @@ namespace ASACS5.Controllers
                 firstWhereLineStarted = true;
             }
 
+            if (vm.Category2FilterEnabled && !String.IsNullOrWhiteSpace(vm.Category2FitlerValue))
+            {
+                if (!firstWhereLineStarted) sb.Append(" WHERE "); else sb.Append(" AND ");
+                sb.Append(" Category2 = '" + vm.Category2FitlerValue + "' ");
+                firstWhereLineStarted = true;
+            }
+
             if (vm.ItemNameFilterEnabled && !String.IsNullOrWhiteSpace(vm.ItemNameFilterValue))
             {
                 if (!firstWhereLineStarted) sb.Append(" WHERE "); else sb.Append(" AND ");
@@ -95,8 +106,153 @@ namespace ASACS5.Controllers
             vm.ExpirationDateFilterOptions = GetDateFilterOperators();
             vm.FoodOrSupplyFilterOptions = GetFoodOrSupplyFilterOptions();
             vm.StorageTypeFilterOptions = GetStorageTypeFilterOptions();
+            vm.Category2FilterOptions = GetCategory2FilterOptionsAsSelectList(vm.FoodOrSupplyFitlerValue);
 
             return View(vm);
+        }
+
+        // This method will get the sub-categories for the specified top-level category
+        [Route("Items/SubCategories/{category}")]
+        public ActionResult SubCategories(string category)
+        {
+            var items = GetCategory2FilterOptions(category);
+
+            return Json(items, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Add()
+        {
+            // Get the logged in Site ID from the session
+            int? SiteID = Session["SiteID"] as int?;
+
+            // if there is none, redirect to the login page
+            if (!SiteID.HasValue) return RedirectToAction("Login", "Account");
+
+            // make sure current Site has a Food Bank. only these users are allowed / makes sense to add
+            if (Int32.Parse(SqlHelper.ExecuteScalar("SELECT COUNT(*) FROM foodbank WHERE SiteID = " + SiteID.Value).ToString()) <= 0)
+                throw new Exception("Access is denied: Food Bank sites only can add items");
+
+            AddUpdateItemViewModel vm = new AddUpdateItemViewModel { SiteID = SiteID.Value, Category = "Food", ExpirationDate = new DateTime(9999, 1, 1) };
+
+            vm.FoodOrSupplyFilterOptions = GetFoodOrSupplyFilterOptions();
+            vm.StorageTypeFilterOptions = GetStorageTypeFilterOptions();
+            vm.Category2FilterOptions = GetCategory2FilterOptions(vm.Category).Select(x => new SelectListItem() { Value = x.ToString(), Text = x.ToString() });
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Add(AddUpdateItemViewModel vm)
+        {
+            // repopulate the dropdown values
+            vm.FoodOrSupplyFilterOptions = GetFoodOrSupplyFilterOptions();
+            vm.StorageTypeFilterOptions = GetStorageTypeFilterOptions();
+            vm.Category2FilterOptions = GetCategory2FilterOptionsAsSelectList(vm.Category);
+
+            if (ModelState.IsValid)
+            {
+                string sql = String.Format(
+                        "INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID) " +
+                        "VALUES ('{0}', {1}, '{2}', '{3}', '{4}', '{5}', {6}); ",
+                        vm.ItemName, vm.NumberOfUnits.ToString(), vm.ExpirationDate.ToString("yyyy-MM-dd"), vm.Category, vm.SubCategory, vm.StorageType, vm.SiteID.ToString()
+                    );
+
+                SqlHelper.ExecuteNonQuery(sql);
+
+                vm.StatusMessage = "Succesfully added!";
+            }
+
+            return View(vm);
+        }
+
+        [Route("Items/{ItemID:int}")]
+        public ActionResult Update(int ItemID)
+        {
+            // Get the logged in Site ID from the session
+            int? SiteID = Session["SiteID"] as int?;
+
+            // if there is none, redirect to the login page
+            if (!SiteID.HasValue) return RedirectToAction("Login", "Account");
+
+            // check the existance of and the SiteID of an item with the specified ID
+            Item item = GetItemById(ItemID);
+
+            // throw an exception if an item with this ID is not found
+            if (item == null) throw new Exception("No Item found for Item ID " + ItemID);
+
+            // throw an exception if the SiteID does not match the Item's Site ID
+            if (!item.SiteID.Equals(SiteID.Value)) throw new Exception("Update not authorized for Item ID " + ItemID + ", Site ID " + SiteID.Value);
+
+            AddUpdateItemViewModel vm = new AddUpdateItemViewModel {
+                SiteID = SiteID.Value,
+                ItemID = ItemID,
+                ItemName = item.ItemName,
+                NumberOfUnits = item.NumberOfUnits,
+                Category = item.Category1,
+                SubCategory = item.Category2,
+                StorageType = item.StorageType,
+                ExpirationDate = item.ExpirationDate,
+                FoodOrSupplyFilterOptions = GetFoodOrSupplyFilterOptions(),
+                StorageTypeFilterOptions = GetStorageTypeFilterOptions(),
+                Category2FilterOptions = GetCategory2FilterOptionsAsSelectList(item.Category1)
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [Route("Items/{ItemID:int}")]
+        [ValidateAntiForgeryToken]
+        public ActionResult Update(AddUpdateItemViewModel vm, int ItemID)
+        {
+            // repopulate the dropdown values
+            vm.FoodOrSupplyFilterOptions = GetFoodOrSupplyFilterOptions();
+            vm.StorageTypeFilterOptions = GetStorageTypeFilterOptions();
+            vm.Category2FilterOptions = GetCategory2FilterOptionsAsSelectList(vm.Category);
+
+            if (ModelState.IsValid)
+            {
+                string sql = String.Format(
+                        "UPDATE item " +
+                        "SET ItemName='{0}', NumberOfUnits={1}, ExpirationDate='{2}', Category1='{3}', Category2='{4}', StorageType='{5}' " +
+                        "WHERE ItemID = {6} ;",
+                        vm.ItemName, vm.NumberOfUnits.ToString(), vm.ExpirationDate.ToString("yyyy-MM-dd"), vm.Category, vm.SubCategory, vm.StorageType, ItemID.ToString()
+                    );
+
+                SqlHelper.ExecuteNonQuery(sql);
+
+                vm.StatusMessage = "Succesfully updated!";
+            }
+
+            return View(vm);
+        }
+
+        private Item GetItemById(int ItemID)
+        {
+            Item response = null;
+
+            string sql = "SELECT ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID FROM item WHERE ItemID = " + ItemID;
+
+            // run the SQL
+            object[] queryResponse = SqlHelper.ExecuteSingleSelect(sql, 7);
+
+            if (queryResponse != null)
+            {
+                response = new Item
+                {
+                    ItemID = ItemID,
+                    ItemName = queryResponse[0].ToString(),
+                    NumberOfUnits = int.Parse(queryResponse[1].ToString()),
+                    ExpirationDate = DateTime.Parse(queryResponse[2].ToString()),
+                    StorageType = queryResponse[5].ToString(),
+                    SiteID = int.Parse(queryResponse[6].ToString()),
+                    Category1 = queryResponse[3].ToString(),
+                    Category2 = queryResponse[4].ToString()
+                };
+            }
+
+            return response;
         }
 
         private List<Item> GetItems(string sql)
@@ -186,6 +342,36 @@ namespace ASACS5.Controllers
             selectListItems.Add(new SelectListItem { Value = "Frozen", Text = "Frozen" });
 
             return new SelectList(selectListItems, "Value", "Text");
+        }
+
+        private List<String> GetCategory2FilterOptions(string category)
+        {
+            var items = new List<string>();
+
+            switch (category)
+            {
+                case "Food":
+                    items.Add("Vegetables");
+                    items.Add("Nuts/grains/beans");
+                    items.Add("Meat/seafood");
+                    items.Add("Dairy/eggs");
+                    items.Add("Sauce/Condiment/Seasoning");
+                    items.Add("Juice/Drink");
+                    break;
+                case "Supply":
+                    items.Add("Personal hygiene");
+                    items.Add("Clothing");
+                    items.Add("Shelter");
+                    items.Add("Other");
+                    break;
+            }
+
+            return items;
+        }
+
+        private IEnumerable<SelectListItem> GetCategory2FilterOptionsAsSelectList(string category)
+        {
+            return GetCategory2FilterOptions(category).Select(x => new SelectListItem() { Value = x.ToString(), Text = x.ToString() });
         }
     }
 }
