@@ -1,0 +1,63 @@
+﻿@using ASACS5.Models.Items
+
+@model ASACS5.Models.Items.AddUpdateItemViewModel
+
+<div class="form-group">
+    @Html.LabelFor(model => model.ItemName, new { @class = "col-md-3", @for = "txtItemName" })
+    <div class="col-md-9">
+        @Html.TextBoxFor(model => model.ItemName, new { @class = "form-control", @id = "txtItemName" })
+        @Html.ValidationMessageFor(model => model.ItemName, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(model => model.NumberOfUnits, new { @class = "col-md-3", @for = "txtNumberOfUnits" })
+    <div class="col-md-9">
+        @Html.TextBoxFor(model => model.NumberOfUnits, new { @class = "form-control", @id = "txtNumberOfUnits", @type = "number" })
+        @Html.ValidationMessageFor(model => model.NumberOfUnits, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(model => model.Category, new { @class = "col-md-3", @for = "txtCategory" })
+    <div class="col-md-9">
+        @Html.DropDownListFor(model => model.Category, Model.FoodOrSupplyFilterOptions, new { @class = "form-control", @id = "txtCategory", @onchange = "categoryChanged()" })
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(model => model.SubCategory, new { @class = "col-md-3", @for = "txtSubCategory" })
+    <div class="col-md-9">
+        @Html.DropDownListFor(model => model.SubCategory, Model.Category2FilterOptions, new { @class = "form-control", @id = "txtSubCategory" })
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(model => model.StorageType, new { @class = "col-md-3", @for = "txtStorageType" })
+    <div class="col-md-9">
+        @Html.DropDownListFor(model => model.StorageType, Model.StorageTypeFilterOptions, new { @class = "form-control", @id = "txtStorageType" })
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(model => model.ExpirationDate, new { @class = "col-md-3", @for = "txtExpirationDate" })
+    <div class="col-md-9">
+        @Html.TextBoxFor(model => model.ExpirationDate, "{0:yyyy-MM-dd}", new { @class = "form-control", @id = "txtExpirationDate", placeholder = "YYYY-MM-DD" })
+        @Html.ValidationMessageFor(model => model.ExpirationDate, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<script type="text/javascript">
+    function categoryChanged() {
+        var cat1Val = $('#txtCategory').val();
+
+        // get the sub-categories, populate the dropdown
+        $.ajax({
+            url: '/Items/SubCategories/' + cat1Val,
+            type: "GET",
+            dataType: "JSON",
+            success: function (result) {
+                $("#txtSubCategory").html(""); // clear before appending new list
+                $.each(result, function (i, val) {
+                    $("#txtSubCategory").append(
+                        $('<option></option>').val(val).html(val));
+                });
+            }
+        });
+    }
+</script>
