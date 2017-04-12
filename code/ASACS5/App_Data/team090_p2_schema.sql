@@ -114,7 +114,7 @@ CREATE TABLE WaitList (
 CREATE TABLE ClientLogEntry (
   LogID int(16) unsigned NOT NULL AUTO_INCREMENT,
   ClientID int(16) unsigned NOT NULL,
-  DateTimeStamp datetime NOT NULL,
+  DateTimeStamp datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   SiteName varchar(250) NOT NULL,
   Description varchar(1000) NOT NULL,
   PRIMARY KEY (LogID)
