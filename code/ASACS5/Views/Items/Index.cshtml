@@ -1,4 +1,6 @@
-﻿@model ASACS5.Models.Items.ItemsIndexViewModel
+﻿@using ASACS5.Models.Items
+
+@model ASACS5.Models.Items.ItemsIndexViewModel
 
 @{
     ViewBag.Title = "Items";
@@ -6,27 +8,173 @@
 
 <h1>Items : Site @Model.SiteID</h1>
 
+@if (Model.HasFoodBank)
+{
+    <p><a href="/Items/Add"><span class="glyphicon glyphicon-plus"></span> <span>Add a new item</span></a></p>
+}
+
+@using (Html.BeginForm("Index", "Items", FormMethod.Post, new { id = "frmItemsIndex" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.SiteID)
+    @Html.HiddenFor(model => model.HasFoodBank)
+
+    <h3>Filters</h3>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="row form-group">
+                <div class="col-xs-2"><b>Enable</b></div>
+                <div class="col-xs-3"><b>Property</b></div>
+                <div class="col-xs-7"><b>Value</b></div>
+            </div>
+            <div class="row form-group">
+                <div class="col-xs-2">
+                    @Html.CheckBoxFor(model => model.SiteNameFilterEnabled)
+                </div>
+                <div class="col-xs-3">
+                    <span>Site</span>
+                </div>
+                <div class="col-xs-7">
+                    @Html.DropDownListFor(model => model.SiteNameFilterValue, Model.SiteNameFilterOptions, new { @class = "form-control", @id = "txtStorageType" })
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-xs-2">
+                    @Html.CheckBoxFor(model => model.ItemNameFilterEnabled)
+                </div>
+                <div class="col-xs-3">
+                    <span>Item Name</span>
+                </div>
+                <div class="col-xs-7">
+                    @Html.TextBoxFor(model => model.ItemNameFilterValue, new { @class = "form-control", @id = "txtItemName" })
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-xs-2">
+                    @Html.CheckBoxFor(model => model.FoodOrSupplyFilterEnabled, new { @id = "chkFoodOrSupply", @onchange = "cat1Changed()" })
+                </div>
+                <div class="col-xs-3">
+                    <span>Category</span>
+                </div>
+                <div class="col-xs-7">
+                    @Html.DropDownListFor(model => model.FoodOrSupplyFitlerValue, Model.FoodOrSupplyFilterOptions, new { @class = "form-control", @id = "txtFoodOrSupply", @onchange = "cat1Changed()" })
+                </div>
+            </div>
+            <div class="row form-group" id="divCategory2" hidden="@(!Model.FoodOrSupplyFilterEnabled)">
+                <div class="col-xs-2">
+                    @Html.CheckBoxFor(model => model.Category2FilterEnabled, new { @id = "chkCategory2" })
+                </div>
+                <div class="col-xs-3">
+                    <span>Sub-category</span>
+                </div>
+                <div class="col-xs-7">
+                    @Html.DropDownListFor(model => model.Category2FitlerValue, Model.Category2FilterOptions, new { @class = "form-control", @id = "txtCategory2" })
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-xs-2">
+                    @Html.CheckBoxFor(model => model.StorageTypeFilterEnabled)
+                </div>
+                <div class="col-xs-3">
+                    <span>Storage Type</span>
+                </div>
+                <div class="col-xs-7">
+                    @Html.DropDownListFor(model => model.StorageTypeFilterValue, Model.StorageTypeFilterOptions, new { @class = "form-control", @id = "txtStorageType" })
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-xs-2">
+                    @Html.CheckBoxFor(model => model.ExpirationDateFilterEnabled)
+                </div>
+                <div class="col-xs-3">
+                    <span>Expiration Date</span>
+                </div>
+                <div class="col-xs-2">
+                    @Html.DropDownListFor(model => model.ExpirationDateFilterOperator, Model.ExpirationDateFilterOptions, new { @class = "form-control", @id = "txtExpirationDateOperator" })
+                </div>
+                <div class="col-xs-5">
+                    @Html.TextBoxFor(model => model.ExpirationDateFilterValue, new { @class = "form-control", @id = "txtExpirationDate", placeholder = "YYYY-MM-DD" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <input type="submit" value="Search" class="btn btn-default" />
+    </div>
+}
+
+<h3>Item results</h3>
 <table class="table">
     <thead>
         <tr>
-            <th>Item ID</th>
             <th>Item Name</th>
             <th>Number of Units</th>
+            <th>Category</th>
+            <th class="hidden-xs hidden-sm">Sub-Category</th>
+            <th class="hidden-xs">Storage Type</th>
             <th>Expiration Date</th>
-            <th>Storage Type</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>5</td>
-            <td>Carrots</td>
-            <td>6 bags</td>
-            <td>5/5/2018</td>
-            <td>Dry goods</td>
-        </tr>
+        @foreach (Item item in Model.Items)
+        {
+            <tr>
+                <td>@item.ItemName</td>
+                <td>@item.NumberOfUnits.ToString()</td>
+                <td>@item.Category1</td>
+                <td class="hidden-xs hidden-sm">@item.Category2</td>
+                <td class="hidden-xs">@item.StorageType</td>
+                <td>@item.ExpirationDate.ToShortDateString()</td>
+                <td>
+                    @if (item.SiteID.Equals(Model.SiteID))
+                    {
+                        <a href="/Items/@item.ItemID.ToString()"><span class="glyphicon glyphicon-pencil" title="Edit"></span></a>
+                    }
+                    else
+                    {
+                        <a href="#"><span class="glyphicon glyphicon-hand-right" title="Request"></span></a>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
 <div>
     @Html.ActionLink("Back", "Index", "Home")
 </div>
+
+<script type="text/javascript">
+    //window.onload = function () {
+    //    cat1Changed(); // populate in the case of form submission
+    //};
+
+    function cat1Changed() {
+        var cat1Checked = $('#chkFoodOrSupply').prop("checked");
+
+        if (cat1Checked) {
+            var cat1Val = $('#txtFoodOrSupply').val();
+
+            // get the sub-categories, populate the dropdown
+            $.ajax({
+                url: '/Items/SubCategories/' + cat1Val,
+                type: "GET",
+                dataType: "JSON",
+                success: function (result) {
+                    $("#txtCategory2").html(""); // clear before appending new list 
+                    $.each(result, function (i, val) {
+                        $("#txtCategory2").append(
+                            $('<option></option>').val(val).html(val));
+                    });
+                    $('#divCategory2').show(); // show the section div
+                }
+            });
+        }
+        else {
+            $('#divCategory2').hide(); // hide the section div
+            $('#chkCategory2').prop("checked", false); // set the filter to un-checked
+        }
+    }
+</script>

@@ -1,0 +1,33 @@
+﻿@using ASACS5.Models.Items
+
+@model ASACS5.Models.Items.AddUpdateItemViewModel
+
+@{
+    ViewBag.Title = "Update Item";
+}
+
+<h1>Update Item : Item # @Model.ItemID</h1>
+
+@using (Html.BeginForm("Update", "Items", FormMethod.Post, new { id = "frmUpdateItem", @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.SiteID)
+    @Html.HiddenFor(model => model.ItemID)
+
+       
+    @Html.Partial("ItemFormContent")
+
+    <div>
+        <input type="submit" value="Save" class="btn btn-default" />
+        @if (!String.IsNullOrWhiteSpace(Model.StatusMessage))
+        {
+            <span class="text-success"><b> @Model.StatusMessage</b></span>
+        }
+    </div>
+
+    <div>
+        @Html.ActionLink("Back", "Index", "Items")
+    </div>
+
+}
