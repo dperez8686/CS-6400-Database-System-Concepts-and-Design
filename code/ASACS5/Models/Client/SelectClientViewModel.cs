@@ -1,5 +1,4 @@
-﻿using ASACS5.Models.Clients;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +7,7 @@ using System.Web;
 
 namespace ASACS5.Models.Site
 {
-    public class SearchClientByNameViewModel
+    public class SelectClientViewModel
     {
         public int SiteID { get; set; }
         public string SiteName { get; set; }
@@ -16,28 +15,30 @@ namespace ASACS5.Models.Site
         public string StatusType { get; set; }
         public string StatusMessage { get; set; }
 
-        public Boolean DisplayQueryResults { get; set; }
-
-        [DisplayName("Client ID")]
-        public string ClientID { get; set; }
+        public int ClientID { get; set; }
 
         [DisplayName("Descriptive ID")]
+        [Required(ErrorMessage = "Descriptive ID is required")]
+        [MaxLength(1000, ErrorMessage = "Max length is 250 characters")]
         public string DescriptiveID { get; set; }
 
         [DisplayName("First Name")]
+        [Required(ErrorMessage = "First name is required")]
+        [MaxLength(1000, ErrorMessage = "Max length is 250 characters")]
         public string FirstName { get; set; }
 
         [DisplayName("Middle Name")]
+        [MaxLength(1000, ErrorMessage = "Max length is 250 characters")]
         public string MiddleName { get; set; }
 
         [DisplayName("Last Name")]
+        [Required(ErrorMessage = "Last name is required")]
+        [MaxLength(1000, ErrorMessage = "Max length is 250 characters")]
         public string LastName { get; set; }
 
         [DisplayName("Phone Number")]
+        [MaxLength(10, ErrorMessage = "Max length is 80 characters")]
         public string PhoneNumber { get; set; }
-
-        public List<Client> Clients { get; set; }
-
 
     }
 }

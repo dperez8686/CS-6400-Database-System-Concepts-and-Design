@@ -8,13 +8,16 @@ using System.Web;
 
 namespace ASACS5.Models.Site
 {
-    public class OutputClientViewModel
+    public class SearchClientViewModel
     {
         public int SiteID { get; set; }
         public string SiteName { get; set; }
 
         public string StatusType { get; set; }
         public string StatusMessage { get; set; }
+
+        public Boolean DisplayQueryResults { get; set; }
+        public int selectedClient { get; set; } 
 
         [DisplayName("Client ID")]
         public string ClientID { get; set; }
@@ -35,6 +38,7 @@ namespace ASACS5.Models.Site
         public string PhoneNumber { get; set; }
 
         public List<Client> Clients { get; set; }
+
 
     }
 }

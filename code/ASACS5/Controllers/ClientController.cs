@@ -75,6 +75,24 @@ namespace ASACS5.Controllers
 
                     SqlHelper.ExecuteNonQuery(sql);
 
+                    // Get Client ID and add entry into log table saying client was added
+                    sql = String.Format(
+                    "SELECT ClientID" +
+                        " FROM client WHERE DescriptiveID = '{0}'; ", vm.DescriptiveID);
+                    
+                    object[] result = SqlHelper.ExecuteSingleSelect(sql, 1);
+                    int clientID = int.Parse(result[0].ToString());
+
+                    // TODO: Fix the whole issue with getting the correct Site ID.
+                    sql = String.Format(
+                        "INSERT INTO clientlogentry (ClientID, SiteName, Description) " +
+                        "VALUES ({0}, '{1}', '{2}'); ",
+                        clientID, "Site Name", "Added to database"
+                    );
+
+                    SqlHelper.ExecuteNonQuery(sql);
+
+
                     vm.StatusMessage = "Succesfully added!";
                 }
                 else
@@ -87,7 +105,7 @@ namespace ASACS5.Controllers
             return View(vm);
         }
 
-        public ActionResult SearchClientByName()
+        public ActionResult SearchClient()
         {
             // Get the logged in Site ID from the session
             int? SiteID = Session["SiteID"] as int?;
@@ -97,7 +115,7 @@ namespace ASACS5.Controllers
 
 
             // set up the response object
-            SearchClientByNameViewModel vm = new SearchClientByNameViewModel();
+            SearchClientViewModel vm = new SearchClientViewModel();
             vm.DisplayQueryResults = false;
 
             return View(vm);
@@ -105,7 +123,7 @@ namespace ASACS5.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult SearchClientByName(SearchClientByNameViewModel vm)
+        public ActionResult SearchClient(SearchClientViewModel vm)
         {
             if (ModelState.IsValid)
             {
@@ -116,7 +134,8 @@ namespace ASACS5.Controllers
 
                 object queryResult = null;
                 //Determine if DescriptiveID is found within table
-                queryResult = SqlHelper.ExecuteScalar(String.Format("SELECT COUNT(ClientID) FROM client WHERE FirstName LIKE '%{0}%' AND LastName LIKE '%{1}%'", vm.FirstName,vm.LastName));
+                // TODO: For some reason, we're not getting count of 0. Fix this. 
+                queryResult = SqlHelper.ExecuteScalar(String.Format("SELECT COUNT(*) FROM client WHERE FirstName LIKE '%{0}%' AND LastName LIKE '%{1}%'", vm.FirstName,vm.LastName));
 
                 // If less than 5 results found in query, display list. If not, display appropiate messages. 
                 if (int.Parse(queryResult.ToString()) < 5)
@@ -124,7 +143,7 @@ namespace ASACS5.Controllers
                     // set up the sql query
                     string sql = String.Format(
                         "SELECT ClientID, DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber " +
-                        "FROM client WHERE FirstName LIKE '%{0}%' AND LastName LIKE '%{1}%'", vm.FirstName, vm.LastName);
+                        "FROM client WHERE DescriptiveID LIKE '%{0}%' AND FirstName LIKE '%{1}%' AND LastName LIKE '%{2}%' ", vm.DescriptiveID, vm.FirstName, vm.LastName);
 
                     // run the sql against the db
                     List <object[]> result = SqlHelper.ExecuteMultiSelect(sql, 6);
@@ -138,6 +157,10 @@ namespace ASACS5.Controllers
                     }
 
                 }
+                else if (int.Parse(queryResult.ToString()) == 0)
+                {
+                    vm.StatusMessage = "No results found.";
+                }
                 else
                 {
                     vm.StatusMessage = "More than 5 entries exist. Please enter more specific query.";
@@ -148,6 +171,59 @@ namespace ASACS5.Controllers
             
             return View(vm);
         }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SelectClient(SearchClientViewModel vm)
+        {
+            
+            string sql = String.Format(
+                "SELECT DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber " +
+                "FROM client WHERE ClientID = {0}; ", vm.selectedClient.ToString());
+            SelectClientViewModel om = new SelectClientViewModel();
+            // run the sql against the db
+            object[] result = SqlHelper.ExecuteSingleSelect(sql, 5);
+
+            // if we got a result, populate the view model fields
+            if (result != null)
+            {
+                om.ClientID = vm.selectedClient;
+                om.DescriptiveID = result[0].ToString();
+                om.FirstName = result[1].ToString();
+                om.MiddleName = result[2].ToString();
+                om.LastName = result[3].ToString();
+                om.PhoneNumber = result[4].ToString();
+            }
+
+            return View(om);
+            
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdateClient(SelectClientViewModel vm)
+        {
+
+            string sql = String.Format(
+                "UPDATE client SET DescriptiveID = '{0}', " +
+                "FirstName = '{1}', " +
+                "MiddleName = '{2}', " +
+                "LastName = '{3}', " +
+                "PhoneNumber = '{4}' " +
+                "WHERE ClientID = {5}; ", 
+                vm.DescriptiveID.ToString(), vm.FirstName.ToString(), vm.MiddleName, vm.LastName.ToString(), 
+                vm.PhoneNumber.ToString(), vm.ClientID);
+
+            SqlHelper.ExecuteNonQuery(sql);
+
+            UpdateClientViewModel om = new UpdateClientViewModel();
+            om.StatusMessage = "Succesfully updated!";
+
+ 
+            return View(om);
+
+        }
+
 
         private List<Client> GetClientListFromQueryResponse(List<object[]> queryResponse)
         {

@@ -1,0 +1,111 @@
+﻿@model ASACS5.Models.Site.SearchClientViewModel
+@using ASACS5.Models.Clients;
+
+@{
+    ViewBag.Title = "Search Client By Name";
+}
+
+@if (Model.SiteID.Equals(0))
+{
+    <h1>Search Client</h1>
+}
+else
+{
+    <h1>Client : Site ID @Model.SiteID</h1>
+}
+
+@using (Html.BeginForm("SearchClient", "Client", FormMethod.Post, new { id = "frmSearchClient", @class = "form-horizontal" }))
+{
+
+    if (!Model.DisplayQueryResults)
+    {
+            @Html.AntiForgeryToken()
+
+            @Html.HiddenFor(model => model.SiteID)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DescriptiveID, new { @class = "col-md-3", @for = "txtDescriptiveID" })
+            <div class="col-md-9">
+                @Html.TextBoxFor(model => model.DescriptiveID, new { @class = "form-control", @id = "txtDescriptiveID" })
+                @Html.ValidationMessageFor(model => model.DescriptiveID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.FirstName, new { @class = "col-md-3", @for = "txtFirstName" })
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control", @id = "txtFirstName" })
+                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.LastName, new { @class = "col-md-3", @for = "txtLastName" })
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.LastName, new { @class = "form-control", @id = "txtLastName" })
+                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div>
+                <input type="submit" value="Search" class="btn btn-default" />
+                @if (!String.IsNullOrWhiteSpace(Model.StatusMessage))
+                {
+                    if (Model.StatusMessage == "Succesfully added!")
+                    {
+                        <span class="text-success"><b> @Model.StatusMessage</b></span>
+                    }
+                    else
+                    {
+                        <span class="text-danger"><b> @Model.StatusMessage</b></span>
+                    }
+                }
+            </div>
+            }
+            }
+
+            @using (Html.BeginForm("SelectClient", "Client", FormMethod.Post, new { id = "frmUpdateClient", @class = "form-horizontal" }))
+            {
+                if (Model.DisplayQueryResults)
+                {
+
+                    @Html.AntiForgeryToken()
+
+
+
+                    <h3>Client results</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Selection</th>
+                                <th>Client ID</th>
+                                <th>Description ID</th>
+                                <th>First Name</th>
+                                <th>Middle Name</th>
+                                <th>Last Name</th>
+                                <th>Phone Number</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Client client in Model.Clients)
+                            {
+                                <tr>
+                                    <td>@Html.RadioButtonFor(model => model.selectedClient, client.ClientID.ToString())</td>
+                                    <td>@client.ClientID</td>
+                                    <td>@client.DescriptionID</td>
+                                    <td>@client.FirstName</td>
+                                    <td>@client.MiddleName</td>
+                                    <td>@client.LastName</td>
+                                    <td>@client.PhoneNumber</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <input type="submit" value="Update Client" class="btn btn-default" />
+                }
+            }
+
+            <div>
+                @Html.ActionLink("Back", "Index", "Home")
+            </div>
+
+
