@@ -9,6 +9,7 @@ using System.Web.Mvc;
 
 using System.Diagnostics;
 using ASACS5.Models.Clients;
+using ASACS5.Models.Logs;
 
 namespace ASACS5.Controllers
 {
@@ -184,6 +185,7 @@ namespace ASACS5.Controllers
             // run the sql against the db
             object[] result = SqlHelper.ExecuteSingleSelect(sql, 5);
 
+            
             // if we got a result, populate the view model fields
             if (result != null)
             {
@@ -193,6 +195,7 @@ namespace ASACS5.Controllers
                 om.MiddleName = result[2].ToString();
                 om.LastName = result[3].ToString();
                 om.PhoneNumber = result[4].ToString();
+
             }
 
             return View(om);
@@ -224,6 +227,25 @@ namespace ASACS5.Controllers
 
         }
 
+        private List<Log> GetLogListFromQueryResponse(List<object[]> queryResponse)
+        {
+            var response = new List<Log>();
+
+            foreach (object[] row in queryResponse)
+            {
+                // create a new client and add it to the Client List for each row in the query results
+                response.Add(new Log
+                {
+                    ClientID = int.Parse(row[0].ToString()),
+                    LogID = int.Parse(row[1].ToString()),
+                    DateTimeStamp = row[2].ToString(),
+                    SiteName = row[3].ToString(),
+                    Description = row[4].ToString(),
+                });
+            }
+
+            return response;
+        }
 
         private List<Client> GetClientListFromQueryResponse(List<object[]> queryResponse)
         {

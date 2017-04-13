@@ -16,6 +16,7 @@ namespace ASACS5.Models.Site
         public string StatusMessage { get; set; }
 
         public int ClientID { get; set; }
+        
 
         [DisplayName("Descriptive ID")]
         [Required(ErrorMessage = "Descriptive ID is required")]

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ASACS5.Models.Logs;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -16,6 +17,7 @@ namespace ASACS5.Models.Site
         public string StatusMessage { get; set; }
 
         public int ClientID { get; set; }
+        public List<Log> Logs { get; set; }
 
         [DisplayName("Descriptive ID")]
         [Required(ErrorMessage = "Descriptive ID is required")]
