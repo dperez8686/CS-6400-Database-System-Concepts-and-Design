@@ -10,7 +10,7 @@
 }
 else
 {
-    <h1>Client : Site ID @Model.SiteID</h1>
+    <h1>Client : Site ID @Model.SiteName</h1>
 }
 
 @using (Html.BeginForm("UpdateClient", "Client",  FormMethod.Post, new { id = "frmUpdateClient", @class = "form-horizontal" }))
@@ -70,7 +70,7 @@ else
         }
     </div>
     <div>
-        @Html.ActionLink("Back", "Index", "Home")
+        @Html.ActionLink("Back", "SearchClient", "Client")
     </div>
 
 }

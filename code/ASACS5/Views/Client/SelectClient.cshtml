@@ -1,5 +1,5 @@
 ﻿@model ASACS5.Models.Site.SelectClientViewModel
-
+@using ASACS5.Models.Logs;
 @{
     ViewBag.Title = "Update Client";
 }
@@ -19,6 +19,11 @@ else
 
     @Html.HiddenFor(model => model.SiteID)
     @Html.HiddenFor(model => model.ClientID)
+    @Html.HiddenFor(model => model.oldDescriptiveID)
+    @Html.HiddenFor(model => model.oldFirstName)
+    @Html.HiddenFor(model => model.oldMiddleName)
+    @Html.HiddenFor(model => model.oldLastName)
+    @Html.HiddenFor(model => model.oldPhoneNumber)
 
     <div class="form-group">
         @Html.LabelFor(model => model.DescriptiveID, new { @class = "col-md-3", @for = "txtDescriptiveID" })
@@ -55,6 +60,44 @@ else
             @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
         </div>
     </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.LogEntry, new { @class = "col-md-3", @for = "txtLogEntry" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.LogEntry, new { @class = "form-control", @id = "txtPhoneNumber" })
+            @Html.ValidationMessageFor(model => model.LogEntry, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <br />
+    if (Model.Logs != null)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Log ID</th>
+                    <th>Client ID</th>
+                    <th>Date/Time Stamp</th>
+                    <th>Site Name</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (Log log in Model.Logs)
+                {
+                    <tr>
+                        <td>@log.LogID</td>
+                        <td>@log.ClientID</td>
+                        <td>@log.DateTimeStamp</td>
+                        <td>@log.SiteName</td>
+                        <td>@log.Description</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+        
+    }
+
 
     <div>
         <input type="submit" value="Save changes" class="btn btn-default" />
@@ -71,7 +114,7 @@ else
         }
     </div>
     <div>
-        @Html.ActionLink("Back", "Index", "Home")
+        @Html.ActionLink("Back", "SearchClient", "Client")
     </div>
 
 }

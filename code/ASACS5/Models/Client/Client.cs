@@ -7,6 +7,8 @@ namespace ASACS5.Models.Clients
 {
     public class Client
     {
+        public int SiteID { get; set; }
+        public string SiteName { get; set; }
         public int ClientID { get; set; }
         public string DescriptionID { get; set; }
         public string FirstName { get; set; }

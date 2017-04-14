@@ -88,7 +88,7 @@ namespace ASACS5.Controllers
                     sql = String.Format(
                         "INSERT INTO clientlogentry (ClientID, SiteName, Description) " +
                         "VALUES ({0}, '{1}', '{2}'); ",
-                        clientID, "Site Name", "Added to database"
+                        clientID, "Site Name", "Profile created"
                     );
 
                     SqlHelper.ExecuteNonQuery(sql);
@@ -136,15 +136,19 @@ namespace ASACS5.Controllers
                 object queryResult = null;
                 //Determine if DescriptiveID is found within table
                 // TODO: For some reason, we're not getting count of 0. Fix this. 
-                queryResult = SqlHelper.ExecuteScalar(String.Format("SELECT COUNT(*) FROM client WHERE FirstName LIKE '%{0}%' AND LastName LIKE '%{1}%'", vm.FirstName,vm.LastName));
+                queryResult = SqlHelper.ExecuteScalar(String.Format("SELECT COUNT(*) FROM client WHERE DescriptiveID='{0}' OR FirstName LIKE '%{1}%' AND LastName LIKE '%{2}%'", vm.DescriptiveID, vm.FirstName,vm.LastName));
 
                 // If less than 5 results found in query, display list. If not, display appropiate messages. 
-                if (int.Parse(queryResult.ToString()) < 5)
+                if (int.Parse(queryResult.ToString()) == 0)
+                {
+                    vm.StatusMessage = "No results found. Try search again.";
+                }
+                else if (int.Parse(queryResult.ToString()) < 5)
                 {
                     // set up the sql query
                     string sql = String.Format(
                         "SELECT ClientID, DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber " +
-                        "FROM client WHERE DescriptiveID LIKE '%{0}%' AND FirstName LIKE '%{1}%' AND LastName LIKE '%{2}%' ", vm.DescriptiveID, vm.FirstName, vm.LastName);
+                        "FROM client WHERE DescriptiveID='{0}' OR FirstName LIKE '%{1}%' AND LastName LIKE '%{2}%' ", vm.DescriptiveID, vm.FirstName, vm.LastName);
 
                     // run the sql against the db
                     List <object[]> result = SqlHelper.ExecuteMultiSelect(sql, 6);
@@ -158,18 +162,12 @@ namespace ASACS5.Controllers
                     }
 
                 }
-                else if (int.Parse(queryResult.ToString()) == 0)
-                {
-                    vm.StatusMessage = "No results found.";
-                }
                 else
                 {
                     vm.StatusMessage = "More than 5 entries exist. Please enter more specific query.";
                 }
 
             }
-
-            
             return View(vm);
         }
         
@@ -195,6 +193,24 @@ namespace ASACS5.Controllers
                 om.MiddleName = result[2].ToString();
                 om.LastName = result[3].ToString();
                 om.PhoneNumber = result[4].ToString();
+                om.oldDescriptiveID = result[0].ToString();
+                om.oldFirstName = result[1].ToString();
+                om.oldMiddleName = result[2].ToString();
+                om.oldLastName = result[3].ToString();
+                om.oldPhoneNumber = result[4].ToString();
+
+                string sql2 = String.Format(
+                       "SELECT LogID, ClientID, DateTimeStamp, SiteName, Description " +
+                       "FROM clientlogentry WHERE ClientID = {0} ", om.ClientID);
+
+                // run the sql against the db
+                List<object[]> result2 = SqlHelper.ExecuteMultiSelect(sql2, 5);
+
+                // if we got a result, populate the view model fields
+                if (result2 != null)
+                {
+                    om.Logs = GetLogListFromQueryResponse(result2);
+                }
 
             }
 
@@ -219,13 +235,71 @@ namespace ASACS5.Controllers
 
             SqlHelper.ExecuteNonQuery(sql);
 
+            string mod_string = String.Format("Profile updated/edited: ");
+            if (vm.oldDescriptiveID != vm.DescriptiveID)
+            {
+                mod_string += String.Format("DescriptiveID changed from {0} to {1}; ", vm.oldDescriptiveID, vm.DescriptiveID);
+            }
+            if (vm.oldFirstName != vm.FirstName)
+            {
+                mod_string += String.Format("First name changed from {0} to {1}; ",vm.oldFirstName,vm.FirstName);
+            }
+            if (vm.oldMiddleName != vm.MiddleName)
+            {
+                mod_string += String.Format("Middle name changed from {0} to {1}; ", vm.oldMiddleName, vm.MiddleName);
+            }
+            if (vm.oldLastName != vm.LastName)
+            {
+                mod_string += String.Format("Last name changed from {0} to {1}; ", vm.oldLastName, vm.LastName);
+            }
+            if (vm.oldPhoneNumber != vm.PhoneNumber)
+            {
+                mod_string += String.Format("Phone Number changed from {0} to {1}; ", vm.oldPhoneNumber, vm.PhoneNumber);
+            }
+
+
+                sql = String.Format(
+                        "INSERT INTO clientlogentry (ClientID, SiteName, Description) " +
+                        "VALUES ({0}, '{1}', '{2}'); ",
+                        vm.ClientID, "Site Name", mod_string
+                    );
+
+            SqlHelper.ExecuteNonQuery(sql);
+
+            if (vm.LogEntry != null)
+            {
+                sql = String.Format(
+                    "INSERT INTO clientlogentry (ClientID, SiteName, Description) " +
+                    "VALUES ({0}, '{1}', '{2}'); ",
+                    vm.ClientID, "Site Name", vm.LogEntry
+                );
+
+                SqlHelper.ExecuteNonQuery(sql);
+            }
+
             UpdateClientViewModel om = new UpdateClientViewModel();
+
             om.StatusMessage = "Succesfully updated!";
 
+
+            // TODO: Try and get site name for logging purposes. 
+            int? SiteID = Session["SiteID"] as int?;
+            if (SiteID.HasValue) vm.SiteID = SiteID.Value;
+
+            vm.SiteName = Session["SiteName"] as string;
  
             return View(om);
 
         }
+
+        
+        public ActionResult AddManualLogIndex(SelectClientViewModel vm)
+        {
+            Log om = new Log();
+            om.ClientID = vm.ClientID;
+            return View(om);
+        }
+
 
         private List<Log> GetLogListFromQueryResponse(List<object[]> queryResponse)
         {
@@ -236,8 +310,8 @@ namespace ASACS5.Controllers
                 // create a new client and add it to the Client List for each row in the query results
                 response.Add(new Log
                 {
-                    ClientID = int.Parse(row[0].ToString()),
-                    LogID = int.Parse(row[1].ToString()),
+                    LogID = int.Parse(row[0].ToString()),
+                    ClientID = int.Parse(row[1].ToString()),
                     DateTimeStamp = row[2].ToString(),
                     SiteName = row[3].ToString(),
                     Description = row[4].ToString(),
