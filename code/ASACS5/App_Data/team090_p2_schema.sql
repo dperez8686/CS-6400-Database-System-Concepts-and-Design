@@ -148,16 +148,7 @@ ALTER TABLE `SoupKitchen`
 ALTER TABLE `Request`
   ADD CONSTRAINT request_ibfk_1 FOREIGN KEY (Username) REFERENCES `User` (Username),
   ADD CONSTRAINT request_ibfk_2 FOREIGN KEY (ItemID) REFERENCES `Item` (ItemID);
-  
-ALTER TABLE `Item`
-  ADD CONSTRAINT item_ibfk_1 FOREIGN KEY (SiteID) REFERENCES `Site` (SiteID);
-  
-ALTER TABLE `Supplies`
-  ADD CONSTRAINT supplies_ibfk_1 FOREIGN KEY (ItemID) REFERENCES `Item` (ItemID);
-  
-ALTER TABLE `Food`
-  ADD CONSTRAINT food_ibfk_1 FOREIGN KEY (ItemID) REFERENCES `Item` (ItemID);
-  
+    
 ALTER TABLE `WaitList`
   ADD CONSTRAINT waitlist_ibfk_1 FOREIGN KEY (ClientID) REFERENCES `Client` (ClientID),
   ADD CONSTRAINT waitlist_ibfk_2 FOREIGN KEY (SiteID) REFERENCES `Site` (SiteID);
