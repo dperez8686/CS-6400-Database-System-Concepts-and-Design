@@ -127,6 +127,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Account\LoginViewModel.cs" />
+    <Compile Include="Models\Client\AddToWaitlistViewModel.cs" />
     <Compile Include="Models\Client\SelectClientViewModel.cs" />
     <Compile Include="Models\Client\UpdateClientViewModel.cs" />
     <Compile Include="Models\Client\Client.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="Models\Site\ShelterViewModel.cs" />
     <Compile Include="Models\Site\SoupKitchenViewModel.cs" />
     <Compile Include="Models\Site\SiteIndexViewModel.cs" />
+    <Compile Include="Models\Waitlist\Waitlist.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\SqlHelper.cs" />
     <Compile Include="Models\Items\Item.cs" />
@@ -167,6 +169,7 @@
     <Content Include="Views\Items\Add.cshtml" />
     <Content Include="Views\Items\ItemFormContent.cshtml" />
     <Content Include="Views\Items\Update.cshtml" />
+    <Content Include="Views\Client\AddToWaitlist.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

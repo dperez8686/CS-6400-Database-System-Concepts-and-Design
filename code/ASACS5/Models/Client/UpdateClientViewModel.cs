@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using ASACS5.Models.Logs;
+using ASACS5.Models.Waitlists;
 
 namespace ASACS5.Models.Site
 {
@@ -16,7 +18,8 @@ namespace ASACS5.Models.Site
         public string StatusMessage { get; set; }
 
         public int ClientID { get; set; }
-   
+        public List<Log> Logs { get; set; }
+        public List<Waitlist> Waitlist { get; set; }
 
         [DisplayName("Descriptive ID")]
         [Required(ErrorMessage = "Descriptive ID is required")]

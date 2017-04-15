@@ -1,4 +1,5 @@
 ﻿using ASACS5.Models.Logs;
+using ASACS5.Models.Waitlists;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,6 +19,8 @@ namespace ASACS5.Models.Site
 
         public int ClientID { get; set; }
         public List<Log> Logs { get; set; }
+        public List<Waitlist> Waitlist { get; set; }
+        public Boolean AddClientToWaitlistAllowed { get; set; }
 
         [DisplayName("Descriptive ID")]
         [Required(ErrorMessage = "Descriptive ID is required")]

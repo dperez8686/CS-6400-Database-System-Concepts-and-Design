@@ -1,5 +1,6 @@
 ﻿@model ASACS5.Models.Site.SelectClientViewModel
 @using ASACS5.Models.Logs;
+@using ASACS5.Models.Waitlists;
 @{
     ViewBag.Title = "Update Client";
 }
@@ -10,10 +11,10 @@
 }
 else
 {
-    <h1>Client : Client ID @Model.ClientID</h1>
+    <h1>Client ID @Model.ClientID Details</h1>
 }
 
-@using (Html.BeginForm("UpdateClient", "Client",  FormMethod.Post, new { id = "frmSelectClient", @class = "form-horizontal" }))
+@using (Html.BeginForm("UpdateClient", "Client", FormMethod.Post, new { id = "frmSelectClient", @class = "form-horizontal" }))
 {
     @Html.AntiForgeryToken()
 
@@ -24,11 +25,12 @@ else
     @Html.HiddenFor(model => model.oldMiddleName)
     @Html.HiddenFor(model => model.oldLastName)
     @Html.HiddenFor(model => model.oldPhoneNumber)
+    @Html.HiddenFor(model => model.Logs)
 
     <div class="form-group">
         @Html.LabelFor(model => model.DescriptiveID, new { @class = "col-md-3", @for = "txtDescriptiveID" })
         <div class="col-md-9">
-            @Html.TextBoxFor(model => model.DescriptiveID, new { @class = "form-control", @id = "txtDescriptiveID"})
+            @Html.TextBoxFor(model => model.DescriptiveID, new { @class = "form-control", @id = "txtDescriptiveID" })
             @Html.ValidationMessageFor(model => model.DescriptiveID, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -42,21 +44,21 @@ else
     <div class="form-group">
         @Html.LabelFor(model => model.MiddleName, new { @class = "col-md-3", @for = "txtMiddleName" })
         <div class="col-md-9">
-            @Html.TextBoxFor(model => model.MiddleName, new { @class = "form-control", @id = "txtMiddleName"})
+            @Html.TextBoxFor(model => model.MiddleName, new { @class = "form-control", @id = "txtMiddleName" })
             @Html.ValidationMessageFor(model => model.MiddleName, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(model => model.LastName, new { @class = "col-md-3", @for = "txtLastName" })
         <div class="col-md-9">
-            @Html.TextBoxFor(model => model.LastName, new { @class = "form-control", @id = "txtLastName"})
+            @Html.TextBoxFor(model => model.LastName, new { @class = "form-control", @id = "txtLastName" })
             @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(model => model.PhoneNumber, new { @class = "col-md-3", @for = "txtPhoneNumber" })
         <div class="col-md-9">
-            @Html.TextBoxFor(model => model.PhoneNumber, new { @class = "form-control", @id = "txtPhoneNumber"})
+            @Html.TextBoxFor(model => model.PhoneNumber, new { @class = "form-control", @id = "txtPhoneNumber" })
             @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -67,7 +69,7 @@ else
             @Html.ValidationMessageFor(model => model.LogEntry, "", new { @class = "text-danger" })
         </div>
     </div>
-    <br />
+    <h1>Log</h1>
     if (Model.Logs != null)
     {
         <table class="table">
@@ -95,9 +97,8 @@ else
 
             </tbody>
         </table>
-        
-    }
 
+    }
 
     <div>
         <input type="submit" value="Save changes" class="btn btn-default" />
@@ -113,8 +114,56 @@ else
             }
         }
     </div>
+}
+    
+    @using (Html.BeginForm("AddToWaitlist", "Client", FormMethod.Post, new { id = "frmAddToWaitlist", @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ClientID)
+
+        <h1>Waitlist</h1>
+        if (Model.Waitlist != null)
+        {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Client ID</th>
+                    <th>Site ID</th>
+                    <th>Ranking</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (Waitlist wt in Model.Waitlist)
+                {
+                    <tr>
+                        <td>@wt.ClientID</td>
+                        <td>@wt.SiteID</td>
+                        <td>@wt.Ranking</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+
+        }
+        if (Model.AddClientToWaitlistAllowed)
+        {
+            <input type="submit" value="Add to Waitlist" class="btn btn-default" />
+            if (!String.IsNullOrWhiteSpace(Model.StatusMessage))
+            {
+                if (Model.StatusMessage == "Succesfully added to waitlist!")
+                {
+                    <span class="text-success"><b> @Model.StatusMessage</b></span>
+                }
+                else
+                {
+                    <span class="text-danger"><b> @Model.StatusMessage</b></span>
+                }
+            }
+        }
+    }
     <div>
         @Html.ActionLink("Back", "SearchClient", "Client")
     </div>
 
-}

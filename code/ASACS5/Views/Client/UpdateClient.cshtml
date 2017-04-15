@@ -1,4 +1,6 @@
 ﻿@model ASACS5.Models.Site.UpdateClientViewModel
+@using ASACS5.Models.Logs;
+@using ASACS5.Models.Waitlists;
 
 @{
     ViewBag.Title = "Update Client";
@@ -55,6 +57,32 @@ else
         </div>
     </div>
 
+    <h1>Log</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Log ID</th>
+                    <th>Client ID</th>
+                    <th>Date/Time Stamp</th>
+                    <th>Site Name</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (Log log in Model.Logs)
+                {
+                    <tr>
+                        <td>@log.LogID</td>
+                        <td>@log.ClientID</td>
+                        <td>@log.DateTimeStamp</td>
+                        <td>@log.SiteName</td>
+                        <td>@log.Description</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
     <div>
         <input type="submit" value="Save changes" class="btn btn-default" />
         @if (!String.IsNullOrWhiteSpace(Model.StatusMessage))

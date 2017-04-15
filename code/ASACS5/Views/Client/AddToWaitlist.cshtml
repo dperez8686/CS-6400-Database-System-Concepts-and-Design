@@ -1,0 +1,65 @@
+﻿@model ASACS5.Models.Site.AddToWaitlistViewModel
+@using ASACS5.Models.Logs;
+@using ASACS5.Models.Waitlists;
+@{
+    ViewBag.Title = "Add Client to Waitlist";
+}
+
+@if (Model.ClientID.Equals(0))
+{
+    <h1>Update Client</h1>
+}
+else
+{
+    <h1>Client ID @Model.ClientID Details</h1>
+}
+    
+    @using (Html.BeginForm("AddToWaitlist", "Client", FormMethod.Post, new { id = "frmAddToWaitlist", @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ClientID)
+
+        <h1>Waitlist</h1>
+        if (Model.Waitlist != null)
+        {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Client ID</th>
+                    <th>Site ID</th>
+                    <th>Ranking</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (Waitlist wt in Model.Waitlist)
+                {
+                    <tr>
+                        <td>@wt.ClientID</td>
+                        <td>@wt.SiteID</td>
+                        <td>@wt.Ranking</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+
+        }
+            <input type="submit" value="Add to Waitlist" class="btn btn-default" />
+            if (!String.IsNullOrWhiteSpace(Model.StatusMessage))
+            {
+                if (Model.StatusMessage == "Succesfully added to waitlist!")
+                {
+                    <span class="text-success"><b> @Model.StatusMessage</b></span>
+                }
+                else
+                {
+                    <span class="text-danger"><b> @Model.StatusMessage</b></span>
+                }
+            }
+        }
+    
+    <div>
+        @Html.ActionLink("Back", "SearchClient", "Client")
+    </div>
+

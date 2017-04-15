@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using System.Diagnostics;
 using ASACS5.Models.Clients;
 using ASACS5.Models.Logs;
+using ASACS5.Models.Waitlists;
 
 namespace ASACS5.Controllers
 {
@@ -57,6 +58,11 @@ namespace ASACS5.Controllers
         {
             if (ModelState.IsValid)
             {
+                int? SiteID = Session["SiteID"] as int?;
+
+                if (SiteID.HasValue) vm.SiteID = SiteID.Value;
+
+                vm.SiteName = Session["SiteName"] as string;
                 // this is needed for some reason.. come back to it
                 // http://stackoverflow.com/questions/4837744/hiddenfor-not-getting-correct-value-from-view-model
                 ModelState.Remove("SiteID");
@@ -84,11 +90,10 @@ namespace ASACS5.Controllers
                     object[] result = SqlHelper.ExecuteSingleSelect(sql, 1);
                     int clientID = int.Parse(result[0].ToString());
 
-                    // TODO: Fix the whole issue with getting the correct Site ID.
                     sql = String.Format(
                         "INSERT INTO clientlogentry (ClientID, SiteName, Description) " +
                         "VALUES ({0}, '{1}', '{2}'); ",
-                        clientID, "Site Name", "Profile created"
+                        clientID, vm.SiteName, "Profile created"
                     );
 
                     SqlHelper.ExecuteNonQuery(sql);
@@ -114,7 +119,6 @@ namespace ASACS5.Controllers
             // if there is none, redirect to the login page
             if (!SiteID.HasValue) return RedirectToAction("Login", "Account");
 
-
             // set up the response object
             SearchClientViewModel vm = new SearchClientViewModel();
             vm.DisplayQueryResults = false;
@@ -132,12 +136,44 @@ namespace ASACS5.Controllers
                 // http://stackoverflow.com/questions/4837744/hiddenfor-not-getting-correct-value-from-view-model
                 ModelState.Remove("SiteID");
 
-
-                object queryResult = null;
-                //Determine if DescriptiveID is found within table
-                // TODO: For some reason, we're not getting count of 0. Fix this. 
-                queryResult = SqlHelper.ExecuteScalar(String.Format("SELECT COUNT(*) FROM client WHERE DescriptiveID='{0}' OR FirstName LIKE '%{1}%' AND LastName LIKE '%{2}%'", vm.DescriptiveID, vm.FirstName,vm.LastName));
-
+                // Ugly way to build a query search for client based on Description ID, First Name and Last Name.
+                // Query did not work well with null parameters so I had to ignore parameters if null.
+                object queryResult = null; 
+                string querystring = "SELECT * FROM client WHERE ";
+                Boolean parametersNotNull = false;
+                Boolean firstParameter = false; 
+                if (vm.DescriptiveID != null)
+                {
+                    firstParameter = true; 
+                    querystring += String.Format("DescriptiveID='{0}' ", vm.DescriptiveID);
+                    parametersNotNull = true;
+                }
+                if (vm.FirstName != null)
+                {
+                    if (firstParameter)
+                    {
+                        querystring += "AND ";
+                    } else
+                    {
+                        firstParameter = true;
+                    }
+                    querystring += String.Format("FirstName='{0}' ", vm.FirstName);
+                    parametersNotNull = true;
+                }
+                if (vm.LastName != null)
+                {
+                    if (firstParameter)
+                    {
+                        querystring += "AND ";
+                    }
+                    querystring += String.Format("LastName='{0}' ", vm.LastName);
+                    parametersNotNull = true;
+                }
+                querystring += ";";
+                if (parametersNotNull)
+                {
+                    queryResult = SqlHelper.ExecuteScalar(querystring);
+                }
                 // If less than 5 results found in query, display list. If not, display appropiate messages. 
                 if (int.Parse(queryResult.ToString()) == 0)
                 {
@@ -145,10 +181,9 @@ namespace ASACS5.Controllers
                 }
                 else if (int.Parse(queryResult.ToString()) < 5)
                 {
+                    
                     // set up the sql query
-                    string sql = String.Format(
-                        "SELECT ClientID, DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber " +
-                        "FROM client WHERE DescriptiveID='{0}' OR FirstName LIKE '%{1}%' AND LastName LIKE '%{2}%' ", vm.DescriptiveID, vm.FirstName, vm.LastName);
+                    string sql = String.Format(querystring);
 
                     // run the sql against the db
                     List <object[]> result = SqlHelper.ExecuteMultiSelect(sql, 6);
@@ -184,7 +219,7 @@ namespace ASACS5.Controllers
             object[] result = SqlHelper.ExecuteSingleSelect(sql, 5);
 
             
-            // if we got a result, populate the view model fields
+            // To auto generate log based on changes in values the old values have to be saved for later comparison.
             if (result != null)
             {
                 om.ClientID = vm.selectedClient;
@@ -199,6 +234,7 @@ namespace ASACS5.Controllers
                 om.oldLastName = result[3].ToString();
                 om.oldPhoneNumber = result[4].ToString();
 
+
                 string sql2 = String.Format(
                        "SELECT LogID, ClientID, DateTimeStamp, SiteName, Description " +
                        "FROM clientlogentry WHERE ClientID = {0} ", om.ClientID);
@@ -212,6 +248,29 @@ namespace ASACS5.Controllers
                     om.Logs = GetLogListFromQueryResponse(result2);
                 }
 
+                string sql3 = String.Format(
+                       "SELECT ClientID, SiteID, Ranking " +
+                       "FROM waitlist WHERE ClientID = {0} ", om.ClientID);
+
+                // run the sql against the db
+                List<object[]> result3 = SqlHelper.ExecuteMultiSelect(sql3, 3);
+
+                if (result3 != null)
+                {
+                    om.Waitlist = GetWaitListFromQueryResponse(result3);
+                }
+                int? SiteID = Session["SiteID"] as int?;
+                object queryResult = null;
+                queryResult = SqlHelper.ExecuteScalar(String.Format("SELECT COUNT(ClientID) FROM waitlist WHERE SiteID = {0} AND ClientID = {1} ", SiteID, om.ClientID));
+
+                // Add to waitlist will only appear if client is not currently on waitlist for site
+                if (queryResult.ToString() == "0")
+                {
+                    om.AddClientToWaitlistAllowed = true;
+                } else
+                {
+                    om.AddClientToWaitlistAllowed = false;
+                }
             }
 
             return View(om);
@@ -222,6 +281,12 @@ namespace ASACS5.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult UpdateClient(SelectClientViewModel vm)
         {
+
+            int? SiteID = Session["SiteID"] as int?;
+
+            if (SiteID.HasValue) vm.SiteID = SiteID.Value;
+
+            vm.SiteName = Session["SiteName"] as string;
 
             string sql = String.Format(
                 "UPDATE client SET DescriptiveID = '{0}', " +
@@ -236,42 +301,52 @@ namespace ASACS5.Controllers
             SqlHelper.ExecuteNonQuery(sql);
 
             string mod_string = String.Format("Profile updated/edited: ");
+            Boolean updateHappened = false;
             if (vm.oldDescriptiveID != vm.DescriptiveID)
             {
+                updateHappened = true;
                 mod_string += String.Format("DescriptiveID changed from {0} to {1}; ", vm.oldDescriptiveID, vm.DescriptiveID);
             }
             if (vm.oldFirstName != vm.FirstName)
             {
+                updateHappened = true;
                 mod_string += String.Format("First name changed from {0} to {1}; ",vm.oldFirstName,vm.FirstName);
             }
             if (vm.oldMiddleName != vm.MiddleName)
             {
+                updateHappened = true;
                 mod_string += String.Format("Middle name changed from {0} to {1}; ", vm.oldMiddleName, vm.MiddleName);
             }
             if (vm.oldLastName != vm.LastName)
             {
+                updateHappened = true;
                 mod_string += String.Format("Last name changed from {0} to {1}; ", vm.oldLastName, vm.LastName);
             }
             if (vm.oldPhoneNumber != vm.PhoneNumber)
             {
+                updateHappened = true;
                 mod_string += String.Format("Phone Number changed from {0} to {1}; ", vm.oldPhoneNumber, vm.PhoneNumber);
             }
 
-
+            // Log auto generated message for changing of values
+            if (updateHappened)
+            {
                 sql = String.Format(
                         "INSERT INTO clientlogentry (ClientID, SiteName, Description) " +
                         "VALUES ({0}, '{1}', '{2}'); ",
-                        vm.ClientID, "Site Name", mod_string
+                        vm.ClientID, vm.SiteName, mod_string
                     );
 
-            SqlHelper.ExecuteNonQuery(sql);
-
+                SqlHelper.ExecuteNonQuery(sql);
+            }
+            
+            //Add manual log entry if available
             if (vm.LogEntry != null)
             {
                 sql = String.Format(
                     "INSERT INTO clientlogentry (ClientID, SiteName, Description) " +
                     "VALUES ({0}, '{1}', '{2}'); ",
-                    vm.ClientID, "Site Name", vm.LogEntry
+                    vm.ClientID, vm.SiteName, vm.LogEntry
                 );
 
                 SqlHelper.ExecuteNonQuery(sql);
@@ -279,15 +354,18 @@ namespace ASACS5.Controllers
 
             UpdateClientViewModel om = new UpdateClientViewModel();
 
+            // Get log list with new entry to display
+            sql = String.Format(
+                    "SELECT LogID, ClientID, DateTimeStamp, SiteName, Description " +
+                       "FROM clientlogentry WHERE ClientID = {0} ", vm.ClientID);
+
+            List<object[]> result = SqlHelper.ExecuteMultiSelect(sql, 5);
+            if (result != null)
+            {
+                om.Logs = GetLogListFromQueryResponse(result);
+            }
             om.StatusMessage = "Succesfully updated!";
-
-
-            // TODO: Try and get site name for logging purposes. 
-            int? SiteID = Session["SiteID"] as int?;
-            if (SiteID.HasValue) vm.SiteID = SiteID.Value;
-
-            vm.SiteName = Session["SiteName"] as string;
- 
+           
             return View(om);
 
         }
@@ -300,6 +378,37 @@ namespace ASACS5.Controllers
             return View(om);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddToWaitlist(SelectClientViewModel vm)
+        {
+            // Get max rating for current site
+            int? SiteID = Session["SiteID"] as int?;
+            string sql = String.Format("SELECT MAX(Ranking) FROM waitlist WHERE SiteID = {0}; ", SiteID);
+            int ranking = int.Parse(SqlHelper.ExecuteScalar(sql).ToString());
+
+            // Place client on waitlist with next ranking. 
+            sql = String.Format(
+                        "INSERT INTO waitlist (ClientID, SiteID, Ranking) " +
+                        "VALUES ({0},{1}, {2}); ",
+                        vm.ClientID, SiteID, ranking+1
+                    );
+
+            SqlHelper.ExecuteNonQuery(sql);
+            AddToWaitlistViewModel om = new AddToWaitlistViewModel();
+            
+            sql = String.Format(
+                       "SELECT ClientID, SiteID, Ranking " +
+                       "FROM waitlist WHERE ClientID = {0} ", vm.ClientID);
+
+            List<object[]> result = SqlHelper.ExecuteMultiSelect(sql, 3);
+            if (result != null)
+            {
+                om.Waitlist = GetWaitListFromQueryResponse(result);
+            }
+            om.StatusMessage = "Succesfully added to waitlist!";
+            return View(om);
+        }
 
         private List<Log> GetLogListFromQueryResponse(List<object[]> queryResponse)
         {
@@ -315,6 +424,23 @@ namespace ASACS5.Controllers
                     DateTimeStamp = row[2].ToString(),
                     SiteName = row[3].ToString(),
                     Description = row[4].ToString(),
+                });
+            }
+
+            return response;
+        }
+
+        private List<Waitlist> GetWaitListFromQueryResponse(List<object[]> queryResponse)
+        {
+            var response = new List<Waitlist>();
+
+            foreach (object[] row in queryResponse)
+            {
+                response.Add(new Waitlist
+                {
+                    ClientID = int.Parse(row[0].ToString()),
+                    SiteID = int.Parse(row[1].ToString()),
+                    Ranking = int.Parse(row[2].ToString()),
                 });
             }
 
