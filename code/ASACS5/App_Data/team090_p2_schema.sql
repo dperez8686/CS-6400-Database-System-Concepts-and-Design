@@ -93,6 +93,16 @@ CREATE TABLE Item (
   PRIMARY KEY (ItemID)
 );
 
+CREATE TABLE Supplies (
+  ItemID int(16) unsigned NOT NULL,
+  CategoryOfSupply varchar(80) NOT NULL
+);
+
+CREATE TABLE Food (
+  ItemID int(16) unsigned NOT NULL,
+  CategoryOfFood varchar(80) NOT NULL
+);
+
 CREATE TABLE Client (
   ClientID int(16) unsigned NOT NULL AUTO_INCREMENT,
   DescriptiveID varchar(250) NOT NULL,
@@ -114,7 +124,7 @@ CREATE TABLE WaitList (
 CREATE TABLE ClientLogEntry (
   LogID int(16) unsigned NOT NULL AUTO_INCREMENT,
   ClientID int(16) unsigned NOT NULL,
-  DateTimeStamp datetime NOT NULL,
+  DateTimeStamp datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   SiteName varchar(250) NOT NULL,
   Description varchar(1000) NOT NULL,
   PRIMARY KEY (LogID)
@@ -148,6 +158,7 @@ ALTER TABLE `WaitList`
 ALTER TABLE `ClientLogEntry`
   ADD CONSTRAINT clientlogentry_ibfk_1 FOREIGN KEY (ClientID) REFERENCES `Client` (ClientID);
 
+
 INSERT INTO site (SiteName, StreetAddress, City, State, ZipCode, PrimaryContactNumber)
 VALUES ('Food City #1', '55 Andrews Ave', 'Fort Lauderdale', 'FL', '33301', '9545556783');
 
@@ -161,14 +172,12 @@ INSERT INTO user (Username, Password, FirstName, MiddleName, LastName, EmailAddr
 VALUES ('billybob1', 'admin', 'Billy', 'G', 'Bob', 'billy.g.bob@gmail.com', 2);
 
 INSERT INTO foodbank (SiteID) VALUES (1);
-
 INSERT INTO foodbank (SiteID) VALUES (2);
 
 INSERT INTO soupkitchen (SiteID, TotalSeatsAvailable, RemainingSeatsAvailable, HoursOfOperation, ConditionsForUse)
 VALUES (1, 30, 18, 'Wednesday to Sunday 7AM to Noon', 'Shirt and shoes required');
 
-INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID)
-VALUES ('Carrots', 5, '2017-08-01', 'Food', 'Vegetables', 'Refrigerated', 1);
+INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID) VALUES ('Carrots', 5, '2017-08-01', 'Food', 'Vegetables', 'Refrigerated', 1);
 
 INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID)
 VALUES ('Salmon', 5, '2017-08-15', 'Food', 'Meat/seafood', 'Frozen', 1);
@@ -185,3 +194,38 @@ VALUES ('T-shirts', 35, '9999-01-01', 'Supply', 'Clothing', 'Dry Good', 2);
 INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID)
 VALUES ('Ice cream', 2, '2018-03-01', 'Food', 'Dairy/eggs', 'Frozen', 2);
 
+INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
+VALUES ('client1', 'Homer', 'J', 'Simpson','5555555555');
+
+INSERT INTO client (DescriptiveID, FirstName, LastName, PhoneNumber)
+VALUES ('client2', 'Peter','Griffin','1234567890');
+
+INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
+VALUES ('client3', 'Liz', 'K', 'Lemon','2345678901');
+
+INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
+VALUES ('client4', 'Anakin', 'A', 'Skywalker','3456789012');
+
+INSERT INTO client (DescriptiveID, FirstName, LastName, PhoneNumber)
+VALUES ('client5', 'Ash','Ketchum','4567890123');
+
+INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
+VALUES ('client6', 'Michael', 'J', 'Scott','5678901234');
+
+INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
+VALUES ('client7', 'Harry', 'J', 'Potter','67890123456');
+
+INSERT INTO client (DescriptiveID, FirstName, LastName, PhoneNumber)
+VALUES ('client8', 'Katniss','Everdeen','6789012345');
+
+INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
+VALUES ('client9', 'Lloyd', 'D', 'Christmas','0000000000');
+
+INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName)
+VALUES ('client10', 'Buzz', 'C', 'Lightyear');
+
+INSERT INTO client (DescriptiveID, FirstName, LastName)
+VALUES ('client11', 'Rick','Sanchez');
+
+INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName)
+VALUES ('client12', 'Ted', 'A', 'Mosby');

@@ -1,19 +1,21 @@
-﻿@model ASACS5.Models.Site.AddClientViewModel
+﻿@model ASACS5.Models.Site.UpdateClientViewModel
+@using ASACS5.Models.Logs;
+@using ASACS5.Models.Waitlists;
 
 @{
-    ViewBag.Title = "Add Client";
+    ViewBag.Title = "Update Client";
 }
 
 @if (Model.SiteID.Equals(0))
 {
-    <h1>Add Client</h1>
+    <h1>Update Client</h1>
 }
 else
 {
-    <h1>Client : Site ID @Model.SiteID</h1>
+    <h1>Client : Site ID @Model.SiteName</h1>
 }
 
-@using (Html.BeginForm("AddClient", "Client",  FormMethod.Post, new { id = "frmAddClient", @class = "form-horizontal" }))
+@using (Html.BeginForm("UpdateClient", "Client",  FormMethod.Post, new { id = "frmUpdateClient", @class = "form-horizontal" }))
 {
     @Html.AntiForgeryToken()
 
@@ -55,11 +57,37 @@ else
         </div>
     </div>
 
+    <h1>Log</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Log ID</th>
+                    <th>Client ID</th>
+                    <th>Date/Time Stamp</th>
+                    <th>Site Name</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (Log log in Model.Logs)
+                {
+                    <tr>
+                        <td>@log.LogID</td>
+                        <td>@log.ClientID</td>
+                        <td>@log.DateTimeStamp</td>
+                        <td>@log.SiteName</td>
+                        <td>@log.Description</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
     <div>
         <input type="submit" value="Save changes" class="btn btn-default" />
         @if (!String.IsNullOrWhiteSpace(Model.StatusMessage))
         {
-            if (Model.StatusMessage == "Succesfully added!")
+            if (Model.StatusMessage == "Succesfully updated!")
             {
                 <span class="text-success"><b> @Model.StatusMessage</b></span>
             }
@@ -70,7 +98,7 @@ else
         }
     </div>
     <div>
-        @Html.ActionLink("Back", "Index", "Client")
+        @Html.ActionLink("Back", "SearchClient", "Client")
     </div>
 
 }
