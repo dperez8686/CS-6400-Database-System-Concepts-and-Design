@@ -175,7 +175,7 @@ namespace ASACS5.Controllers
                     queryResult = SqlHelper.ExecuteScalar(querystring);
                 }
                 // If less than 5 results found in query, display list. If not, display appropiate messages. 
-                if (int.Parse(queryResult.ToString()) == 0)
+                if (queryResult == null)
                 {
                     vm.StatusMessage = "No results found. Try search again.";
                 }

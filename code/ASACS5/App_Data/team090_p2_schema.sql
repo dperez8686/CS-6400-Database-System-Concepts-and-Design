@@ -86,6 +86,8 @@ CREATE TABLE Item (
   ItemName varchar(250) NOT NULL,
   NumberOfUnits int(16) unsigned NOT NULL DEFAULT '0',
   ExpirationDate datetime NOT NULL,
+  Category1 varchar(80) NOT NULL,
+  Category2 varchar(80) NOT NULL,
   StorageType varchar(80) NOT NULL,
   SiteID int(16) unsigned NOT NULL,
   PRIMARY KEY (ItemID)
@@ -169,14 +171,28 @@ VALUES ('jeffro96', 'admin', 'Jeff', 'P', 'Ross', 'jross323@gmail.com', 1);
 INSERT INTO user (Username, Password, FirstName, MiddleName, LastName, EmailAddress, SiteID)
 VALUES ('billybob1', 'admin', 'Billy', 'G', 'Bob', 'billy.g.bob@gmail.com', 2);
 
+INSERT INTO foodbank (SiteID) VALUES (1);
+INSERT INTO foodbank (SiteID) VALUES (2);
+
 INSERT INTO soupkitchen (SiteID, TotalSeatsAvailable, RemainingSeatsAvailable, HoursOfOperation, ConditionsForUse)
 VALUES (1, 30, 18, 'Wednesday to Sunday 7AM to Noon', 'Shirt and shoes required');
 
-INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, StorageType, SiteID)
-VALUES ('Carrots', 5, '2017-08-01', 'Dry Goods', 1);
+INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID) VALUES ('Carrots', 5, '2017-08-01', 'Food', 'Vegetables', 'Refrigerated', 1);
 
-INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, StorageType, SiteID)
-VALUES ('Beans', 12, '2019-01-03', 'Dry Goods', 1);
+INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID)
+VALUES ('Salmon', 5, '2017-08-15', 'Food', 'Meat/seafood', 'Frozen', 1);
+
+INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID)
+VALUES ('Beans', 12, '2019-01-03', 'Food', 'Vegetables', 'Dry Good', 1);
+
+INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID)
+VALUES ('Soap', 100, '9999-01-01', 'Supply', 'Personal hygiene', 'Dry Good', 1);
+
+INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID)
+VALUES ('T-shirts', 35, '9999-01-01', 'Supply', 'Clothing', 'Dry Good', 2);
+
+INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID)
+VALUES ('Ice cream', 2, '2018-03-01', 'Food', 'Dairy/eggs', 'Frozen', 2);
 
 INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
 VALUES ('client1', 'Homer', 'J', 'Simpson','5555555555');
