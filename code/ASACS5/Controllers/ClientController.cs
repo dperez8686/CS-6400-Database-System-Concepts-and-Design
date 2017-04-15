@@ -157,7 +157,7 @@ namespace ASACS5.Controllers
                     {
                         firstParameter = true;
                     }
-                    querystring += String.Format("FirstName='{0}' ", vm.FirstName);
+                    querystring += String.Format("FirstName LIKE '%{0}%' ", vm.FirstName);
                     parametersNotNull = true;
                 }
                 if (vm.LastName != null)
@@ -166,7 +166,7 @@ namespace ASACS5.Controllers
                     {
                         querystring += "AND ";
                     }
-                    querystring += String.Format("LastName='{0}' ", vm.LastName);
+                    querystring += String.Format("LastName LIKE '%{0}%' ", vm.LastName);
                     parametersNotNull = true;
                 }
                 querystring += ";";
