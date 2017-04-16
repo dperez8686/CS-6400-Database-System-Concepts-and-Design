@@ -12,5 +12,6 @@ namespace ASACS5.Models.Site
         public string ServiceType { get; set; }
         public bool ServiceExists { get; set; }
         public bool DeleteCompleted { get; set; }
+        public string ErrorMessage { get; set; }
     }
 }

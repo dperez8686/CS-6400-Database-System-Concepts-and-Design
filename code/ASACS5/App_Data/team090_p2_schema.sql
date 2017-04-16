@@ -54,7 +54,7 @@ CREATE TABLE Shelter (
   RoomsAvailable int(16) unsigned NOT NULL DEFAULT '0',
   HoursOfOperation varchar(1000) NOT NULL,
   ConditionsForUse varchar(1000),
-  Description varchar(1000),
+  Description varchar(1000) NOT NULL,
   PRIMARY KEY (SiteID)
 );
 
@@ -62,7 +62,7 @@ CREATE TABLE FoodPantry (
   SiteID int(16) unsigned NOT NULL,
   HoursOfOperation varchar(1000) NOT NULL,
   ConditionsForUse varchar(1000),
-  Description varchar(1000),
+  Description varchar(1000) NOT NULL,
   PRIMARY KEY (SiteID)
 );
 
@@ -72,7 +72,7 @@ CREATE TABLE SoupKitchen (
   RemainingSeatsAvailable int(16) unsigned NOT NULL DEFAULT '0',
   HoursOfOperation varchar(1000) NOT NULL,
   ConditionsForUse varchar(1000),
-  Description varchar(1000),
+  Description varchar(1000) NOT NULL,
   PRIMARY KEY (SiteID)
 );
 
@@ -121,7 +121,8 @@ CREATE TABLE ClientLogEntry (
   LogID int(16) unsigned NOT NULL AUTO_INCREMENT,
   ClientID int(16) unsigned NOT NULL,
   DateTimeStamp datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  SiteName varchar(250) NOT NULL,
+  SiteName varchar(250),
+  ServiceName varchar(250),
   Description varchar(1000) NOT NULL,
   PRIMARY KEY (LogID)
 );
@@ -181,9 +182,9 @@ INSERT INTO shelter (SiteID, MaleBunksAvailable, FemaleBunksAvailable, MixedBunk
 VALUES (2, 10, 12, 6, 4, '24hours 7days', 'All are welcome', 'shelter2'),
        (3, 20, 22, 16, 14, '24hours 7days', 'All are welcome', 'shelter3');
 
-INSERT INTO foodbank (SiteID, Description) VALUES (1, 'foodbank1');
-INSERT INTO foodbank (SiteID, Description) VALUES (2, 'foodbank2');
-INSERT INTO foodbank (SiteID, Description) VALUES (3, 'foodbank3');
+INSERT INTO foodbank (SiteID) VALUES (1);
+INSERT INTO foodbank (SiteID) VALUES (2);
+INSERT INTO foodbank (SiteID) VALUES (3);
 
 -- Food bank #1 : 10 Food Items: (storage_type= refrigerated, food_catogory=vegetables) (only insert leafy vegetables into this bank)
 INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID)

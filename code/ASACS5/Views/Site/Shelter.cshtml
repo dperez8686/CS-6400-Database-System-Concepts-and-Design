@@ -20,6 +20,13 @@ else
     @Html.HiddenFor(model => model.SiteID)
 
     <div class="form-group">
+        @Html.LabelFor(model => model.Description, new { @class = "col-md-3", @for = "txtDescription" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Description, new { @class = "form-control", @id = "txtDescription" })
+            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
         @Html.LabelFor(model => model.HoursOfOperation, new { @class = "col-md-3", @for = "txtHoursOfOperation" })
         <div class="col-md-9">
             @Html.TextBoxFor(model => model.HoursOfOperation, new { @class = "form-control", @id = "txtHoursOfOperation" })

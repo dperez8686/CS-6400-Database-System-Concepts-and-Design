@@ -41,6 +41,43 @@ namespace ASACS5.Controllers
             return View(vm);
         }
 
+        public ActionResult FoodBank()
+        {
+            // Get the logged in Site ID from the session
+            int? SiteID = Session["SiteID"] as int?;
+
+            // if there is none, redirect to the login page
+            if (!SiteID.HasValue) return RedirectToAction("Login", "Account");
+
+            FoodBankViewModel vm = new FoodBankViewModel();
+
+
+            // find out if we have a food bank for this site already or not
+            string sql = String.Format("SELECT COUNT(*) FROM foodbank WHERE SiteID = {0}; ", SiteID.Value.ToString());
+
+            vm.FoodBankExists = Int32.Parse(SqlHelper.ExecuteScalar(sql).ToString()) > 0;
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult FoodBank(FoodBankViewModel vm)
+        {
+            // insert a new Food Bank based on the logged in users Site ID
+            int? SiteID = Session["SiteID"] as int?;
+
+            string sql = String.Format(
+                "INSERT INTO foodbank (SiteID) VALUES ({0}); ",  SiteID.Value.ToString());
+
+            SqlHelper.ExecuteNonQuery(sql);
+
+            vm.SiteID = SiteID.Value; // set the ID since it now exists
+            vm.StatusMessage = "Succesfully added!";            
+
+            return View(vm);
+        }
+
         public ActionResult SoupKitchen()
         {
             // Get the logged in Site ID from the session
@@ -54,11 +91,11 @@ namespace ASACS5.Controllers
 
             // set up the sql query
             string sql = String.Format(
-                "SELECT TotalSeatsAvailable, RemainingSeatsAvailable, HoursOfOperation, ConditionsForUse " +
+                "SELECT TotalSeatsAvailable, RemainingSeatsAvailable, HoursOfOperation, ConditionsForUse, Description " +
                 "FROM soupkitchen WHERE SiteID = {0}; ", SiteID.Value.ToString());
 
             // run the sql against the db
-            object[] result = SqlHelper.ExecuteSingleSelect(sql, 4);
+            object[] result = SqlHelper.ExecuteSingleSelect(sql, 5);
 
             // if we got a result, populate the view model fields
             if (result != null)
@@ -68,6 +105,7 @@ namespace ASACS5.Controllers
                 vm.RemainingSeatsAvailable = int.Parse(result[1].ToString());
                 vm.HoursOfOperation = result[2].ToString();
                 vm.ConditionsForUse = result[3].ToString();
+                vm.Description = result[4].ToString();
             }
 
             return View(vm);
@@ -92,10 +130,9 @@ namespace ASACS5.Controllers
                     int? SiteID = Session["SiteID"] as int?;
 
                     string sql = String.Format(
-                        "INSERT INTO soupkitchen (SiteID, TotalSeatsAvailable, RemainingSeatsAvailable, HoursOfOperation, ConditionsForUse) " +
-                        "VALUES ({0}, {1}, {2}, '{3}', '{4}'); ",
-                        SiteID.Value.ToString(), vm.TotalSeatsAvailable, vm.RemainingSeatsAvailable, vm.HoursOfOperation, vm.ConditionsForUse
-                    );
+                        "INSERT INTO soupkitchen (SiteID, TotalSeatsAvailable, RemainingSeatsAvailable, HoursOfOperation, ConditionsForUse, Description) " +
+                        "VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}'); ",
+                        SiteID.Value.ToString(), vm.TotalSeatsAvailable, vm.RemainingSeatsAvailable, vm.HoursOfOperation, vm.ConditionsForUse, vm.Description);
 
                     SqlHelper.ExecuteNonQuery(sql);
 
@@ -111,10 +148,10 @@ namespace ASACS5.Controllers
                         "SET TotalSeatsAvailable = {0}, " +
                         "RemainingSeatsAvailable = {1}, " +
                         "HoursOfOperation = '{2}', " +
-                        "ConditionsForUse = '{3}' " +
-                        "WHERE SiteID = {4}; ",
-                        vm.TotalSeatsAvailable, vm.RemainingSeatsAvailable, vm.HoursOfOperation, vm.ConditionsForUse, vm.SiteID
-                    );
+                        "ConditionsForUse = '{3}', " +
+                        "Description = '{4}' " +
+                        "WHERE SiteID = {5}; ",
+                        vm.TotalSeatsAvailable, vm.RemainingSeatsAvailable, vm.HoursOfOperation, vm.ConditionsForUse, vm.Description, vm.SiteID);
 
                     SqlHelper.ExecuteNonQuery(sql);
 
@@ -138,11 +175,11 @@ namespace ASACS5.Controllers
 
 			// set up the sql query
 			string sql = String.Format(
-				"SELECT HoursOfOperation, ConditionsForUse " +
+                "SELECT HoursOfOperation, ConditionsForUse, Description " +
 				"FROM foodpantry WHERE SiteID = {0}; ", SiteID.Value.ToString());
 
 			// run the sql against the db
-			object[] result = SqlHelper.ExecuteSingleSelect(sql, 2);
+			object[] result = SqlHelper.ExecuteSingleSelect(sql, 3);
 
 			// if we got a result, populate the view model fields
 			if (result != null)
@@ -150,7 +187,9 @@ namespace ASACS5.Controllers
 				vm.SiteID = SiteID.Value;
 				vm.HoursOfOperation = result[0].ToString();
 				vm.ConditionsForUse = result[1].ToString();
-			}
+                vm.Description = result[2].ToString();
+
+            }
 
 			return View(vm);
 		}
@@ -174,10 +213,9 @@ namespace ASACS5.Controllers
 					int? SiteID = Session["SiteID"] as int?;
 
 					string sql = String.Format(
-						"INSERT INTO foodpantry (SiteID, HoursOfOperation, ConditionsForUse) " +
-						"VALUES ({0},'{1}','{2}'); ",
-						SiteID.Value.ToString(), vm.HoursOfOperation, vm.ConditionsForUse
-					);
+                        "INSERT INTO foodpantry (SiteID, HoursOfOperation, ConditionsForUse, Description) " +
+						"VALUES ({0}, '{1}', '{2}', '{3}'); ",
+						SiteID.Value.ToString(), vm.HoursOfOperation, vm.ConditionsForUse, vm.Description);
 
 					SqlHelper.ExecuteNonQuery(sql);
 
@@ -191,9 +229,10 @@ namespace ASACS5.Controllers
 					string sql = String.Format(
 						"UPDATE foodpantry " +
 						"SET HoursOfOperation = '{0}', " +
-						"ConditionsForUse = '{1}' " +
-						"WHERE SiteID = {2}; ",
-						 vm.HoursOfOperation, vm.ConditionsForUse, vm.SiteID
+						"ConditionsForUse = '{1}', " +
+                        "Description = '{2}' " +
+                        "WHERE SiteID = {3}; ",
+						 vm.HoursOfOperation, vm.ConditionsForUse, vm.Description, vm.SiteID
 					);
 
 					SqlHelper.ExecuteNonQuery(sql);
@@ -221,11 +260,11 @@ namespace ASACS5.Controllers
 
             // set up the sql query
             string sql = String.Format(
-                "SELECT MaleBunksAvailable, FemaleBunksAvailable, MixedBunksAvailable, RoomsAvailable, HoursOfOperation, ConditionsForUse " +
+                "SELECT MaleBunksAvailable, FemaleBunksAvailable, MixedBunksAvailable, RoomsAvailable, HoursOfOperation, ConditionsForUse, Description " +
                 "FROM shelter WHERE SiteID = {0}; ", SiteID.Value.ToString());
 
             // run the sql against the db
-            object[] result = SqlHelper.ExecuteSingleSelect(sql, 6);
+            object[] result = SqlHelper.ExecuteSingleSelect(sql, 7);
 
             // if we got a result, populate the view model fields
             if (result != null)
@@ -237,6 +276,7 @@ namespace ASACS5.Controllers
                 vm.RoomsAvailable = int.Parse(result[3].ToString());
                 vm.HoursOfOperation = result[4].ToString();
                 vm.ConditionsForUse = result[5].ToString();
+                vm.Description = result[6].ToString();
             }
 
             return View(vm);
@@ -261,10 +301,9 @@ namespace ASACS5.Controllers
                     int? SiteID = Session["SiteID"] as int?;
 
                     string sql = String.Format(
-                        "INSERT INTO shelter (SiteID, MaleBunksAvailable, FemaleBunksAvailable, MixedBunksAvailable, RoomsAvailable, HoursOfOperation, ConditionsForUse) " +
-                        "VALUES ({0}, {1}, {2}, {3}, {4}, '{5}', '{6}'); ",
-                        SiteID.Value.ToString(), vm.MaleBunksAvailable, vm.FemaleBunksAvailable, vm.MixedBunksAvailable, vm.RoomsAvailable, vm.HoursOfOperation, vm.ConditionsForUse
-                    );
+                        "INSERT INTO shelter (SiteID, MaleBunksAvailable, FemaleBunksAvailable, MixedBunksAvailable, RoomsAvailable, HoursOfOperation, ConditionsForUse, Description) " +
+                        "VALUES ({0}, {1}, {2}, {3}, {4}, '{5}', '{6}', '{7}'); ",
+                        SiteID.Value.ToString(), vm.MaleBunksAvailable, vm.FemaleBunksAvailable, vm.MixedBunksAvailable, vm.RoomsAvailable, vm.HoursOfOperation, vm.ConditionsForUse, vm.Description);
                     
                     SqlHelper.ExecuteNonQuery(sql);
 
@@ -282,9 +321,10 @@ namespace ASACS5.Controllers
                         "MixedBunksAvailable = {2}, " +
                         "RoomsAvailable = {3}, " +
                         "HoursOfOperation = '{4}', " +
-                        "ConditionsForUse = '{5}'; ",
-                        vm.MaleBunksAvailable, vm.FemaleBunksAvailable, vm.MixedBunksAvailable, vm.RoomsAvailable, vm.HoursOfOperation, vm.ConditionsForUse, vm.SiteID
-                    );
+                        "ConditionsForUse = '{5}', " +
+                        "Description = '{6}' " +
+                        "WHERE SiteID = {7} ;",
+                        vm.MaleBunksAvailable, vm.FemaleBunksAvailable, vm.MixedBunksAvailable, vm.RoomsAvailable, vm.HoursOfOperation, vm.ConditionsForUse, vm.Description, vm.SiteID);
 
                     SqlHelper.ExecuteNonQuery(sql);
 
@@ -348,29 +388,49 @@ namespace ASACS5.Controllers
         [Route("Site/DeleteService/{serviceType}")]
         public ActionResult DeleteService(string serviceType, DeleteServiceViewModel vm)
         {
-            string sql = null;
+            // first thing need is to see if this is the last service for the given Site. if
+            // so the user is not allowed to delete it so show an error message.
 
-            switch (serviceType.ToLower())
+            string sql = String.Format(
+                "SELECT COUNT(comb.SiteID) from " +
+                "(SELECT fb.SiteID FROM foodbank fb WHERE fb.SiteID = {0} UNION ALL " +
+                " SELECT fp.SiteID FROM foodpantry fp WHERE fp.SiteID = {0} UNION ALL " +
+                " SELECT s.SiteID FROM shelter s WHERE s.SiteID = {0} UNION ALL " +
+                " SELECT sk.SiteID FROM soupkitchen sk WHERE sk.SiteID = {0}) comb; ", vm.SiteID);
+
+            int numberOfServices = Int32.Parse(SqlHelper.ExecuteScalar(sql).ToString());
+
+            if (numberOfServices.Equals(1))
             {
-                case "foodbank":
-                    sql = String.Format("DELETE FROM foodbank WHERE SiteID = {0}", vm.SiteID);
-                    break;
-                case "foodpantry":
-                    sql = String.Format("DELETE FROM foodpantry WHERE SiteID = {0}", vm.SiteID);
-                    break;
-                case "shelter":
-                    sql = String.Format("DELETE FROM shelter WHERE SiteID = {0}", vm.SiteID);
-                    break;
-                case "soupkitchen":
-                    sql = String.Format("DELETE FROM soupkitchen WHERE SiteID = {0}", vm.SiteID);
-                    break;
-                default:
-                    throw new Exception("SiteController.DeleteService: non-supported serviceType");
+                vm.ServiceExists = true;
+                vm.ErrorMessage = "Error: The last service for a site cannot be deleted. Please contact the system admin to delete your site.";
             }
+            else
+            { 
+                string sql2 = null;
 
-            SqlHelper.ExecuteNonQuery(sql);
+                switch (serviceType.ToLower())
+                {
+                    case "foodbank":
+                        sql2 = String.Format("DELETE FROM foodbank WHERE SiteID = {0}", vm.SiteID);
+                        break;
+                    case "foodpantry":
+                        sql2 = String.Format("DELETE FROM foodpantry WHERE SiteID = {0}", vm.SiteID);
+                        break;
+                    case "shelter":
+                        sql2 = String.Format("DELETE FROM shelter WHERE SiteID = {0}", vm.SiteID);
+                        break;
+                    case "soupkitchen":
+                        sql2 = String.Format("DELETE FROM soupkitchen WHERE SiteID = {0}", vm.SiteID);
+                        break;
+                    default:
+                        throw new Exception("SiteController.DeleteService: non-supported serviceType");
+                }
 
-            vm.DeleteCompleted = true;
+                SqlHelper.ExecuteNonQuery(sql2);
+
+                vm.DeleteCompleted = true;
+            }
 
             return View(vm);
         }
