@@ -1,0 +1,74 @@
+﻿@using ASACS5.Models.Requests
+
+@model ASACS5.Models.Requests.AddRequestViewModel
+
+@{
+    ViewBag.Title = "Add Request";
+}
+
+<h1>Add Request</h1>
+
+@using (Html.BeginForm("Add", "Requests", FormMethod.Post, new { id = "frmAddRequest", @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.ItemID)
+    @Html.HiddenFor(model => model.UserSiteName)
+    @Html.HiddenFor(model => model.OwnerSiteID)
+    @Html.HiddenFor(model => model.ItemName)
+    @Html.HiddenFor(model => model.MaxNumberOfUnits)
+    @Html.HiddenFor(model => model.ExpirationDate)
+
+    <fieldset disabled="@(Model.Success)">
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.UserSiteName, new { @class = "col-md-3", @for = "txtUserSiteName" })
+            <div class="col-md-9">
+                @Html.DisplayFor(model => model.UserSiteName, new { @class = "form-control", @id = "txtUserSiteName" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.OwnerSiteID, new { @class = "col-md-3", @for = "txtOwnerSiteID" })
+            <div class="col-md-9">
+                @Html.DisplayFor(model => model.OwnerSiteID, new { @class = "form-control", @id = "txtOwnerSiteID" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ItemName, new { @class = "col-md-3", @for = "txtItemName" })
+            <div class="col-md-9">
+                @Html.DisplayFor(model => model.ItemName, new { @class = "form-control", @id = "txtItemName" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.NumberOfUnits, new { @class = "col-md-3", @for = "txtNumberOfUnits" })
+            <div class="col-md-9">
+                @Html.TextBoxFor(model => model.NumberOfUnits, new { @class = "form-control", @id = "txtNumberOfUnits", @type = "number" })
+                @Html.ValidationMessageFor(model => model.NumberOfUnits, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ExpirationDate, new { @class = "col-md-3", @for = "txtExpirationDate" })
+            <div class="col-md-9">
+                @Html.DisplayFor(model => model.ExpirationDate, "{0:yyyy-MM-dd}", new { @class = "form-control", @id = "txtExpirationDate" })
+            </div>
+        </div>
+
+        <div>
+            <input type="submit" value="Save" class="btn btn-default" />
+            @if (!String.IsNullOrWhiteSpace(Model.StatusMessage))
+            {
+                <span class="text-success"><b> @Model.StatusMessage</b></span>
+            }
+            @if (!String.IsNullOrWhiteSpace(Model.ErrorMessage))
+            {
+                <span class="text-warning"><b> @Model.ErrorMessage</b></span>
+            }
+        </div>
+
+    </fieldset>
+
+    <div>
+        @Html.ActionLink("Home", "Index", "Home")
+    </div>
+
+}

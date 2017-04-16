@@ -176,7 +176,7 @@ namespace ASACS5.Controllers
             if (!SiteID.HasValue) return RedirectToAction("Login", "Account");
 
             // check the existance of and the SiteID of an item with the specified ID
-            Item item = GetItemById(ItemID);
+            Item item = ItemService.GetItemById(ItemID);
 
             // throw an exception if an item with this ID is not found
             if (item == null) throw new Exception("No Item found for Item ID " + ItemID);
@@ -226,33 +226,6 @@ namespace ASACS5.Controllers
             }
 
             return View(vm);
-        }
-
-        private Item GetItemById(int ItemID)
-        {
-            Item response = null;
-
-            string sql = "SELECT ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID FROM item WHERE ItemID = " + ItemID;
-
-            // run the SQL
-            object[] queryResponse = SqlHelper.ExecuteSingleSelect(sql, 7);
-
-            if (queryResponse != null)
-            {
-                response = new Item
-                {
-                    ItemID = ItemID,
-                    ItemName = queryResponse[0].ToString(),
-                    NumberOfUnits = int.Parse(queryResponse[1].ToString()),
-                    ExpirationDate = DateTime.Parse(queryResponse[2].ToString()),
-                    StorageType = queryResponse[5].ToString(),
-                    SiteID = int.Parse(queryResponse[6].ToString()),
-                    Category1 = queryResponse[3].ToString(),
-                    Category2 = queryResponse[4].ToString()
-                };
-            }
-
-            return response;
         }
 
         private List<Item> GetItems(string sql)

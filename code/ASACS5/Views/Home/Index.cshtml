@@ -12,10 +12,15 @@
 }
 else
 {
-    <h3>Current Site: @Model.SiteName (SiteID @Model.SiteID)</h3>
+    <h3>Welcome @Model.Username! (@Model.SiteName)</h3>
     <p><a href="/Site/Index">Site Details</a></p>
     <p><a href="/Client/Index">Client Details</a></p>
-    <p><a href="/Items/Index">View/Update Items</a></p>
+    <p><a href="/Items/Index">Search/Add/Update Items</a></p>
+    <p><a href="/Requests/MyRequests">My Requests</a></p>
+    if (Model.HasFoodBank)
+    {
+        <p><a href="/Requests/Index">Outstanding Requests</a></p>
+    }
 }
 
 <p><a href="/Reports">Reports</a></p>

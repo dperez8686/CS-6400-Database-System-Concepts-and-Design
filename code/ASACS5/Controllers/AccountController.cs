@@ -21,6 +21,9 @@ namespace ASACS5.Controllers
 
             if (SiteID.HasValue) vm.AlreadyLoggedIn = true;
 
+            vm.Username = "emp1"; // set the default username
+            vm.Password = "gatech123";
+
             return View(vm);
         }
 
@@ -59,6 +62,15 @@ namespace ASACS5.Controllers
             }
 
             return View(vm);
+        }
+
+        public ActionResult Logout()
+        {
+            Session["SiteID"] = 0;
+            Session["SiteName"] = "";
+            Session["Username"] = "";
+
+            return View();
         }
     }
 }

@@ -1,0 +1,69 @@
+﻿@using ASACS5.Models.Requests
+
+@model ASACS5.Models.Requests.RequestsIndexViewModel
+
+@{
+    ViewBag.Title = "Requests";
+}
+
+<h1>@Model.SiteName Outstanding Requests</h1>
+
+@using (Html.BeginForm("Index", "Requests", FormMethod.Post, new { id = "frmRequestsIndex" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.SiteID)
+    @Html.HiddenFor(model => model.SiteName)
+
+    <h3>Sort Options</h3>
+    <div class="row">
+        <div class="col-md-8 col-sm-10">
+            <div class="row form-group">
+                <div class="col-xs-6"><b>Field</b></div>
+                <div class="col-xs-6"><b>Order</b></div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-4 col-xs-6">
+                    @Html.DropDownListFor(model => model.SortByChoice, Model.SortByChoiceOptions, new { @class = "form-control" })
+                </div>
+                <div class="col-sm-4 col-xs-6">
+                    @Html.DropDownListFor(model => model.SortByOrder, Model.SortByOrderOptions, new { @class = "form-control" })
+                </div>
+                <div class="col-sm-4">
+                    <input type="submit" value="Update Sorting" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<h3>Requests</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Item Name</th>
+            <th>Category</th>
+            <th class="hidden-xs hidden-sm">Sub-Category</th>
+            <th class="hidden-xs">Storage Type</th>
+            <th>Requested Quantity</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Request request in Model.Requests)
+        {
+            <tr>
+                <td>@request.ItemName</td>
+                <td>@request.Category</td>
+                <td class="hidden-xs hidden-sm">@request.SubCategory</td>
+                <td class="hidden-xs">@request.StorageType</td>
+                <td>@request.RequestedQuantity.ToString()</td>
+                <td><a href="/Requests/Update/@request.RequestID.ToString()"><span class="glyphicon glyphicon-pencil" title="Update"></span></a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    @Html.ActionLink("Home", "Index", "Home")
+</div>

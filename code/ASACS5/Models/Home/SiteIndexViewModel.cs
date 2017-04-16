@@ -9,5 +9,7 @@ namespace ASACS5.Models.Home
     {
         public int SiteID { get; set; }
         public string SiteName { get; set; }
+        public string Username { get; set; }
+        public bool HasFoodBank { get; set; }
     }
 }
