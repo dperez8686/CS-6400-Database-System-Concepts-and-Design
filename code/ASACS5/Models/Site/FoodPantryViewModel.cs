@@ -13,7 +13,12 @@ namespace ASACS5.Models.Site
 		public string StatusType { get; set; }
 		public string StatusMessage { get; set; }
 
-		[DisplayName("Hours of Operation")]
+        [DisplayName("Description")]
+        [Required(ErrorMessage = "Description is required")]
+        [MaxLength(1000, ErrorMessage = "Max length is 1000 characters")]
+        public string Description { get; set; }
+
+        [DisplayName("Hours of Operation")]
 		[Required(ErrorMessage = "Hours of Operation is required")]
 		[MaxLength(1000, ErrorMessage = "Max length is 1000 characters")]
 		public string HoursOfOperation { get; set; }

@@ -8,7 +8,7 @@
 
 @if (Model.DeleteCompleted)
 {
-    <h4>Service succesfully deleted!</h4>
+    <h4 class="text-success">Service succesfully deleted!</h4>
     <div>
         @Html.ActionLink("Back", "Index", "Site")
     </div>
@@ -32,6 +32,10 @@ else
 
         <div>
             <input type="submit" value="Confirm Service Deletion" class="btn btn-default" />
+            @if (!String.IsNullOrWhiteSpace(Model.ErrorMessage))
+            {
+                <span class="text-danger"><b> @Model.ErrorMessage</b></span>
+            }
         </div>
         <div>
             @Html.ActionLink("Back", "Index", "Site")

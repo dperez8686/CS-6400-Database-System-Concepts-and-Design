@@ -57,7 +57,7 @@
                 <td>@request.Category</td>
                 <td class="hidden-xs hidden-sm">@request.SubCategory</td>
                 <td class="hidden-xs">@request.StorageType</td>
-                <td>@request.RequestedQuantity.ToString()</td>
+                <td class="@(request.OverTheLimit ? "over-the-limit" : null)">@request.RequestedQuantity.ToString()</td>
                 <td><a href="/Requests/Update/@request.RequestID.ToString()"><span class="glyphicon glyphicon-pencil" title="Update"></span></a></td>
             </tr>
         }

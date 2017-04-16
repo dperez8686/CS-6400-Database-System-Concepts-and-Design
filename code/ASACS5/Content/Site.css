@@ -1,3 +1,8 @@
 ﻿h1 {
     color: blue;
 }
+
+.over-the-limit {
+    color: red;
+    font-weight: bold;
+}

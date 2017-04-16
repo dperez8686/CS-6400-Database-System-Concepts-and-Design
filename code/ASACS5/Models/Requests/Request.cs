@@ -13,6 +13,7 @@ namespace ASACS5.Models.Requests
         public string UserName { get; set; }
         public int OwnerSiteID { get; set; }
         public string ItemName { get; set; }
+        public int ItemID { get; set; }
         public int RequestedQuantity { get; set; }
         public string Category { get; set; }
         public string SubCategory { get; set; }
@@ -20,5 +21,6 @@ namespace ASACS5.Models.Requests
         public DateTime ExpirationDate { get; set; }
         public String Status { get; set; }
         public int FulfilledQuantity { get; set; }
+        public bool OverTheLimit { get; set; }
     }
 }

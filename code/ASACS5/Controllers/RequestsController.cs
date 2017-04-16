@@ -39,9 +39,9 @@ namespace ASACS5.Controllers
                 SortByOrder = GetSortByOrderOptions().First().Value
             };
 
-            string sql = String.Format("SELECT r.RequestID, i.ItemName, i.Category1, i.Category2, i.StorageType, r.RequestedQuantity, r.Status, r.FulfilledQuantity " +
+            string sql = String.Format("SELECT r.RequestID, i.ItemName, i.Category1, i.Category2, i.StorageType, r.RequestedQuantity, r.Status, r.FulfilledQuantity, i.ItemID " +
                 "FROM request r " + 
-                "INNER JOIN item i on i.ItemId = r.ItemID " +
+                "INNER JOIN item i on i.ItemID = r.ItemID " +
                 "WHERE i.SiteID = {0} AND r.Status='Pending' " +
                 "ORDER BY {1} {2} ;", SiteID.Value.ToString(), vm.SortByChoice, vm.SortByOrder);
 
@@ -65,9 +65,9 @@ namespace ASACS5.Controllers
             vm.SortByChoiceOptions = GetSortByChoiceOptions();
             vm.SortByOrderOptions = GetSortByOrderOptions();
 
-            string sql = String.Format("SELECT r.RequestID, i.ItemName, i.Category1, i.Category2, i.StorageType, r.RequestedQuantity, r.Status, r.FulfilledQuantity " +
+            string sql = String.Format("SELECT r.RequestID, i.ItemName, i.Category1, i.Category2, i.StorageType, r.RequestedQuantity, r.Status, r.FulfilledQuantity, i.ItemID " +
                 "FROM request r " +
-                "INNER JOIN item i on i.ItemId = r.ItemID " +
+                "INNER JOIN item i on i.ItemID = r.ItemID " +
                 "WHERE i.SiteID = {0} AND r.Status='Pending' " +
                 "ORDER BY {1} {2} ;", SiteID.Value.ToString(), vm.SortByChoice, vm.SortByOrder);
 
@@ -89,9 +89,9 @@ namespace ASACS5.Controllers
                 SiteID = SiteID.Value
             };
 
-            string sql = String.Format("SELECT r.RequestID, i.ItemName, i.Category1, i.Category2, i.StorageType, r.RequestedQuantity, r.Status, r.FulfilledQuantity " +
+            string sql = String.Format("SELECT r.RequestID, i.ItemName, i.Category1, i.Category2, i.StorageType, r.RequestedQuantity, r.Status, r.FulfilledQuantity, i.ItemID " +
                 "FROM request r " +
-                "INNER JOIN item i on i.ItemId = r.ItemID " +
+                "INNER JOIN item i on i.ItemID = r.ItemID " +
                 "WHERE r.Username = '{0}' " +
                 "ORDER BY r.RequestID DESC ;", Session["Username"].ToString());
 
@@ -217,7 +217,7 @@ namespace ASACS5.Controllers
             var response = new List<Request>();
 
             // run the SQL
-            List<object[]> queryResponse = SqlHelper.ExecuteMultiSelect(sql, 8);
+            List<object[]> queryResponse = SqlHelper.ExecuteMultiSelect(sql, 9);
 
             foreach (object[] row in queryResponse)
             {
@@ -231,8 +231,41 @@ namespace ASACS5.Controllers
                     StorageType = row[4].ToString(),
                     RequestedQuantity = int.Parse(row[5].ToString()),
                     Status = row[6].ToString(),
-                    FulfilledQuantity = int.Parse(row[7].ToString())
+                    FulfilledQuantity = int.Parse(row[7].ToString()),
+                    ItemID = int.Parse(row[8].ToString())
                 });
+            }
+
+            // we need to meet this requirement: If more than one request for a particular item exists
+            // such that the total number of items requested is greater than the total number available, the report
+            // should indicate this shortfall in inventory to the user by highlighting numbers in red or some other
+            // suitable method.
+
+            List<int> ItemIDsOverRequestLimit = GetItemIDsOverRequestLimit();
+
+            foreach (Request r in response)
+            {
+                if (ItemIDsOverRequestLimit.Contains(r.ItemID)) r.OverTheLimit = true;
+            }
+
+            return response;
+        }
+
+        private List<int> GetItemIDsOverRequestLimit()
+        {
+            // Get all the Items for which the requests are over the limit
+            string sql = "select r.ItemID from request r " +
+                          "where r.Status = 'Pending' " +
+                          "group by r.ItemID having sum(r.RequestedQuantity) > " +
+                          "(select i.NumberOfUnits from item i where i.ItemID = r.ItemID); ";
+
+            var result = SqlHelper.ExecuteMultiSelect(sql, 1);
+
+            List<int> response = new List<int>();
+
+            foreach (object[] x in result)
+            {
+                response.Add(Int32.Parse(x[0].ToString()));
             }
 
             return response;

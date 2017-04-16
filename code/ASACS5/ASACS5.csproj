@@ -143,8 +143,9 @@
     <Compile Include="Models\Requests\RequestsIndexViewModel.cs" />
     <Compile Include="Models\Requests\Request.cs" />
     <Compile Include="Models\Requests\AddRequestViewModel.cs" />
-	<Compile Include="Models\Log\Log.cs" />
+    <Compile Include="Models\Log\Log.cs" />
     <Compile Include="Models\Site\DeleteServiceViewModel.cs" />
+    <Compile Include="Models\Site\FoodBankViewModel.cs" />
     <Compile Include="Models\Site\FoodPantryViewModel.cs" />
     <Compile Include="Models\Site\ShelterViewModel.cs" />
     <Compile Include="Models\Site\SoupKitchenViewModel.cs" />
@@ -185,11 +186,11 @@
     <Content Include="Views\Requests\Update.cshtml" />
     <Content Include="Views\Requests\MyRequests.cshtml" />
     <Content Include="Views\Account\Logout.cshtml" />
-	<Content Include="Views\Client\AddToWaitlist.cshtml" />
     <Content Include="Views\Client\AddToWaitlist.cshtml" />
     <Content Include="Views\Waitlist\UpdateWaitlist.cshtml" />
     <Content Include="Views\Waitlist\DeleteFromWaitlist.cshtml" />
     <Content Include="Views\Waitlist\MoveInWaitlist.cshtml" />
+    <Content Include="Views\Site\FoodBank.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

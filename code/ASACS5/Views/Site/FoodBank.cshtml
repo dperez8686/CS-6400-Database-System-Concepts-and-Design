@@ -1,0 +1,36 @@
+﻿@model ASACS5.Models.Site.FoodBankViewModel
+@{
+	ViewBag.Title = "Food Bank";
+}
+
+@if (Model.FoodBankExists)
+{
+    <h1>Food Bank</h1>
+    <h4>This site already has a Food Bank!</h4>
+}
+else
+{
+    <h1>Add Food Bank</h1>
+
+    using (Html.BeginForm("FoodBank", "Site", FormMethod.Post, new { id = "frmFoodBank", @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.SiteID)
+
+        <p>Click 'Confirm' to add a Food Bank service to this site.</p>
+
+        <fieldset disabled="@(!String.IsNullOrWhiteSpace(Model.StatusMessage))">
+            <div>
+                <input type="submit" value="Confirm" class="btn btn-default" />
+                @if (!String.IsNullOrWhiteSpace(Model.StatusMessage))
+                {
+                    <span class="text-success"><b> @Model.StatusMessage</b></span> }
+            </div>
+        </fieldset>
+    }
+}
+
+<div>
+    @Html.ActionLink("Back", "Index", "Site")
+</div>
