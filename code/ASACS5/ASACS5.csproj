@@ -123,6 +123,7 @@
     <Compile Include="Controllers\RequestsController.cs" />
     <Compile Include="Controllers\ItemsController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
+    <Compile Include="Controllers\WaitlistController.cs" />
     <Compile Include="Controllers\SiteController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -148,6 +149,9 @@
     <Compile Include="Models\Site\ShelterViewModel.cs" />
     <Compile Include="Models\Site\SoupKitchenViewModel.cs" />
     <Compile Include="Models\Site\SiteIndexViewModel.cs" />
+    <Compile Include="Models\Waitlist\MoveInWaitlistViewModel.cs" />
+    <Compile Include="Models\Waitlist\DeleteFromWaitlistViewModel.cs" />
+    <Compile Include="Models\Waitlist\UpdateWaitlistViewModel.cs" />
     <Compile Include="Models\Waitlist\Waitlist.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ItemService.cs" />
@@ -182,6 +186,10 @@
     <Content Include="Views\Requests\MyRequests.cshtml" />
     <Content Include="Views\Account\Logout.cshtml" />
 	<Content Include="Views\Client\AddToWaitlist.cshtml" />
+    <Content Include="Views\Client\AddToWaitlist.cshtml" />
+    <Content Include="Views\Waitlist\UpdateWaitlist.cshtml" />
+    <Content Include="Views\Waitlist\DeleteFromWaitlist.cshtml" />
+    <Content Include="Views\Waitlist\MoveInWaitlist.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

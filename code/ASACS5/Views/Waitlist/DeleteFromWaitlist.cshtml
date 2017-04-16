@@ -1,0 +1,36 @@
+﻿@model ASACS5.Models.Site.DeleteFromWaitlistViewModel
+@using ASACS5.Models.Logs;
+@using ASACS5.Models.Waitlists;
+
+@{
+    ViewBag.Title = "Delete Client From Waitlist";
+}
+
+<h1>Delete Client @Model.ClientID from SiteID @Model.SiteID</h1>
+
+@if (Model.DeleteCompleted)
+{
+    <h4>Client succesfully deleted from waitlist!</h4>
+    <div>
+        @Html.ActionLink("Back", "UpdateWaitlist", "Waitlist")
+    </div>
+}
+else
+{
+    using (Html.BeginForm("DeleteClient", "Waitlist", FormMethod.Post, new { id = "frmDeleteClient", @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.SiteID)
+        @Html.HiddenFor(model => model.ClientID)
+
+        <p>Are you sure you want to delete this client from waitlist?</p>
+
+        <div>
+            <input type="submit" value="Confirm Deletion" class="btn btn-default" />
+        </div>
+        <div>
+            @Html.ActionLink("Back", "UpdateWaitlist", "Waitlist")
+        </div>
+    }
+}

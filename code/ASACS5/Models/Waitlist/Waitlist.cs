@@ -10,5 +10,6 @@ namespace ASACS5.Models.Waitlists
         public int ClientID { get; set; }
         public int SiteID { get; set; }
         public int Ranking { get; set; }
+        public int oldRanking { get; set; }
     }
 }

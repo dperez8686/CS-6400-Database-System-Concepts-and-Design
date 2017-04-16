@@ -1,0 +1,72 @@
+﻿@model ASACS5.Models.Site.UpdateWaitlistViewModel
+@using ASACS5.Models.Logs;
+@using ASACS5.Models.Waitlists;
+@{
+    ViewBag.Title = "Update Waitlist";
+}
+
+@if (Model.ClientID.Equals(0))
+{
+    <h1>Update Waitlist</h1>
+}
+else
+{
+    <h1>Client ID @Model.ClientID Details</h1>
+}
+    
+    @using (Html.BeginForm("UpdateWaitlist", "Waitlist", FormMethod.Post, new { id = "frmUpdateWaitlist", @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ClientID)
+
+        if (Model.HasShelter)
+        {
+
+            if (Model.Waitlist != null && Model.Waitlist.Count > 0)
+            {
+                <h1>Waitlist</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Client ID</th>
+                    <th>Ranking</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Waitlist wt in Model.Waitlist)
+                {
+                    <tr>
+                        <td>@wt.ClientID</td>
+                        <td>@wt.Ranking</td>
+                        <td>
+                            <a href="/Waitlist/DeleteClient/@wt.ClientID"><span class="glyphicon glyphicon-minus" title="Delete"></span></a>
+                            @if (@wt.Ranking > 1)
+                            {
+                            <a href="/Waitlist/MoveInWaitlist/@wt.ClientID/up"><span class="glyphicon glyphicon-arrow-up" title="MoveUp"></span></a>
+                            }
+                            @if (@wt.Ranking < Model.Waitlist.Count())
+                            {
+                            <a href="/Waitlist/MoveInWaitlist/@wt.ClientID/down"><span class="glyphicon glyphicon-arrow-down" title="MoveDown"></span></a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+            }
+            else
+            {
+                <h2 style="color:red;">Waitlist is empty!</h2>
+            }
+        }
+        else
+        {
+            <h2 style="color:red;">Site does not contain shelter</h2>
+        }
+    }
+
+    <div>
+        @Html.ActionLink("Back", "Index", "Home")
+    </div>
+

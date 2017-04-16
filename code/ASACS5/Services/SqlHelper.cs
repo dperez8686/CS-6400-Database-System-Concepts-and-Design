@@ -32,7 +32,7 @@ namespace ASACS5.Services
             catch (Exception ex)
             {
                 Debug.WriteLine("SqlHelper.ExecuteNonQuery: " + ex.ToString());
-                throw ex;
+               throw ex;
             }
 
             conn.Close();

@@ -61,9 +61,8 @@ else
         <table class="table">
             <thead>
                 <tr>
-                    <th>Log ID</th>
-                    <th>Client ID</th>
                     <th>Date/Time Stamp</th>
+                    <th>Service Name</th>
                     <th>Site Name</th>
                     <th>Description</th>
                 </tr>
@@ -73,9 +72,8 @@ else
                 @foreach (Log log in Model.Logs)
                 {
                     <tr>
-                        <td>@log.LogID</td>
-                        <td>@log.ClientID</td>
                         <td>@log.DateTimeStamp</td>
+                        <td>@log.ServiceName</td>
                         <td>@log.SiteName</td>
                         <td>@log.Description</td>
                     </tr>

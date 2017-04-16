@@ -138,7 +138,6 @@ namespace ASACS5.Controllers
 
                 // Ugly way to build a query search for client based on Description ID, First Name and Last Name.
                 // Query did not work well with null parameters so I had to ignore parameters if null.
-                object queryResult = null; 
                 string querystring = "SELECT * FROM client WHERE ";
                 Boolean parametersNotNull = false;
                 Boolean firstParameter = false; 
@@ -170,16 +169,17 @@ namespace ASACS5.Controllers
                     parametersNotNull = true;
                 }
                 querystring += ";";
+                List<object[]> queryResult = null;
                 if (parametersNotNull)
                 {
-                    queryResult = SqlHelper.ExecuteScalar(querystring);
+                    queryResult = SqlHelper.ExecuteMultiSelect(querystring, 6);
                 }
                 // If less than 5 results found in query, display list. If not, display appropiate messages. 
                 if (queryResult == null)
                 {
                     vm.StatusMessage = "No results found. Try search again.";
                 }
-                else if (int.Parse(queryResult.ToString()) < 5)
+                else if (queryResult.Count < 5)
                 {
                     
                     // set up the sql query
@@ -210,7 +210,8 @@ namespace ASACS5.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult SelectClient(SearchClientViewModel vm)
         {
-            
+            int? SiteID = Session["SiteID"] as int?;
+            if (SiteID.HasValue) vm.SiteID = SiteID.Value;
             string sql = String.Format(
                 "SELECT DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber " +
                 "FROM client WHERE ClientID = {0}; ", vm.selectedClient.ToString());
@@ -236,11 +237,11 @@ namespace ASACS5.Controllers
 
 
                 string sql2 = String.Format(
-                       "SELECT LogID, ClientID, DateTimeStamp, SiteName, Description " +
+                       "SELECT DateTimeStamp, ServiceName, SiteName, Description " +
                        "FROM clientlogentry WHERE ClientID = {0} ", om.ClientID);
 
                 // run the sql against the db
-                List<object[]> result2 = SqlHelper.ExecuteMultiSelect(sql2, 5);
+                List<object[]> result2 = SqlHelper.ExecuteMultiSelect(sql2, 4);
 
                 // if we got a result, populate the view model fields
                 if (result2 != null)
@@ -259,7 +260,7 @@ namespace ASACS5.Controllers
                 {
                     om.Waitlist = GetWaitListFromQueryResponse(result3);
                 }
-                int? SiteID = Session["SiteID"] as int?;
+                
                 object queryResult = null;
                 queryResult = SqlHelper.ExecuteScalar(String.Format("SELECT COUNT(ClientID) FROM waitlist WHERE SiteID = {0} AND ClientID = {1} ", SiteID, om.ClientID));
 
@@ -272,8 +273,21 @@ namespace ASACS5.Controllers
                     om.AddClientToWaitlistAllowed = false;
                 }
             }
+            
 
-            return View(om);
+            //Get Available bunks 
+            string sql4 = String.Format(
+                       "SELECT MaleBunksAvailable, FemaleBunksAVailable, MixedBunksAvailable " +
+                       "FROM shelter WHERE SiteID = {0} ", vm.SiteID);
+
+            result = SqlHelper.ExecuteSingleSelect(sql4, 3);
+            if (result != null)
+            {
+                om.MaleBunks = int.Parse(result[0].ToString());
+                om.FemaleBunks = int.Parse(result[1].ToString());
+                om.MixedBunks = int.Parse(result[2].ToString());
+            }
+                return View(om);
             
         }
 
@@ -283,6 +297,7 @@ namespace ASACS5.Controllers
         {
 
             int? SiteID = Session["SiteID"] as int?;
+            
 
             if (SiteID.HasValue) vm.SiteID = SiteID.Value;
 
@@ -356,14 +371,52 @@ namespace ASACS5.Controllers
 
             // Get log list with new entry to display
             sql = String.Format(
-                    "SELECT LogID, ClientID, DateTimeStamp, SiteName, Description " +
+                    "SELECT DateTimeStamp, ServiceName, SiteName, Description " +
                        "FROM clientlogentry WHERE ClientID = {0} ", vm.ClientID);
 
-            List<object[]> result = SqlHelper.ExecuteMultiSelect(sql, 5);
+            List<object[]> result = SqlHelper.ExecuteMultiSelect(sql, 4);
             if (result != null)
             {
                 om.Logs = GetLogListFromQueryResponse(result);
             }
+
+            
+            if (vm.selectedBunk != null)
+            {
+                // If Check-in radio button is selected, decrement from bunklist
+                sql = String.Format(
+               "UPDATE shelter SET {0} = {0} - 1 " +
+               "WHERE SiteID = {1}; ",
+               vm.selectedBunk, vm.SiteID);
+
+                SqlHelper.ExecuteNonQuery(sql);
+
+                // Add logging for checkin-in
+                string checkInLogEntry = "Checked into ";
+                if (vm.selectedBunk == "MaleBunksAvailable")
+                {
+                    checkInLogEntry += "male bunk";
+
+                }
+                else if (vm.selectedBunk == "FemaleBunksAvailable")
+                {
+                    checkInLogEntry += "female bunk";
+                }
+                else
+                {
+                    checkInLogEntry += "mixed bunk";
+                }
+
+                sql = String.Format(
+                    "INSERT INTO clientlogentry (ClientID, SiteName, Description) " +
+                    "VALUES ({0}, '{1}', '{2}'); ",
+                    vm.ClientID, vm.SiteName, checkInLogEntry
+                );
+
+                SqlHelper.ExecuteNonQuery(sql);
+            }
+
+
             om.StatusMessage = "Succesfully updated!";
            
             return View(om);
@@ -384,14 +437,19 @@ namespace ASACS5.Controllers
         {
             // Get max rating for current site
             int? SiteID = Session["SiteID"] as int?;
+            string queryResult = null;
             string sql = String.Format("SELECT MAX(Ranking) FROM waitlist WHERE SiteID = {0}; ", SiteID);
-            int ranking = int.Parse(SqlHelper.ExecuteScalar(sql).ToString());
-
+            queryResult = SqlHelper.ExecuteScalar(sql).ToString();
+            int ranking = 1;
+            if (queryResult != "")
+            {
+                ranking = int.Parse(SqlHelper.ExecuteScalar(sql).ToString())+1;
+            } 
             // Place client on waitlist with next ranking. 
             sql = String.Format(
                         "INSERT INTO waitlist (ClientID, SiteID, Ranking) " +
                         "VALUES ({0},{1}, {2}); ",
-                        vm.ClientID, SiteID, ranking+1
+                        vm.ClientID, SiteID, ranking
                     );
 
             SqlHelper.ExecuteNonQuery(sql);
@@ -419,11 +477,10 @@ namespace ASACS5.Controllers
                 // create a new client and add it to the Client List for each row in the query results
                 response.Add(new Log
                 {
-                    LogID = int.Parse(row[0].ToString()),
-                    ClientID = int.Parse(row[1].ToString()),
-                    DateTimeStamp = row[2].ToString(),
-                    SiteName = row[3].ToString(),
-                    Description = row[4].ToString(),
+                    DateTimeStamp = row[0].ToString(),
+                    ServiceName = row[1].ToString(),
+                    SiteName = row[2].ToString(),
+                    Description = row[3].ToString(),
                 });
             }
 

@@ -18,6 +18,11 @@ namespace ASACS5.Models.Site
         public string StatusMessage { get; set; }
 
         public int ClientID { get; set; }
+        public int MaleBunks { get; set; }
+        public int FemaleBunks { get; set; }
+        public int MixedBunks { get; set; }
+        public int BunksAvailable { get; set; }
+        public string selectedBunk { get; set; }
         public List<Log> Logs { get; set; }
         public List<Waitlist> Waitlist { get; set; }
         public Boolean AddClientToWaitlistAllowed { get; set; }
