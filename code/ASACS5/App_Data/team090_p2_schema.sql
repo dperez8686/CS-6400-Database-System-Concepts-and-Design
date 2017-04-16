@@ -145,15 +145,15 @@ ALTER TABLE `SoupKitchen`
   ADD CONSTRAINT soupkitchen_ibfk_1 FOREIGN KEY (SiteID) REFERENCES `Site` (SiteID);
 
 ALTER TABLE `Request`
-  ADD CONSTRAINT request_ibfk_1 FOREIGN KEY (Username) REFERENCES `User` (Username),
-  ADD CONSTRAINT request_ibfk_2 FOREIGN KEY (ItemID) REFERENCES `Item` (ItemID);
+  ADD CONSTRAINT request_ibfk_1 FOREIGN KEY (Username) REFERENCES `User` (Username) ON DELETE CASCADE,
+  ADD CONSTRAINT request_ibfk_2 FOREIGN KEY (ItemID) REFERENCES `Item` (ItemID) ON DELETE CASCADE;
     
 ALTER TABLE `WaitList`
-  ADD CONSTRAINT waitlist_ibfk_1 FOREIGN KEY (ClientID) REFERENCES `Client` (ClientID),
+  ADD CONSTRAINT waitlist_ibfk_1 FOREIGN KEY (ClientID) REFERENCES `Client` (ClientID) ON DELETE CASCADE,
   ADD CONSTRAINT waitlist_ibfk_2 FOREIGN KEY (SiteID) REFERENCES `Site` (SiteID);
   
 ALTER TABLE `ClientLogEntry`
-  ADD CONSTRAINT clientlogentry_ibfk_1 FOREIGN KEY (ClientID) REFERENCES `Client` (ClientID);
+  ADD CONSTRAINT clientlogentry_ibfk_1 FOREIGN KEY (ClientID) REFERENCES `Client` (ClientID) ON DELETE CASCADE;
 
 -- Start seed data inserts
 
@@ -632,3 +632,4 @@ VALUES (11, 'site3', 'shelter3','Visit');
 
 INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
 VALUES (12, 'site3', 'shelter3','Visit');
+

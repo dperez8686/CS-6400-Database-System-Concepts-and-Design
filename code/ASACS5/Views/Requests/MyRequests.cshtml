@@ -14,9 +14,9 @@
             <th>Item Name</th>
             <th class="hidden-xs">Category</th>
             <th class="hidden-xs hidden-sm">Sub-Category</th>
-            <th class="hidden-xs">Storage Type</th>
-            <th>Requested Quantity</th>
-            <th>Fulfilled Quantity</th>
+            <th class="hidden-xs hidden-sm">Storage Type</th>
+            <th class="hidden-xs">Requested Quantity</th>
+            <th class="hidden-xs">Fulfilled Quantity</th>
             <th>Status</th>
             <th>Action</th>
         </tr>
@@ -28,10 +28,10 @@
                 <td>@request.ItemName</td>
                 <td class="hidden-xs">@request.Category</td>
                 <td class="hidden-xs hidden-sm">@request.SubCategory</td>
-                <td class="hidden-xs">@request.StorageType</td>
-                <td>@request.RequestedQuantity.ToString()</td>
-                <td>@if(@request.Status  != "Pending") { @request.FulfilledQuantity.ToString() }</td>
-                <td>@request.Status</td>
+                <td class="hidden-xs hidden-sm">@request.StorageType</td>
+                <td class="hidden-xs">@request.RequestedQuantity.ToString()</td>
+                <td class="hidden-xs">@if(@request.Status  != "Pending") { @request.FulfilledQuantity.ToString() }</td>
+                <td class="status-col">@request.Status</td>
                 <td><a href="/Requests/MyRequests/Delete/@request.RequestID.ToString()"><span class="glyphicon glyphicon-trash" title="Delete"></span></a></td>
             </tr>
         }
@@ -41,3 +41,38 @@
 <div>
     @Html.ActionLink("Home", "Index", "Home")
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('td.status-col').each(function () {
+            if ($(this).text() == 'Complete') {
+                $(this).css('color', 'green');
+            }
+            else if ($(this).text() == 'Partially Fulfilled') {
+                $(this).css('color', 'orange');
+            }
+            else if ($(this).text() == 'Rejected') {
+                $(this).css('color', 'red');
+            }
+        });
+    });
+
+    // the following script for table sorting was pulled from
+    //    http://stackoverflow.com/questions/3160277/jquery-table-sort
+    //
+
+    $('th').click(function () {
+        var table = $(this).parents('table').eq(0)
+        var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
+        this.asc = !this.asc
+        if (!this.asc) { rows = rows.reverse() }
+        for (var i = 0; i < rows.length; i++) { table.append(rows[i]) }
+    })
+    function comparer(index) {
+        return function (a, b) {
+            var valA = getCellValue(a, index), valB = getCellValue(b, index)
+            return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.localeCompare(valB)
+        }
+    }
+    function getCellValue(row, index) { return $(row).children('td').eq(index).html() }
+</script>

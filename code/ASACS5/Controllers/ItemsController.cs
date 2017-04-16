@@ -23,7 +23,7 @@ namespace ASACS5.Controllers
             // if there is none, redirect to the login page
             if (!SiteID.HasValue) return RedirectToAction("Login", "Account");
 
-            ItemsIndexViewModel vm = new ItemsIndexViewModel { SiteID = SiteID.Value };
+            ItemsIndexViewModel vm = new ItemsIndexViewModel { SiteID = SiteID.Value, SiteNameFilterOperator = "Only" };
 
             // find out if the current Site has a Food Bank or not
             vm.HasFoodBank = Int32.Parse(SqlHelper.ExecuteScalar("SELECT COUNT(*) FROM foodbank WHERE SiteID = " + SiteID.Value).ToString()) > 0;
@@ -35,6 +35,7 @@ namespace ASACS5.Controllers
             vm.Items = GetItems(sql);
 
             // Populate the select lists
+            vm.SiteNameFilterOperatorOptions = GetSiteNameFilterOperators();
             vm.SiteNameFilterOptions = GetFoodBankSelectList(true);
             vm.ExpirationDateFilterOptions = GetDateFilterOperators();
             vm.FoodOrSupplyFilterOptions = GetFoodOrSupplyFilterOptions();
@@ -59,7 +60,11 @@ namespace ASACS5.Controllers
 
             if (vm.SiteNameFilterEnabled)
             {
-                sb.Append(" WHERE SiteID = " + vm.SiteNameFilterValue.ToString() + " ");
+                if (vm.SiteNameFilterOperator.Equals("Only"))
+                {
+                    sb.Append(" WHERE SiteID = " + vm.SiteNameFilterValue.ToString() + " ");
+                }
+                else sb.Append(" WHERE SiteID != " + vm.SiteNameFilterValue.ToString() + " ");
                 firstWhereLineStarted = true;
             }
 
@@ -102,6 +107,7 @@ namespace ASACS5.Controllers
             vm.Items = GetItems(sb.ToString());
 
             // Re-populate the select lists
+            vm.SiteNameFilterOperatorOptions = GetSiteNameFilterOperators();
             vm.SiteNameFilterOptions = GetFoodBankSelectList(false);
             vm.ExpirationDateFilterOptions = GetDateFilterOperators();
             vm.FoodOrSupplyFilterOptions = GetFoodOrSupplyFilterOptions();
@@ -213,6 +219,7 @@ namespace ASACS5.Controllers
 
             if (ModelState.IsValid)
             {
+                // update the item with specified values
                 string sql = String.Format(
                         "UPDATE item " +
                         "SET ItemName='{0}', NumberOfUnits={1}, ExpirationDate='{2}', Category1='{3}', Category2='{4}', StorageType='{5}' " +
@@ -222,10 +229,52 @@ namespace ASACS5.Controllers
 
                 SqlHelper.ExecuteNonQuery(sql);
 
+                // Requirement from demo info : If specific item remains in inventory with zero available, all 
+                // pending requests should be updated as ‘closed’ 
+                if (vm.NumberOfUnits.Equals(0))
+                {
+                    string sql2 = String.Format("UPDATE request SET FulfilledQuantity=0, Status='Closed' " +
+                                            "WHERE ItemID = {0} AND Status='Pending' ;", vm.ItemID.ToString());
+
+                    SqlHelper.ExecuteNonQuery(sql2);
+                }
+
                 vm.StatusMessage = "Succesfully updated!";
             }
 
             return View(vm);
+        }
+
+        [Route("Items/Delete/{ItemID:int}")]
+        public ActionResult DeleteItem(int ItemID)
+        {
+            // Get the logged in Site ID from the session
+            int? SiteID = Session["SiteID"] as int?;
+
+            // if there is none, redirect to the login page
+            if (!SiteID.HasValue) return RedirectToAction("Login", "Account");
+
+            // get the specified Item to see if it exists and this user is allowed to delete it
+            string sql = String.Format("SELECT SiteID FROM item WHERE ItemID = {0} ", ItemID.ToString());
+
+            var queryResult = SqlHelper.ExecuteSingleSelect(sql, 1);
+
+            if (queryResult == null)
+            {
+                throw new Exception("No Item found for Item ID " + ItemID.ToString());
+            }
+            else if (queryResult[0].ToString() != SiteID.Value.ToString())
+            {
+                throw new Exception("Item ID " + ItemID.ToString() + " does not belong to your site.");
+            }
+
+            // they are, so now delete the request
+            string sql2 = String.Format("DELETE FROM item WHERE ItemID = {0} ;", ItemID.ToString());
+
+            SqlHelper.ExecuteNonQuery(sql2);
+
+            // send them back to index
+            return RedirectToAction("Index");
         }
 
         private List<Item> GetItems(string sql)
@@ -281,6 +330,16 @@ namespace ASACS5.Controllers
 
                 });
             }
+
+            return new SelectList(selectListItems, "Value", "Text");
+        }
+
+        private IEnumerable<SelectListItem> GetSiteNameFilterOperators()
+        {
+            var selectListItems = new List<SelectListItem>();
+
+            selectListItems.Add(new SelectListItem { Value = "Only", Text = "Only" });
+            selectListItems.Add(new SelectListItem { Value = "Not", Text = "Not" });
 
             return new SelectList(selectListItems, "Value", "Text");
         }

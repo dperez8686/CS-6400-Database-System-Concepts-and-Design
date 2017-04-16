@@ -35,7 +35,10 @@
                 <div class="col-xs-3">
                     <span>Site</span>
                 </div>
-                <div class="col-xs-7">
+                <div class="col-xs-2">
+                    @Html.DropDownListFor(model => model.SiteNameFilterOperator, Model.SiteNameFilterOperatorOptions, new { @class = "form-control", @id = "txtSiteNameFilterOperator" })
+                </div>
+                <div class="col-xs-5">
                     @Html.DropDownListFor(model => model.SiteNameFilterValue, Model.SiteNameFilterOptions, new { @class = "form-control", @id = "txtStorageType" })
                 </div>
             </div>
@@ -131,6 +134,10 @@
                     @if (item.SiteID.Equals(Model.SiteID))
                     {
                         <a href="/Items/@item.ItemID.ToString()"><span class="glyphicon glyphicon-pencil" title="Edit"></span></a>
+                        if (item.NumberOfUnits.Equals(0))
+                        {
+                            <a href="/Items/Delete/@item.ItemID.ToString()"><span class="glyphicon glyphicon-trash" title="Delete"></span></a>
+                        }
                     }
                     else
                     {
@@ -147,10 +154,6 @@
 </div>
 
 <script type="text/javascript">
-    //window.onload = function () {
-    //    cat1Changed(); // populate in the case of form submission
-    //};
-
     function cat1Changed() {
         var cat1Checked = $('#chkFoodOrSupply').prop("checked");
 
@@ -177,4 +180,23 @@
             $('#chkCategory2').prop("checked", false); // set the filter to un-checked
         }
     }
+
+    // the following script for table sorting was pulled from
+    //    http://stackoverflow.com/questions/3160277/jquery-table-sort
+    //
+
+    $('th').click(function () {
+        var table =  $(this).parents('table').eq(0)
+        var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
+        this.asc = !this.asc
+        if (!this.asc) { rows = rows.reverse() }
+        for (var i = 0; i < rows.length; i++) { table.append(rows[i]) }
+    })
+    function comparer(index) {
+        return function (a, b) {
+            var valA = getCellValue(a, index), valB = getCellValue(b, index)
+            return $.isNumeric(valA) && $.isNumeric(valB) ?  valA - valB  : valA.localeCompare(valB)
+        }
+    }
+    function getCellValue(row, index) { return $(row).children('td').eq(index).html() }
 </script>

@@ -104,7 +104,7 @@ namespace ASACS5.Controllers
                 {
                     if (r.FulfilledQuantity.Equals(r.RequestedQuantity))
                     {
-                        r.Status = "Fulfilled";
+                        r.Status = "Complete";
                     }
                     else if (r.FulfilledQuantity > 0)
                     {
@@ -269,7 +269,7 @@ namespace ASACS5.Controllers
                 SqlHelper.ExecuteNonQuery(sql);
 
                 // Update the Item Inventory as appropriate
-                string sql2 = String.Format("UPDATE item SET NumberOfItems = (NumberOfItems - {0}) WHERE ItemID = {1} ;",
+                string sql2 = String.Format("UPDATE item SET NumberOfUnits = (NumberOfUnits - {0}) WHERE ItemID = {1} ;",
                                         vm.QuantityToFulfill, vm.ItemID);
 
                 SqlHelper.ExecuteNonQuery(sql2);

@@ -12,12 +12,14 @@ namespace ASACS5.Models.Items
         public int SiteID { get; set; }
         public bool HasFoodBank { get; set; }
         public List<Item> Items { get; set; }
+        public IEnumerable<SelectListItem> SiteNameFilterOperatorOptions { get; set; }
         public IEnumerable<SelectListItem> SiteNameFilterOptions { get; set; }
         public IEnumerable<SelectListItem> ExpirationDateFilterOptions { get; set; }
         public IEnumerable<SelectListItem> FoodOrSupplyFilterOptions { get; set; }
         public IEnumerable<SelectListItem> Category2FilterOptions { get; set; }
         public IEnumerable<SelectListItem> StorageTypeFilterOptions { get; set; }
 
+        public string SiteNameFilterOperator { get; set; }
         public bool SiteNameFilterEnabled { get; set; }
         public int SiteNameFilterValue { get; set; }
 

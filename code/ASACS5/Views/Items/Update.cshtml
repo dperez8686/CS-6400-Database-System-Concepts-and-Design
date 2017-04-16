@@ -14,7 +14,6 @@
 
     @Html.HiddenFor(model => model.SiteID)
     @Html.HiddenFor(model => model.ItemID)
-
        
     @Html.Partial("ItemFormContent")
 
@@ -25,9 +24,17 @@
             <span class="text-success"><b> @Model.StatusMessage</b></span>
         }
     </div>
-
-    <div>
-        @Html.ActionLink("Back", "Index", "Items")
-    </div>
-
 }
+
+@if (Model.NumberOfUnits.Equals(0))
+{
+    <form action="/Items/Delete/@Model.ItemID">
+        <input type="submit" value="Delete this item" class="btn btn-default" />
+    </form>
+}
+
+<div>
+    @Html.ActionLink("Back", "Index", "Items")
+</div>
+
+

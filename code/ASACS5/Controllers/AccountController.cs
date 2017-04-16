@@ -54,6 +54,8 @@ namespace ASACS5.Controllers
                     Session["SiteID"] = int.Parse(result[1].ToString()); // set the SiteID properties in the session
                     Session["SiteName"] = result[2].ToString();
                     Session["Username"] = vm.Username;
+
+                    return RedirectToAction("Index", "Home"); // send to Home after succesful Login
                 }
                 else
                 {
@@ -66,9 +68,9 @@ namespace ASACS5.Controllers
 
         public ActionResult Logout()
         {
-            Session["SiteID"] = 0;
-            Session["SiteName"] = "";
-            Session["Username"] = "";
+            Session.Remove("SiteID");
+            Session.Remove("SiteName");
+            Session.Remove("Username");
 
             return View();
         }
