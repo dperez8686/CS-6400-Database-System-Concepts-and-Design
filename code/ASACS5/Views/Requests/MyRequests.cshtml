@@ -30,9 +30,9 @@
                 <td class="hidden-xs hidden-sm">@request.SubCategory</td>
                 <td class="hidden-xs">@request.StorageType</td>
                 <td>@request.RequestedQuantity.ToString()</td>
-                <td>@request.FulfilledQuantity.ToString()</td>
+                <td>@if(@request.Status  != "Pending") { @request.FulfilledQuantity.ToString() }</td>
                 <td>@request.Status</td>
-                <td><a href="/MyRequests/Delete/@request.RequestID.ToString()"><span class="glyphicon glyphicon-trash" title="Delete"></span></a></td>
+                <td><a href="/Requests/MyRequests/Delete/@request.RequestID.ToString()"><span class="glyphicon glyphicon-trash" title="Delete"></span></a></td>
             </tr>
         }
     </tbody>

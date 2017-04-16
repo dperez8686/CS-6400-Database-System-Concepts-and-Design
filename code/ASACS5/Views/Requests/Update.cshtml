@@ -18,6 +18,7 @@
     @Html.HiddenFor(model => model.ItemName)
     @Html.HiddenFor(model => model.QuantityAvailable)
     @Html.HiddenFor(model => model.QuantityRequested)
+    @Html.HiddenFor(model => model.ItemID)
 
     <fieldset disabled="@(Model.Success)">
 
@@ -60,7 +61,7 @@
         </div>
 
         <div>
-            <input type="submit" value="Close Request" class="btn btn-default" />
+            <input type="submit" value="Complete Request" class="btn btn-default" />
             @if (!String.IsNullOrWhiteSpace(Model.StatusMessage))
             {
                 <span class="text-success"><b> @Model.StatusMessage</b></span>

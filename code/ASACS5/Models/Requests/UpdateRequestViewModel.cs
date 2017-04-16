@@ -11,8 +11,11 @@ namespace ASACS5.Models.Requests
     {
         public string StatusMessage { get; set; }
         public string ErrorMessage { get; set; }
+
         public bool Success { get; set; }
         public int OwnerSiteID { get; set; }
+
+        public int ItemID { get; set; }
 
         [DisplayName("Requesting Site")]
         public string RequestorSiteName { get; set; }

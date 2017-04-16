@@ -97,7 +97,61 @@ namespace ASACS5.Controllers
 
             vm.Requests = GetRequests(sql);
 
+            // update the Closed property to a more informative value based on the fulfilled / requested quantities
+            foreach (Request r in vm.Requests)
+            {
+                if (r.Status.Equals("Closed"))
+                {
+                    if (r.FulfilledQuantity.Equals(r.RequestedQuantity))
+                    {
+                        r.Status = "Fulfilled";
+                    }
+                    else if (r.FulfilledQuantity > 0)
+                    {
+                        r.Status = "Partially Fulfilled";
+                    }
+                    else r.Status = "Rejected";
+                }
+            }
+
             return View(vm);
+        }
+
+        [Route("Requests/MyRequests/Delete/{RequestID:int}")]
+        public ActionResult DeleteMyRequest(int RequestID)
+        {
+            // Get the logged in Site ID from the session
+            int? SiteID = Session["SiteID"] as int?;
+
+            // if there is none, redirect to the login page
+            if (!SiteID.HasValue) return RedirectToAction("Login", "Account");
+
+            // get the specified request to see if it exists and this user is allowed to delete it
+            string sql = String.Format("SELECT r.Username, r.Status FROM request r " +
+                "WHERE r.RequestID = {0} ", RequestID.ToString());
+
+            var queryResult = SqlHelper.ExecuteSingleSelect(sql, 2);
+
+            if (queryResult == null)
+            {
+                throw new Exception("No Request found for Request ID " + RequestID.ToString());
+            }
+            else if (queryResult[0].ToString() != Session["Username"].ToString())
+            {
+                throw new Exception("Request ID " + RequestID.ToString() + " does not belong to your username");
+            }
+            else if (queryResult[1].ToString() != "Pending")
+            {
+                throw new Exception("Request ID " + RequestID.ToString() + " has already been closed and cannot be deleted.");
+            }
+
+            // they are, so now delete the request
+            string sql2 = String.Format("DELETE FROM request WHERE RequestID = {0} ;", RequestID.ToString());
+
+            SqlHelper.ExecuteNonQuery(sql2);
+
+            // send them back to index
+            return RedirectToAction("MyRequests");
         }
 
         [Route("Requests/Add/{ItemID:int}")]
@@ -162,14 +216,14 @@ namespace ASACS5.Controllers
 
             UpdateRequestViewModel vm = new UpdateRequestViewModel();
 
-            string sql = String.Format("SELECT s.SiteName, u.Username, i.ItemName, r.RequestedQuantity as 'RequestedQuantity', i.NumberOfUnits as 'QuantityAvailable', i.SiteID as 'OwnerSiteID' " +
+            string sql = String.Format("SELECT s.SiteName, u.Username, i.ItemName, r.RequestedQuantity as 'RequestedQuantity', i.NumberOfUnits as 'QuantityAvailable', i.SiteID as 'OwnerSiteID', i.ItemID " +
                 "FROM request r " +
                 "INNER JOIN item i on i.ItemId = r.ItemID " +
                 "INNER JOIN user u on r.Username = u.Username " +
                 "INNER JOIN site s on u.SiteID = s.SiteID " +
                 "WHERE r.RequestId = {0} AND r.Status='Pending' ;", RequestID.ToString());
 
-            object[] queryResponse = SqlHelper.ExecuteSingleSelect(sql, 6);
+            object[] queryResponse = SqlHelper.ExecuteSingleSelect(sql, 7);
 
             if (queryResponse != null)
             {
@@ -179,8 +233,14 @@ namespace ASACS5.Controllers
                 vm.QuantityRequested = int.Parse(queryResponse[3].ToString());
                 vm.QuantityAvailable = int.Parse(queryResponse[4].ToString());
                 vm.OwnerSiteID = int.Parse(queryResponse[5].ToString());
+                vm.ItemID = int.Parse(queryResponse[6].ToString());
             }
             else throw new Exception("No pending request found with RequestID = " + RequestID.ToString());
+
+            // setup the default Quantity to Fulfill
+            if (vm.QuantityRequested > vm.QuantityAvailable)
+                vm.QuantityToFulfill = vm.QuantityAvailable;
+            else vm.QuantityToFulfill = vm.QuantityRequested;
 
             if (vm.OwnerSiteID != SiteID.Value) throw new Exception("You cannot update a request that is not for an item in your Site.");
 
@@ -200,12 +260,21 @@ namespace ASACS5.Controllers
             {
                 string username = Session["Username"].ToString();
 
+                // Ideally the below  2 queries will be done in a transaction
+
+                // Update the request to Closed status with the Fulfilled Quantity
                 string sql = String.Format("UPDATE request SET FulfilledQuantity = {0}, Status='Closed' " +
                                            "WHERE RequestID = {1} ;", vm.QuantityToFulfill, RequestID);
 
                 SqlHelper.ExecuteNonQuery(sql);
 
-                vm.StatusMessage = "Succesfully fulfilled and closed!";
+                // Update the Item Inventory as appropriate
+                string sql2 = String.Format("UPDATE item SET NumberOfItems = (NumberOfItems - {0}) WHERE ItemID = {1} ;",
+                                        vm.QuantityToFulfill, vm.ItemID);
+
+                SqlHelper.ExecuteNonQuery(sql2);
+
+                vm.StatusMessage = "Succesfully completed!!";
                 vm.Success = true;
 
             }
