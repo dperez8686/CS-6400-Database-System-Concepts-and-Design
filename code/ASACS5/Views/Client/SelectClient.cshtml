@@ -75,9 +75,8 @@ else
         <table class="table">
             <thead>
                 <tr>
-                    <th>Log ID</th>
-                    <th>Client ID</th>
                     <th>Date/Time Stamp</th>
+                    <th>Service Name</th>
                     <th>Site Name</th>
                     <th>Description</th>
                 </tr>
@@ -87,9 +86,8 @@ else
                 @foreach (Log log in Model.Logs)
                 {
                     <tr>
-                        <td>@log.LogID</td>
-                        <td>@log.ClientID</td>
                         <td>@log.DateTimeStamp</td>
+                        <td>@log.ServiceName</td>
                         <td>@log.SiteName</td>
                         <td>@log.Description</td>
                     </tr>
@@ -99,6 +97,37 @@ else
         </table>
 
     }
+
+    <h3>Check-In</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                @if (Model.MaleBunks > 0) {
+                    <th>Male Bunk</th>
+                }
+                @if (Model.FemaleBunks > 0) {
+                    <th>Female Bunk</th>
+                }
+                @if (Model.MixedBunks > 0) {
+                    <th>Mixed Bunk</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                @if (Model.MaleBunks > 0) {
+                <td>@Html.RadioButtonFor(model => model.selectedBunk, "MaleBunksAvailable")</td>
+                }
+                @if (Model.FemaleBunks > 0) {
+                <td>@Html.RadioButtonFor(model => model.selectedBunk, "FemaleBunksAvailable")</td>
+                }
+                @if (Model.MixedBunks > 0) {
+                <td>@Html.RadioButtonFor(model => model.selectedBunk, "MIxedBunksAvailable")</td>
+                }
+            </tr>
+        </tbody>
+    </table>
+
 
     <div>
         <input type="submit" value="Save changes" class="btn btn-default" />
@@ -162,6 +191,8 @@ else
                 }
             }
         }
+
+        
     }
     <div>
         @Html.ActionLink("Back", "SearchClient", "Client")

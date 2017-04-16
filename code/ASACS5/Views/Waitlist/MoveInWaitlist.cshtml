@@ -1,0 +1,77 @@
+﻿@model ASACS5.Models.Site.MoveInWaitlistViewModel
+@using ASACS5.Models.Logs;
+@using ASACS5.Models.Waitlists;
+@{
+    ViewBag.Title = "Move In Waitlist";
+}
+
+
+    <h1>Update Waitlist</h1>
+    
+        <h1>Waitlist</h1>
+        @if (Model.WaitlistList != null)
+        {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Client ID</th>
+                    <th>Old Ranking</th>
+                    <th>New Ranking</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Waitlist wt in Model.WaitlistList)
+                {
+                    <tr>
+                        <td>@wt.ClientID</td>
+                        <td>@wt.oldRanking</td>
+                        <td>@wt.Ranking</td>
+                        <td>
+                            @if (@wt.Ranking > 1) {
+                            <a href="/Waitlist/MoveInWaitlist/@wt.ClientID/up"><span class="glyphicon glyphicon-arrow-up" title="MoveUp"></span></a>
+                            }
+                            @if (@wt.Ranking < Model.WaitlistList.Count())
+                            {
+                            <a href="/Waitlist/MoveInWaitlist/@wt.ClientID/down"><span class="glyphicon glyphicon-arrow-down" title="MoveDown"></span></a>
+                            }
+                        </td>
+                        
+                        
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+
+        
+
+    @*Hide for now*@
+    @*@if (false)
+    {
+    @using (Html.BeginForm("MoveInWaitlist", "Waitlist", FormMethod.Post, new { id = "frmMoveInWaitlist", @class = "form-horizontal" }))
+    {
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ClientID)
+    @Html.HiddenFor(model => model.SiteID)
+        for (int i = 0; i < Model.WaitlistList.Count(); i++)
+        {
+
+            @Html.HiddenFor(model => Model.WaitlistList[i].ClientID);
+            @Html.HiddenFor(model => Model.WaitlistList[i].oldRanking);
+            @Html.HiddenFor(model => Model.WaitlistList[i].Ranking);
+        }
+
+        <div>
+            <input type="submit" value="Save changes" class="btn btn-default" />
+            @if (!String.IsNullOrWhiteSpace(Model.StatusMessage))
+            {
+                <span class="text-success"><b> @Model.StatusMessage</b></span>
+            }
+        </div>
+    }*@
+    }
+    <div>
+        @Html.ActionLink("Back", "UpdateWaitlist", "Waitlist")
+    </div>
+
