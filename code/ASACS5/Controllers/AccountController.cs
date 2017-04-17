@@ -33,7 +33,7 @@ namespace ASACS5.Controllers
         {
             if (ModelState.IsValid)
             {
-                // set up the SQL to check username and password
+                // select users based on username and password
                 string sql = String.Format(
                     "SELECT u.FirstName, u.SiteID, s.SiteName " +
                     "FROM user u " +

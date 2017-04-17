@@ -32,7 +32,8 @@
                 <td class="hidden-xs">@request.RequestedQuantity.ToString()</td>
                 <td class="hidden-xs">@if(@request.Status  != "Pending") { @request.FulfilledQuantity.ToString() }</td>
                 <td class="status-col">@request.Status</td>
-                <td><a href="/Requests/MyRequests/Delete/@request.RequestID.ToString()"><span class="glyphicon glyphicon-trash" title="Delete"></span></a></td>
+                <td>@if (request.Status.Equals("Pending"))
+                { <a href="/Requests/MyRequests/Delete/@request.RequestID.ToString()"><span class="glyphicon glyphicon-trash" title="Delete"></span></a> }</td>
             </tr>
         }
     </tbody>

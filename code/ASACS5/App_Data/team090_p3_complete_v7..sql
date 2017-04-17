@@ -83,8 +83,7 @@ CREATE TABLE Request (
   RequestedQuantity int(16) unsigned NOT NULL DEFAULT '0',
   FulfilledQuantity int(16) unsigned NOT NULL DEFAULT '0',
   Status varchar(20) NOT NULL,
-  PRIMARY KEY (RequestID),
-  UNIQUE KEY (Username,ItemID)
+  PRIMARY KEY (RequestID)
 );
 
 CREATE TABLE Item (
@@ -339,11 +338,11 @@ VALUES (12, 'site3', 'shelter3','Visit');
 -- Food bank #1 : 10 Food Items: (storage_type= refrigerated, food_catogory=vegetables) (only insert leafy vegetables into this bank)
 INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID)
 VALUES ('Leafy vegetable #1', 14, '2017-08-01', 'Food', 'Vegetables', 'Refrigerated', 1),
-       ('Leafy vegetable #2', 2, '2017-08-01', 'Food', 'Vegetables', 'Refrigerated', 1),
+       ('Leafy vegetable #2', 20, '2017-08-01', 'Food', 'Vegetables', 'Refrigerated', 1),
        ('Leafy vegetable #3', 63, '2017-08-01', 'Food', 'Vegetables', 'Refrigerated', 1),
        ('Leafy vegetable #4', 205, '2017-08-01', 'Food', 'Vegetables', 'Refrigerated', 1),
        ('Leafy vegetable #5', 12, '2017-08-01', 'Food', 'Vegetables', 'Refrigerated', 1),
-       ('Leafy vegetable #6', 5, '2017-08-01', 'Food', 'Vegetables', 'Refrigerated', 1),
+       ('Leafy vegetable #6', 50, '2017-08-01', 'Food', 'Vegetables', 'Refrigerated', 1),
        ('Leafy vegetable #7', 60, '2017-08-01', 'Food', 'Vegetables', 'Refrigerated', 1),
        ('Leafy vegetable #8', 50, '2017-08-01', 'Food', 'Vegetables', 'Refrigerated', 1),
        ('Leafy vegetable #9', 200, '2017-08-01', 'Food', 'Vegetables', 'Refrigerated', 1),
@@ -365,11 +364,11 @@ VALUES ('Nut #1', 100, '2017-09-01', 'Food', 'Nuts/grains/beans', 'Dry Good', 1)
 -- Food bank #1 : 10 Food Items: (storage_type=drygoods, food_catogory=sauce/condiments)
 INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID)
 VALUES ('Sauce #1', 18, '2017-10-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 1),
-       ('Sauce #2', 5, '2017-10-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 1),
+       ('Sauce #2', 50, '2017-10-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 1),
        ('Sauce #3', 11, '2017-10-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 1),
        ('Sauce #4', 10, '2017-10-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 1),
-       ('Sauce #5', 2, '2017-10-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 1),
-       ('Sauce #6', 4, '2017-10-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 1),
+       ('Sauce #5', 20, '2017-10-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 1),
+       ('Sauce #6', 40, '2017-10-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 1),
        ('Sauce #7', 970, '2017-10-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 1),
        ('Sauce #8', 140, '2017-10-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 1),
        ('Sauce #9', 70, '2017-10-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 1),
@@ -379,14 +378,14 @@ VALUES ('Sauce #1', 18, '2017-10-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry 
 INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID)
 VALUES ('Soda #1', 5, '2017-11-01', 'Food', 'Juice/Drink', 'Refrigerated', 1),
        ('Soda #2', 58, '2017-11-01', 'Food', 'Juice/Drink', 'Refrigerated', 1),
-       ('Soda #3', 3, '2017-11-01', 'Food', 'Juice/Drink', 'Refrigerated', 1),
+       ('Soda #3', 30, '2017-11-01', 'Food', 'Juice/Drink', 'Refrigerated', 1),
        ('Soda #4', 6, '2017-11-01', 'Food', 'Juice/Drink', 'Refrigerated', 1),
        ('Soda #5', 50, '2017-11-01', 'Food', 'Juice/Drink', 'Refrigerated', 1),
        ('Soda #6', 5, '2017-11-01', 'Food', 'Juice/Drink', 'Refrigerated', 1),
        ('Soda #7', 88, '2017-11-01', 'Food', 'Juice/Drink', 'Refrigerated', 1),
        ('Soda #8', 94, '2017-11-01', 'Food', 'Juice/Drink', 'Refrigerated', 1),
        ('Soda #9', 54, '2017-11-01', 'Food', 'Juice/Drink', 'Refrigerated', 1),
-       ('Soda #10', 3, '2017-11-01', 'Food', 'Juice/Drink', 'Refrigerated', 1);
+       ('Soda #10', 30, '2017-11-01', 'Food', 'Juice/Drink', 'Refrigerated', 1);
       
 -- Food bank #1 : 10 Food Items: (storage_type=frozen, food_catogory=meat/seafood) (only insert red-meat only items in this bank)
 INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID)
@@ -394,11 +393,11 @@ VALUES ('Steak #1', 3, '2017-12-01', 'Food', 'Meat/seafood', 'Frozen', 1),
        ('Steak #2', 32, '2017-12-01', 'Food', 'Meat/seafood', 'Frozen', 1),
        ('Steak #3', 9, '2017-12-01', 'Food', 'Meat/seafood', 'Frozen', 1),
        ('Steak #4', 8, '2017-12-01', 'Food', 'Meat/seafood', 'Frozen', 1),
-       ('Steak #5', 1, '2017-12-01', 'Food', 'Meat/seafood', 'Frozen', 1),
+       ('Steak #5', 5, '2017-12-01', 'Food', 'Meat/seafood', 'Frozen', 1),
        ('Steak #6', 5, '2017-12-01', 'Food', 'Meat/seafood', 'Frozen', 1),
        ('Steak #7', 7, '2017-12-01', 'Food', 'Meat/seafood', 'Frozen', 1),
-       ('Steak #8', 2, '2017-12-01', 'Food', 'Meat/seafood', 'Frozen', 1),
-       ('Steak #9', 4, '2017-12-01', 'Food', 'Meat/seafood', 'Frozen', 1),
+       ('Steak #8', 8, '2017-12-01', 'Food', 'Meat/seafood', 'Frozen', 1),
+       ('Steak #9', 9, '2017-12-01', 'Food', 'Meat/seafood', 'Frozen', 1),
        ('Steak #10', 30, '2017-12-01', 'Food', 'Meat/seafood', 'Frozen', 1);
 
 -- Food bank #1 : 10 Food Items: (storage_type=refrigerated, food_catogory=dairy/eggs) (only insert cheese products in this bank)
@@ -407,12 +406,12 @@ VALUES ('Cheese #1', 29, '2018-01-01', 'Food', 'Dairy/eggs', 'Refrigerated', 1),
        ('Cheese #2', 10, '2018-01-01', 'Food', 'Dairy/eggs', 'Refrigerated', 1),
        ('Cheese #3', 3, '2018-01-01', 'Food', 'Dairy/eggs', 'Refrigerated', 1),
        ('Cheese #4', 120, '2018-01-01', 'Food', 'Dairy/eggs', 'Refrigerated', 1),
-       ('Cheese #5', 4, '2018-01-01', 'Food', 'Dairy/eggs', 'Refrigerated', 1),
+       ('Cheese #5', 41, '2018-01-01', 'Food', 'Dairy/eggs', 'Refrigerated', 1),
        ('Cheese #6', 257, '2018-01-01', 'Food', 'Dairy/eggs', 'Refrigerated', 1),
        ('Cheese #7', 37, '2018-01-01', 'Food', 'Dairy/eggs', 'Refrigerated', 1),
        ('Cheese #8', 20, '2018-01-01', 'Food', 'Dairy/eggs', 'Refrigerated', 1),
        ('Cheese #9', 340, '2018-01-01', 'Food', 'Dairy/eggs', 'Refrigerated', 1),
-       ('Cheese #10', 3, '2018-01-01', 'Food', 'Dairy/eggs', 'Refrigerated', 1);
+       ('Cheese #10', 30, '2018-01-01', 'Food', 'Dairy/eggs', 'Refrigerated', 1);
 
 -- Food bank #1 : 5 Supply Items: (type: personal hygiene) examples: toothbrush, toothpaste, shampoo, deodorant, soap/detergent, baby wipes, etc.
 INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID)
@@ -450,8 +449,8 @@ VALUES ('Grain #1', 32, '2018-03-01', 'Food', 'Nuts/grains/beans', 'Dry Good', 2
        ('Grain #3', 13, '2018-03-01', 'Food', 'Nuts/grains/beans', 'Dry Good', 2),
        ('Grain #4', 77, '2018-03-01', 'Food', 'Nuts/grains/beans', 'Dry Good', 2),
        ('Grain #5', 16, '2018-03-01', 'Food', 'Nuts/grains/beans', 'Dry Good', 2),
-       ('Grain #6', 4, '2018-03-01', 'Food', 'Nuts/grains/beans', 'Dry Good', 2),
-       ('Grain #7', 3, '2018-03-01', 'Food', 'Nuts/grains/beans', 'Dry Good', 2),
+       ('Grain #6', 5, '2018-03-01', 'Food', 'Nuts/grains/beans', 'Dry Good', 2),
+       ('Grain #7', 5, '2018-03-01', 'Food', 'Nuts/grains/beans', 'Dry Good', 2),
        ('Grain #8', 7, '2018-03-01', 'Food', 'Nuts/grains/beans', 'Dry Good', 2),
        ('Grain #9', 398, '2018-03-01', 'Food', 'Nuts/grains/beans', 'Dry Good', 2),
        ('Grain #10', 123, '2018-03-01', 'Food', 'Nuts/grains/beans', 'Dry Good', 2);
@@ -460,11 +459,11 @@ VALUES ('Grain #1', 32, '2018-03-01', 'Food', 'Nuts/grains/beans', 'Dry Good', 2
 INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID)
 VALUES ('Ketchup #1', 7, '2018-04-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 2),
        ('Ketchup #2', 8, '2018-04-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 2),
-       ('Ketchup #3', 4, '2018-04-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 2),
+       ('Ketchup #3', 8, '2018-04-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 2),
        ('Ketchup #4', 16, '2018-04-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 2),
        ('Ketchup #5', 92, '2018-04-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 2),
        ('Ketchup #6', 52, '2018-04-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 2),
-       ('Ketchup #7', 1, '2018-04-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 2),
+       ('Ketchup #7', 5, '2018-04-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 2),
        ('Ketchup #8', 82, '2018-04-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 2),
        ('Ketchup #9', 322, '2018-04-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 2),
        ('Ketchup #10', 32, '2018-04-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry Good', 2);
@@ -473,24 +472,24 @@ VALUES ('Ketchup #1', 7, '2018-04-01', 'Food', 'Sauce/Condiment/Seasoning', 'Dry
 INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID)
 VALUES ('Apple Juice', 30, '2018-05-01', 'Food', 'Juice/Drink', 'Refrigerated', 2),
        ('Orange Juice', 26, '2018-05-01', 'Food', 'Juice/Drink', 'Refrigerated', 2),
-       ('Grape Juice', 5, '2018-05-01', 'Food', 'Juice/Drink', 'Refrigerated', 2),
+       ('Grape Juice', 50, '2018-05-01', 'Food', 'Juice/Drink', 'Refrigerated', 2),
        ('Pineapple Juice', 200, '2018-05-01', 'Food', 'Juice/Drink', 'Refrigerated', 2),
-       ('Banana Juice', 8, '2018-05-01', 'Food', 'Juice/Drink', 'Refrigerated', 2),
-       ('Kiwi Juice', 6, '2018-05-01', 'Food', 'Juice/Drink', 'Refrigerated', 2),
-       ('Pear Juice', 4, '2018-05-01', 'Food', 'Juice/Drink', 'Refrigerated', 2),
+       ('Banana Juice', 80, '2018-05-01', 'Food', 'Juice/Drink', 'Refrigerated', 2),
+       ('Kiwi Juice', 60, '2018-05-01', 'Food', 'Juice/Drink', 'Refrigerated', 2),
+       ('Pear Juice', 40, '2018-05-01', 'Food', 'Juice/Drink', 'Refrigerated', 2),
        ('Tangarine Juice', 42, '2018-05-01', 'Food', 'Juice/Drink', 'Refrigerated', 2),
        ('Grapefruit Juice', 62, '2018-05-01', 'Food', 'Juice/Drink', 'Refrigerated', 2),
-       ('Watermellon Juice', 3, '2018-05-01', 'Food', 'Juice/Drink', 'Refrigerated', 2);
+       ('Watermellon Juice', 30, '2018-05-01', 'Food', 'Juice/Drink', 'Refrigerated', 2);
 
 -- Food bank #2 : 10 Food Items: (storage_type=frozen, food_catogory= meat/seafood) (only insert seafood only items in this bank)
 INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID)
 VALUES ('White Fish', 20, '2018-06-01', 'Food', 'Meat/seafood', 'Frozen', 2),
-       ('Red Fish', 9, '2018-06-01', 'Food', 'Meat/seafood', 'Frozen', 2),
+       ('Red Fish', 90, '2018-06-01', 'Food', 'Meat/seafood', 'Frozen', 2),
        ('Green Fish', 50, '2018-06-01', 'Food', 'Meat/seafood', 'Frozen', 2),
        ('Blue Fish', 32, '2018-06-01', 'Food', 'Meat/seafood', 'Frozen', 2),
        ('Orange Fish', 82, '2018-06-01', 'Food', 'Meat/seafood', 'Frozen', 2),
        ('Purple Fish', 7, '2018-06-01', 'Food', 'Meat/seafood', 'Frozen', 2),
-       ('Black Fish', 3, '2018-06-01', 'Food', 'Meat/seafood', 'Frozen', 2),
+       ('Black Fish', 30, '2018-06-01', 'Food', 'Meat/seafood', 'Frozen', 2),
        ('Brown Fish', 10, '2018-06-01', 'Food', 'Meat/seafood', 'Frozen', 2),
        ('Salmon', 36, '2018-06-01', 'Food', 'Meat/seafood', 'Frozen', 2),
        ('Crab Legs', 30, '2018-06-01', 'Food', 'Meat/seafood', 'Frozen', 2);
@@ -502,10 +501,10 @@ VALUES ('Eggs #1', 40, '2018-07-01', 'Food', 'Dairy/eggs', 'Refrigerated', 2),
        ('Eggs #3', 50, '2018-07-01', 'Food', 'Dairy/eggs', 'Refrigerated', 2),
        ('Eggs #4', 90, '2018-07-01', 'Food', 'Dairy/eggs', 'Refrigerated', 2),
        ('Eggs #5', 70, '2018-07-01', 'Food', 'Dairy/eggs', 'Refrigerated', 2),
-       ('Eggs #6', 4, '2018-07-01', 'Food', 'Dairy/eggs', 'Refrigerated', 2),
-       ('Eggs #7', 8, '2018-07-01', 'Food', 'Dairy/eggs', 'Refrigerated', 2),
-       ('Eggs #8', 4, '2018-07-01', 'Food', 'Dairy/eggs', 'Refrigerated', 2),
-       ('Eggs #9', 7, '2018-07-01', 'Food', 'Dairy/eggs', 'Refrigerated', 2),
+       ('Eggs #6', 40, '2018-07-01', 'Food', 'Dairy/eggs', 'Refrigerated', 2),
+       ('Eggs #7', 80, '2018-07-01', 'Food', 'Dairy/eggs', 'Refrigerated', 2),
+       ('Eggs #8', 40, '2018-07-01', 'Food', 'Dairy/eggs', 'Refrigerated', 2),
+       ('Eggs #9', 70, '2018-07-01', 'Food', 'Dairy/eggs', 'Refrigerated', 2),
        ('Eggs #10', 42, '2018-07-01', 'Food', 'Dairy/eggs', 'Refrigerated', 2);
 
 -- Food bank #2 : 5 Supply Items: (type: shelter) examples: tent, sleeping bags, blankets, winter jackets, rain coat, etc.
@@ -639,7 +638,219 @@ VALUES ('emp3', 131, 5, 0, 'Pending'),
        ('emp3', 136, 20, 0, 'Pending'),
        ('emp3', 137, 10, 0, 'Pending');
 
+-- 4 Closed Requests per Employee User
+INSERT INTO request (Username, ItemID, RequestedQuantity, FulfilledQuantity, Status)
+VALUES ('emp1', 2, 5, 0, 'Closed'),
+       ('emp1', 81, 57, 57, 'Closed'),
+	   ('emp1', 132, 1000, 500, 'Closed'),
+	   ('emp1', 140, 12, 12, 'Closed'),
+	   ('emp2', 152, 5, 5, 'Closed'),
+	   ('emp2', 142, 12, 0, 'Closed'),
+	   ('emp2', 16, 54, 54, 'Closed'),
+	   ('emp2', 22, 2, 2, 'Closed'),
+	   ('emp3', 108, 50, 00, 'Closed'),
+	   ('emp3', 117, 6, 0, 'Closed'),
+	   ('emp3', 33, 20, 15, 'Closed'),
+	   ('emp3', 44, 80, 80, 'Closed');
 
+-- Of 3 Volunteer Users above, each will have:
+-- Pending Requests for Volunteer Users
+-- **Same as Employee requests, just change 'emp#' to 'vol#'**
+-- 4 Closed Requests per Volunteer Users
 
+INSERT INTO request (Username, ItemID, RequestedQuantity, FulfilledQuantity, Status)
+VALUES ('vol1', 71, 1, 0, 'Pending'),
+       ('vol1', 74, 2, 0, 'Pending'),
+       ('vol1', 78, 1, 0, 'Pending'),
+       ('vol1', 84, 1 0, 'Pending'),
+       ('vol1', 87, 1, 0, 'Pending'),
+       ('vol1', 91, 1, 0, 'Pending'),
+       ('vol1', 106, 2, 0, 'Pending'),
+       ('vol1', 119, 1, 0, 'Pending'),
+       ('vol1', 126, 1, 0, 'Pending'),
+       ('vol1', 130, 1, 0, 'Pending');
 
+-- 'vol1' 4 request from non-associated bankID=3 to 'site1' (bankID=3 expired food items only)
+INSERT INTO request (Username, ItemID, RequestedQuantity, FulfilledQuantity, Status)
+VALUES ('vol1', 141, 3, 0, 'Pending'),
+       ('vol1', 144, 2, 0, 'Pending'),
+       ('vol1', 147, 1, 0, 'Pending'),
+       ('vol1', 148, 2, 0, 'Pending');
+       
+-- 'vol2' (bankID=2) 10 requests from non-associated bankID=1 to 'site2' (bankID=1 specific food items only)
+INSERT INTO request (Username, ItemID, RequestedQuantity, FulfilledQuantity, Status)
+VALUES ('vol2', 1, 2, 0, 'Pending'),
+       ('vol2', 10, 2, 0, 'Pending'),
+       ('vol2', 12, 1, 0, 'Pending'),
+       ('vol2', 19, 3, 0, 'Pending'),
+       ('vol2', 21, 4, 0, 'Pending'),
+       ('vol2', 24, 2, 0, 'Pending'),
+       ('vol2', 31, 5, 0, 'Pending'),
+       ('vol2', 32, 8, 0, 'Pending'),
+       ('vol2', 51, 5, 0, 'Pending'),
+       ('vol2', 52, 4, 0, 'Pending');
+        
+-- 'vol2' 4 request from non-associated bankID=3 to 'site2' (bankID=3 expired food items only)
+INSERT INTO request (Username, ItemID, RequestedQuantity, FulfilledQuantity, Status)
+VALUES ('vol2', 143, 5, 0, 'Pending'),
+       ('vol2', 144, 4, 0, 'Pending'),
+       ('vol2', 145, 4, 0, 'Pending'),
+       ('vol2', 150, 4, 0, 'Pending');
 
+-- 'vol2' 7 requests from non-associated bankID=1 to 'site2' (bankID=1 supply items only)
+INSERT INTO request (Username, ItemID, RequestedQuantity, FulfilledQuantity, Status)
+VALUES ('vol2', 61, 5, 0, 'Pending'),
+       ('vol2', 62, 6, 0, 'Pending'),
+	   ('vol2', 63, 6, 0, 'Pending'),
+       ('vol2', 64, 4, 0, 'Pending'),
+       ('vol2', 69, 1, 0, 'Pending'),
+       ('vol2', 70, 2, 0, 'Pending'),
+       ('vol2', 68, 1, 0, 'Pending');
+  
+-- 'vol3' (bankID=3) 10 requests from non-associated bankID=1 to 'site3' (bankID=1 specific food items only)
+INSERT INTO request (Username, ItemID, RequestedQuantity, FulfilledQuantity, Status)
+VALUES ('vol3', 5, 6, 0, 'Pending'),
+       ('vol3', 6, 5, 0, 'Pending'),
+	   ('vol3', 7, 5, 0, 'Pending'),
+       ('vol3', 24, 5, 0, 'Pending'),
+       ('vol3', 25, 1, 0, 'Pending'),
+       ('vol3', 31, 1, 0, 'Pending'),
+       ('vol3', 32, 2, 0, 'Pending'),
+       ('vol3', 33, 3, 0, 'Pending'),
+       ('vol3', 41, 3, 0, 'Pending'),
+       ('vol3', 42, 6, 0, 'Pending');
+
+-- 'vol3' 10 requests from non-associated bankID=2 to 'site3' (bankID=2 specific food items only)
+INSERT INTO request (Username, ItemID, RequestedQuantity, FulfilledQuantity, Status)
+VALUES ('vol3', 78, 5, 0, 'Pending'),
+       ('vol3', 79, 4, 0, 'Pending'),
+       ('vol3', 80, 5, 0, 'Pending'),
+       ('vol3', 89, 8, 0, 'Pending'),
+       ('vol3', 90, 5, 0, 'Pending'),
+       ('vol3', 95, 4, 0, 'Pending'),
+       ('vol3', 96, 5, 0, 'Pending'),
+       ('vol3', 104, 2, 0, 'Pending'),
+       ('vol3', 105, 1, 0, 'Pending'),
+       ('vol3', 112, 2, 0, 'Pending');
+
+-- 'vol3' 7 requests from non-associated bankID=1 (bankID=1 specific supply items only) to 'site3'
+INSERT INTO request (Username, ItemID, RequestedQuantity, FulfilledQuantity, Status)
+VALUES ('vol3', 67, 4, 0, 'Pending'),
+       ('vol3', 68, 2, 0, 'Pending'),
+       ('vol3', 69, 5, 0, 'Pending'),
+       ('vol3', 70, 4, 0, 'Pending'),
+       ('vol3', 66, 3, 0, 'Pending'),
+       ('vol3', 65, 2, 0, 'Pending'),
+       ('vol3', 64, 2, 0, 'Pending');
+
+-- 'vol3' 7 requests from non-associated bankID=2 (bankID=2 specific supply items only) to 'site3'
+INSERT INTO request (Username, ItemID, RequestedQuantity, FulfilledQuantity, Status)
+VALUES ('vol3', 131, 5, 0, 'Pending'),
+       ('vol3', 132, 5, 0, 'Pending'),
+       ('vol3', 133, 5, 0, 'Pending'),
+       ('vol3', 134, 5, 0, 'Pending'),
+       ('vol3', 135, 5, 0, 'Pending'),
+       ('vol3', 136, 5, 0, 'Pending'),
+       ('vol3', 137, 5, 0, 'Pending');
+
+-- 4 Closed Requests per volloyee User
+INSERT INTO request (Username, ItemID, RequestedQuantity, FulfilledQuantity, Status)
+VALUES ('vol1', 2, 5, 0, 'Closed'),
+       ('vol1', 81, 5, 5, 'Closed'),
+	   ('vol1', 132, 1000, 500, 'Closed'),
+	   ('vol1', 140, 12, 12, 'Closed'),
+	   ('vol2', 152, 5, 5, 'Closed'),
+	   ('vol2', 142, 12, 0, 'Closed'),
+	   ('vol2', 16, 54, 54, 'Closed'),
+	   ('vol2', 22, 2, 2, 'Closed'),
+	   ('vol3', 108, 50, 00, 'Closed'),
+	   ('vol3', 117, 6, 0, 'Closed'),
+	   ('vol3', 33, 20, 15, 'Closed'),
+	   ('vol3', 44, 80, 80, 'Closed');
+
+INSERT INTO clientlogentry (ClientID, Description)
+VALUES (8, 'Profile Created');
+
+INSERT INTO clientlogentry (ClientID, Description)
+VALUES (9, 'Profile Created');
+
+INSERT INTO clientlogentry (ClientID, Description)
+VALUES (10, 'Profile Created');
+
+INSERT INTO clientlogentry (ClientID, Description)
+VALUES (11, 'Profile Created');
+
+INSERT INTO clientlogentry (ClientID, Description)
+VALUES (12, 'Profile Created');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (1, 'site1', 'pantry1','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (2, 'site1', 'pantry1','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (3, 'site1', 'pantry1','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (4, 'site1', 'pantry1','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (1, 'site3', 'pantry3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (2, 'site3', 'pantry3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (3, 'site3', 'pantry3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (4, 'site3', 'pantry3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (5, 'site2', 'soup2','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (6, 'site2', 'soup2','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (7, 'site2', 'soup2','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (8, 'site2', 'soup2','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (5, 'site3', 'soup3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (6, 'site3', 'soup3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (7, 'site3', 'soup3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (8, 'site3', 'soup3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (9, 'site2', 'shelter2','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (10, 'site2', 'shelter2','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (11, 'site2', 'shelter2','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (12, 'site2', 'shelter2','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (9, 'site3', 'shelter3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (10, 'site3', 'shelter3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (11, 'site3', 'shelter3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (12, 'site3', 'shelter3','Visit');

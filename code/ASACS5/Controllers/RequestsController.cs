@@ -39,6 +39,7 @@ namespace ASACS5.Controllers
                 SortByOrder = GetSortByOrderOptions().First().Value
             };
 
+            // get the pending requests and all related data needed for this view
             string sql = String.Format("SELECT r.RequestID, i.ItemName, i.Category1, i.Category2, i.StorageType, r.RequestedQuantity, r.Status, r.FulfilledQuantity, i.ItemID " +
                 "FROM request r " + 
                 "INNER JOIN item i on i.ItemID = r.ItemID " +
@@ -65,6 +66,7 @@ namespace ASACS5.Controllers
             vm.SortByChoiceOptions = GetSortByChoiceOptions();
             vm.SortByOrderOptions = GetSortByOrderOptions();
 
+            // get requests
             string sql = String.Format("SELECT r.RequestID, i.ItemName, i.Category1, i.Category2, i.StorageType, r.RequestedQuantity, r.Status, r.FulfilledQuantity, i.ItemID " +
                 "FROM request r " +
                 "INNER JOIN item i on i.ItemID = r.ItemID " +
@@ -89,6 +91,7 @@ namespace ASACS5.Controllers
                 SiteID = SiteID.Value
             };
 
+            // get all requests for the current user
             string sql = String.Format("SELECT r.RequestID, i.ItemName, i.Category1, i.Category2, i.StorageType, r.RequestedQuantity, r.Status, r.FulfilledQuantity, i.ItemID " +
                 "FROM request r " +
                 "INNER JOIN item i on i.ItemID = r.ItemID " +
@@ -193,6 +196,7 @@ namespace ASACS5.Controllers
             {
                 string username = Session["Username"].ToString();
 
+                // add a new request
                 string sql = String.Format("INSERT INTO request (Username, ItemID, RequestedQuantity, Status) " +
                                            "VALUES ('{0}', {1}, {2}, 'Pending') ;", username, vm.ItemID, vm.NumberOfUnits);
 
@@ -216,6 +220,7 @@ namespace ASACS5.Controllers
 
             UpdateRequestViewModel vm = new UpdateRequestViewModel();
 
+            // get the info on pending request; find out if it can be updated
             string sql = String.Format("SELECT s.SiteName, u.Username, i.ItemName, r.RequestedQuantity as 'RequestedQuantity', i.NumberOfUnits as 'QuantityAvailable', i.SiteID as 'OwnerSiteID', i.ItemID " +
                 "FROM request r " +
                 "INNER JOIN item i on i.ItemId = r.ItemID " +

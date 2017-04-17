@@ -28,7 +28,7 @@ namespace ASACS5.Controllers
             // find out if the current Site has a Food Bank or not
             vm.HasFoodBank = Int32.Parse(SqlHelper.ExecuteScalar("SELECT COUNT(*) FROM foodbank WHERE SiteID = " + SiteID.Value).ToString()) > 0;
 
-            // set up the SQL to get all Items
+            // Get all Items with no filters
             string sql = String.Format("SELECT ItemID, ItemName, NumberOfUnits, ExpirationDate, StorageType, SiteID, Category1, Category2 FROM item");
 
             // Initialize the view model Items list
@@ -158,6 +158,7 @@ namespace ASACS5.Controllers
 
             if (ModelState.IsValid)
             {
+                // insert a new Item
                 string sql = String.Format(
                         "INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID) " +
                         "VALUES ('{0}', {1}, '{2}', '{3}', '{4}', '{5}', {6}); ",
