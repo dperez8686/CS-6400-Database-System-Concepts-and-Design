@@ -25,16 +25,16 @@ namespace ASACS5.Controllers
             // Set up the view model and run SQL to populate the properties
             SiteIndexViewModel vm = new SiteIndexViewModel { SiteID = SiteID.Value };
             object queryResult = null;
-
+            // Determine if site has foodbank
             queryResult = SqlHelper.ExecuteScalar(String.Format("SELECT COUNT(SiteID) FROM foodbank WHERE SiteID = {0}", SiteID.Value));
             if (queryResult != null && int.Parse(queryResult.ToString()) > 0) vm.HasFoodBank = true;
-
+            // Determine if site has foodpantry
             queryResult = SqlHelper.ExecuteScalar(String.Format("SELECT COUNT(SiteID) FROM foodpantry WHERE SiteID = {0}", SiteID.Value));
             if (queryResult != null && int.Parse(queryResult.ToString()) > 0) vm.HasFoodPantry = true;
-
+            // Determine if site has shelter
             queryResult = SqlHelper.ExecuteScalar(String.Format("SELECT COUNT(SiteID) FROM shelter WHERE SiteID = {0}", SiteID.Value));
             if (queryResult != null && int.Parse(queryResult.ToString()) > 0) vm.HasShelter = true;
-
+            // Determine if site has soupkitchen
             queryResult = SqlHelper.ExecuteScalar(String.Format("SELECT COUNT(SiteID) FROM soupkitchen WHERE SiteID = {0}", SiteID.Value));
             if (queryResult != null && int.Parse(queryResult.ToString()) > 0) vm.HasSoupKitchen = true;
 
@@ -67,6 +67,7 @@ namespace ASACS5.Controllers
             // insert a new Food Bank based on the logged in users Site ID
             int? SiteID = Session["SiteID"] as int?;
 
+            // Insert into foodbank table the user's Site ID
             string sql = String.Format(
                 "INSERT INTO foodbank (SiteID) VALUES ({0}); ",  SiteID.Value.ToString());
 
@@ -89,7 +90,7 @@ namespace ASACS5.Controllers
             // set up the response object
             SoupKitchenViewModel vm = new SoupKitchenViewModel();
 
-            // set up the sql query
+            // Find soup kitchen for given Site ID
             string sql = String.Format(
                 "SELECT TotalSeatsAvailable, RemainingSeatsAvailable, HoursOfOperation, ConditionsForUse, Description " +
                 "FROM soupkitchen WHERE SiteID = {0}; ", SiteID.Value.ToString());
@@ -128,7 +129,7 @@ namespace ASACS5.Controllers
                 {
                     // we didn't find an existing soup kitchen. so insert a new one based on the logged in users Site ID
                     int? SiteID = Session["SiteID"] as int?;
-
+                    // Add soup kitchen for the user's site
                     string sql = String.Format(
                         "INSERT INTO soupkitchen (SiteID, TotalSeatsAvailable, RemainingSeatsAvailable, HoursOfOperation, ConditionsForUse, Description) " +
                         "VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}'); ",
@@ -173,7 +174,7 @@ namespace ASACS5.Controllers
 			// set up the response object
 			FoodPantryViewModel vm = new FoodPantryViewModel();
 
-			// set up the sql query
+			// Find food pantry for user's site
 			string sql = String.Format(
                 "SELECT HoursOfOperation, ConditionsForUse, Description " +
 				"FROM foodpantry WHERE SiteID = {0}; ", SiteID.Value.ToString());
@@ -211,7 +212,7 @@ namespace ASACS5.Controllers
 				{
 					// we didn't find an existing soup kitchen. so insert a new one based on the logged in users Site ID
 					int? SiteID = Session["SiteID"] as int?;
-
+                    // Insrt food pantry for user's site
 					string sql = String.Format(
                         "INSERT INTO foodpantry (SiteID, HoursOfOperation, ConditionsForUse, Description) " +
 						"VALUES ({0}, '{1}', '{2}', '{3}'); ",
@@ -258,7 +259,7 @@ namespace ASACS5.Controllers
             // set up the response object
             ShelterViewModel vm = new ShelterViewModel();
 
-            // set up the sql query
+            // find shelter's for user's site
             string sql = String.Format(
                 "SELECT MaleBunksAvailable, FemaleBunksAvailable, MixedBunksAvailable, RoomsAvailable, HoursOfOperation, ConditionsForUse, Description " +
                 "FROM shelter WHERE SiteID = {0}; ", SiteID.Value.ToString());
@@ -299,7 +300,7 @@ namespace ASACS5.Controllers
                 {
                     // we didn't find an existing soup kitchen. so insert a new one based on the logged in users Site ID
                     int? SiteID = Session["SiteID"] as int?;
-
+                    //insert shelter for site
                     string sql = String.Format(
                         "INSERT INTO shelter (SiteID, MaleBunksAvailable, FemaleBunksAvailable, MixedBunksAvailable, RoomsAvailable, HoursOfOperation, ConditionsForUse, Description) " +
                         "VALUES ({0}, {1}, {2}, {3}, {4}, '{5}', '{6}', '{7}'); ",
@@ -350,7 +351,7 @@ namespace ASACS5.Controllers
 
             // now find out if this siteID has a service of the specified type
             string sql = null;
-
+            // determine if service is found at site
             switch (serviceType.ToLower())
             {
                 case "foodbank":
