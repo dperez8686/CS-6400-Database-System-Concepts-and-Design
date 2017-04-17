@@ -150,7 +150,7 @@ ALTER TABLE `Request`
     
 ALTER TABLE `WaitList`
   ADD CONSTRAINT waitlist_ibfk_1 FOREIGN KEY (ClientID) REFERENCES `Client` (ClientID) ON DELETE CASCADE,
-  ADD CONSTRAINT waitlist_ibfk_2 FOREIGN KEY (SiteID) REFERENCES `Site` (SiteID);
+  ADD CONSTRAINT waitlist_ibfk_2 FOREIGN KEY (SiteID) REFERENCES `Shelter` (SiteID) ON DELETE CASCADE;
   
 ALTER TABLE `ClientLogEntry`
   ADD CONSTRAINT clientlogentry_ibfk_1 FOREIGN KEY (ClientID) REFERENCES `Client` (ClientID) ON DELETE CASCADE;
@@ -170,6 +170,42 @@ VALUES ('emp1', 'gatech123', 'Site1', 'A', 'Employee1', 'emp1@site1.com', 1),
        ('emp3', 'gatech123', 'Site3', 'A', 'Employee3', 'emp3@site1.com', 3),
        ('vol3', 'gatech123', 'Site3', 'A', 'Volunteer3', 'vol3@site1.com', 3);
 
+INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
+VALUES ('client1', 'Joe', 'A', 'Client1','5555555555');
+
+INSERT INTO client (DescriptiveID, FirstName, MiddleName,LastName, PhoneNumber)
+VALUES ('client2', 'Jane', 'B','Client2','1234567890');
+
+INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
+VALUES ('client3', 'Joe', 'C', 'Client3','2345678901');
+
+INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
+VALUES ('client4', 'Jane', 'D', 'Client4','3456789012');
+
+INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
+VALUES ('client5', 'Joe','E', 'Client5','4567890123');
+
+INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
+VALUES ('client6', 'Jane', 'F', 'Client6','5678901234');
+
+INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
+VALUES ('client7', 'Joe', 'G', 'Client7','67890123456');
+
+INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
+VALUES ('client8', 'Jane', 'H','Client8','6789012345');
+
+INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
+VALUES ('client9', 'Joe', 'I', 'Client9','0000000000');
+
+INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
+VALUES ('client10', 'Jane', 'J', 'Client10', '3456789012');
+
+INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
+VALUES ('client11', 'Joe', 'K', 'Client11', '3456789012');
+
+INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
+VALUES ('client12', 'Jane', 'L', 'Client12', '3456789012');
+
 INSERT INTO foodpantry (SiteID, HoursOfOperation, ConditionsForUse, Description)
 VALUES (1, 'Monday-Friday 9am-5pm', 'No jerks allowed', 'pantry1'),
        (3, 'Monday-Friday 10am-6pm', 'No jerks allowed', 'pantry3');
@@ -179,12 +215,126 @@ VALUES (2, 30, 25, 'Wednesday to Sunday 7AM to Noon', 'Shirt and shoes required'
        (3, 60, 12, 'Tuesday to Sunday 8AM to Noon', 'Shirt and shoes required', 'soup3');
 
 INSERT INTO shelter (SiteID, MaleBunksAvailable, FemaleBunksAvailable, MixedBunksAvailable, RoomsAvailable, HoursOfOperation, ConditionsForUse, Description)
-VALUES (2, 10, 12, 6, 4, '24hours 7days', 'All are welcome', 'shelter2'),
-       (3, 20, 22, 16, 14, '24hours 7days', 'All are welcome', 'shelter3');
+VALUES (2, 4, 4, 4, 0, '24hours 7days', 'All are welcome', 'shelter2'),
+       (3, 4, 4, 4, 4, '24hours 7days', 'All are welcome', 'shelter3');
 
 INSERT INTO foodbank (SiteID) VALUES (1);
 INSERT INTO foodbank (SiteID) VALUES (2);
 INSERT INTO foodbank (SiteID) VALUES (3);
+
+INSERT INTO waitlist (ClientID, SiteID, Ranking)
+VALUES (9, 3, 1),
+       (10, 3, 2),
+       (11, 3, 3),
+       (12, 3, 4);
+
+       INSERT INTO clientlogentry (ClientID, Description)
+VALUES (1, 'Profile Created');
+
+INSERT INTO clientlogentry (ClientID, Description)
+VALUES (2, 'Profile Created');
+
+INSERT INTO clientlogentry (ClientID, Description)
+VALUES (3, 'Profile Created');
+
+INSERT INTO clientlogentry (ClientID, Description)
+VALUES (4, 'Profile Created');
+
+INSERT INTO clientlogentry (ClientID, Description)
+VALUES (5, 'Profile Created');
+
+INSERT INTO clientlogentry (ClientID, Description)
+VALUES (6, 'Profile Created');
+
+INSERT INTO clientlogentry (ClientID, Description)
+VALUES (7, 'Profile Created');
+
+INSERT INTO clientlogentry (ClientID, Description)
+VALUES (8, 'Profile Created');
+
+INSERT INTO clientlogentry (ClientID, Description)
+VALUES (9, 'Profile Created');
+
+INSERT INTO clientlogentry (ClientID, Description)
+VALUES (10, 'Profile Created');
+
+INSERT INTO clientlogentry (ClientID, Description)
+VALUES (11, 'Profile Created');
+
+INSERT INTO clientlogentry (ClientID, Description)
+VALUES (12, 'Profile Created');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (1, 'site1', 'pantry1','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (2, 'site1', 'pantry1','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (3, 'site1', 'pantry1','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (4, 'site1', 'pantry1','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (1, 'site3', 'pantry3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (2, 'site3', 'pantry3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (3, 'site3', 'pantry3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (4, 'site3', 'pantry3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (5, 'site2', 'soup2','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (6, 'site2', 'soup2','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (7, 'site2', 'soup2','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (8, 'site2', 'soup2','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (5, 'site3', 'soup3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (6, 'site3', 'soup3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (7, 'site3', 'soup3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (8, 'site3', 'soup3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (9, 'site2', 'shelter2','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (10, 'site2', 'shelter2','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (11, 'site2', 'shelter2','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (12, 'site2', 'shelter2','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (9, 'site3', 'shelter3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (10, 'site3', 'shelter3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (11, 'site3', 'shelter3','Visit');
+
+INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
+VALUES (12, 'site3', 'shelter3','Visit');
 
 -- Food bank #1 : 10 Food Items: (storage_type= refrigerated, food_catogory=vegetables) (only insert leafy vegetables into this bank)
 INSERT INTO item (ItemName, NumberOfUnits, ExpirationDate, Category1, Category2, StorageType, SiteID)
@@ -489,147 +639,7 @@ VALUES ('emp3', 131, 5, 0, 'Pending'),
        ('emp3', 136, 20, 0, 'Pending'),
        ('emp3', 137, 10, 0, 'Pending');
 
-INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
-VALUES ('client1', 'Joe', 'A', 'Client1','5555555555');
 
-INSERT INTO client (DescriptiveID, FirstName, MiddleName,LastName, PhoneNumber)
-VALUES ('client2', 'Jane', 'B','Client2','1234567890');
 
-INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
-VALUES ('client3', 'Joe', 'C', 'Client3','2345678901');
 
-INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
-VALUES ('client4', 'Jane', 'D', 'Client4','3456789012');
-
-INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
-VALUES ('client5', 'Joe','E', 'Client5','4567890123');
-
-INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
-VALUES ('client6', 'Jane', 'F', 'Client6','5678901234');
-
-INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
-VALUES ('client7', 'Joe', 'G', 'Client7','67890123456');
-
-INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
-VALUES ('client8', 'Jane', 'H','Client8','6789012345');
-
-INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
-VALUES ('client9', 'Joe', 'I', 'Client9','0000000000');
-
-INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
-VALUES ('client10', 'Jane', 'J', 'Client10', '3456789012');
-
-INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
-VALUES ('client11', 'Joe', 'K', 'Client11', '3456789012');
-
-INSERT INTO client (DescriptiveID, FirstName, MiddleName, LastName, PhoneNumber)
-VALUES ('client12', 'Jane', 'L', 'Client12', '3456789012');
-
-INSERT INTO clientlogentry (ClientID, Description)
-VALUES (1, 'Profile Created');
-
-INSERT INTO clientlogentry (ClientID, Description)
-VALUES (2, 'Profile Created');
-
-INSERT INTO clientlogentry (ClientID, Description)
-VALUES (3, 'Profile Created');
-
-INSERT INTO clientlogentry (ClientID, Description)
-VALUES (4, 'Profile Created');
-
-INSERT INTO clientlogentry (ClientID, Description)
-VALUES (5, 'Profile Created');
-
-INSERT INTO clientlogentry (ClientID, Description)
-VALUES (6, 'Profile Created');
-
-INSERT INTO clientlogentry (ClientID, Description)
-VALUES (7, 'Profile Created');
-
-INSERT INTO clientlogentry (ClientID, Description)
-VALUES (8, 'Profile Created');
-
-INSERT INTO clientlogentry (ClientID, Description)
-VALUES (9, 'Profile Created');
-
-INSERT INTO clientlogentry (ClientID, Description)
-VALUES (10, 'Profile Created');
-
-INSERT INTO clientlogentry (ClientID, Description)
-VALUES (11, 'Profile Created');
-
-INSERT INTO clientlogentry (ClientID, Description)
-VALUES (12, 'Profile Created');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (1, 'site1', 'pantry1','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (2, 'site1', 'pantry1','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (3, 'site1', 'pantry1','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (4, 'site1', 'pantry1','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (1, 'site3', 'pantry3','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (2, 'site3', 'pantry3','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (3, 'site3', 'pantry3','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (4, 'site3', 'pantry3','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (5, 'site2', 'soup2','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (6, 'site2', 'soup2','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (7, 'site2', 'soup2','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (8, 'site2', 'soup2','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (5, 'site3', 'soup3','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (6, 'site3', 'soup3','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (7, 'site3', 'soup3','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (8, 'site3', 'soup3','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (9, 'site2', 'shelter2','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (10, 'site2', 'shelter2','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (11, 'site2', 'shelter2','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (12, 'site2', 'shelter2','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (9, 'site3', 'shelter3','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (10, 'site3', 'shelter3','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (11, 'site3', 'shelter3','Visit');
-
-INSERT INTO clientlogentry (ClientID, SiteName, ServiceName, Description)
-VALUES (12, 'site3', 'shelter3','Visit');
 
