@@ -15,8 +15,7 @@
             <thead>
                 <tr>
                     <th>Client ID</th>
-                    <th>Old Ranking</th>
-                    <th>New Ranking</th>
+                    <th>Ranking</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -25,9 +24,9 @@
                 {
                     <tr>
                         <td>@wt.ClientID</td>
-                        <td>@wt.oldRanking</td>
                         <td>@wt.Ranking</td>
                         <td>
+                            <a href="/Waitlist/DeleteClient/@wt.ClientID"><span class="glyphicon glyphicon-minus" title="Delete"></span></a>
                             @if (@wt.Ranking > 1) {
                             <a href="/Waitlist/MoveInWaitlist/@wt.ClientID/up"><span class="glyphicon glyphicon-arrow-up" title="MoveUp"></span></a>
                             }

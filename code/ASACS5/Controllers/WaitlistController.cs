@@ -150,7 +150,7 @@ namespace ASACS5.Controllers
                 SqlHelper.ExecuteNonQuery(sql);
                 count += 1;
             }
-            List<Waitlist> SortedList = current_Waitlist.OrderBy(o => o.oldRanking).ToList();
+            List<Waitlist> SortedList = current_Waitlist.OrderBy(o => o.Ranking).ToList();
             vm.WaitlistList = SortedList;
 
 
