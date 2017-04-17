@@ -1,0 +1,78 @@
+﻿@using ASACS5.Models.Reports
+
+@model ASACS5.Models.Reports.RoomsBunksAvailabilityViewModel
+@{
+	ViewBag.Title ="Rooms Bunks Availability Report";
+}
+
+<h1>Rooms Bunks Availability Web Report </h1>
+
+<table class="table">
+	<thead>
+	<tr>
+		<th>
+			Site ID
+		</th>
+		<th>
+			Site Name
+		</th>
+		<th>
+			Location
+		</th>
+
+		<th>
+			Primary Contact Number
+		</th>
+
+		<th>
+			Male Bunks Available
+		</th>
+
+		<th>
+			Female Bunks Available
+		</th>
+
+		<th>
+			Mixed Bunks Available
+		</th>
+
+		<th>
+			Rooms Available
+		</th>
+
+		<th>
+			Hours of Operation
+		</th>
+
+        <th>
+            Conditions for Use
+        </th>
+	</tr>
+		</thead>
+	<tbody>
+        @foreach(RoomsReportRow row in Model.reportRows)
+        { 
+		    <tr>
+			    <td>@row.SiteID</td>
+			    <td>@row.SiteName</td>
+			    <td>@row.City, @row.State</td>
+			    <td>@row.PrimaryContactNumber</td>
+			    <td>@row.MaleBunksAvailable</td>
+			    <td>@row.FemaleBunksAvailable</td>
+			    <td>@row.MixedBunksAvailable</td>
+			    <td>@row.RoomsAvailable</td>
+			    <td>@row.HoursOfOperation</td>
+                <td>@row.ConditionsForUse</td>
+		    </tr>
+        }
+	</tbody>
+</table>
+
+@if (Model.reportRows.Count == 0)
+{
+    <h4>Sorry, all shelters are currently at maximum capacity. :(</h4>
+}
+
+<div>
+	@Html.ActionLink("Back", "Index", "Reports")
+</div>

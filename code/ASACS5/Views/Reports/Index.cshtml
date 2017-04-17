@@ -1,0 +1,14 @@
+﻿@using ASACS5.Models.Reports
+
+@{
+	ViewBag.Title = "Web Reports";
+}
+
+<h1>Web Reports</h1>
+
+<p><a href="/Reports/MealsRemaining">Meals Remaining Web Report</a></p>
+<p><a href="/Reports/RoomsBunksAvailability">Rooms / Bunks Availability Web Report</a></p>
+
+<div>
+	@Html.ActionLink("Back", "Index", "Home")
+</div>

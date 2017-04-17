@@ -1,0 +1,27 @@
+﻿@using ASACS5.Models.Reports
+@using ASACS5.Models.Items
+
+@model ASACS5.Models.Reports.MealsRemainingViewModel
+
+@{
+	ViewBag.Title = "Meals Remaining Report";
+}
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Category of Food Most Needed for Donations</th>
+			<th>Maximum Meals Available</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>@Model.CategoryOfFood</td>
+			<td>@Model.MaxMealsAvaible.ToString()</td>	
+		</tr>
+	</tbody>
+</table>
+
+<div>
+	@Html.ActionLink("Back", "Index", "Reports")
+</div>

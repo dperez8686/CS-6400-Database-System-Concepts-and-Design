@@ -120,6 +120,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\RequestsController.cs" />
     <Compile Include="Controllers\ItemsController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
@@ -138,6 +139,8 @@
     <Compile Include="Models\Home\SiteIndexViewModel.cs" />
     <Compile Include="Models\Items\AddUpdateItemViewModel.cs" />
     <Compile Include="Models\Items\ItemsIndexViewModel.cs" />
+    <Compile Include="Models\Reports\RoomsBunksAvailabilityViewModel.cs" />
+    <Compile Include="Models\Reports\MealsRemainingViewModel.cs" />
     <Compile Include="Models\Requests\MyRequestsViewModel.cs" />
     <Compile Include="Models\Requests\UpdateRequestViewModel.cs" />
     <Compile Include="Models\Requests\RequestsIndexViewModel.cs" />
@@ -191,6 +194,9 @@
     <Content Include="Views\Waitlist\DeleteFromWaitlist.cshtml" />
     <Content Include="Views\Waitlist\MoveInWaitlist.cshtml" />
     <Content Include="Views\Site\FoodBank.cshtml" />
+    <Content Include="Views\Reports\Index.cshtml" />
+    <Content Include="Views\Reports\MealsRemaining.cshtml" />
+    <Content Include="Views\Reports\RoomsBunksAvailability.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
