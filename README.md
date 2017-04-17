@@ -1,7 +1,6 @@
 # 6400Spring17Team090
-OMS CS 6400 repo.
+### OMS CS 6400 repo: Team 70
 
-# Team 70
 Team members: Jeff Ross, Vidya KV, Danny Perez
 
 This project is implemented in ASP.NET MVC5 (C#, HTML5, JavaScript, JQuery, CSS) and MySql on Windows.
