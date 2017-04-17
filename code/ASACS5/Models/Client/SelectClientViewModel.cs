@@ -21,11 +21,19 @@ namespace ASACS5.Models.Site
         public int MaleBunks { get; set; }
         public int FemaleBunks { get; set; }
         public int MixedBunks { get; set; }
-        public int BunksAvailable { get; set; }
         public string selectedBunk { get; set; }
+        public Boolean HasShelter { get; set; }
+        public Boolean HasFoodPantry { get; set; }
+        public Boolean HasSoupKitchen { get; set; }
+        
         public List<Log> Logs { get; set; }
         public List<Waitlist> Waitlist { get; set; }
         public Boolean AddClientToWaitlistAllowed { get; set; }
+        public string ShelterServiceName { get; set; }
+        public string FoodPantryServiceName { get; set; }
+        public string SoupKitchenServiceName { get; set; }
+        public Boolean BunksAvailable { get; set; }
+        
 
         [DisplayName("Descriptive ID")]
         [Required(ErrorMessage = "Descriptive ID is required")]
@@ -58,5 +66,23 @@ namespace ASACS5.Models.Site
         [DisplayName("Log Entry")]
         [MaxLength(1000, ErrorMessage = "Max length is 250 characters")]
         public string LogEntry { get; set; }
+
+        [DisplayName("Additional Notes for Bunk Check-In")]
+        [MaxLength(1000, ErrorMessage = "Max length is 250 characters")]
+        public string ShelterLogEntry { get; set; }
+
+        [DisplayName("Additional Notes for Food Pantry Check-In")]
+        [MaxLength(1000, ErrorMessage = "Max length is 250 characters")]
+        public string FoodPantryLogEntry { get; set; }
+
+        [DisplayName("Additional Notes for Soup Kitchen Check-In")]
+        [MaxLength(1000, ErrorMessage = "Max length is 250 characters")]
+        public string SoupKitchenLogEntry { get; set; }
+
+        [DisplayName("Provide food from food pantry")]
+        public Boolean FoodPantryCheckIn { get; set; }
+
+        [DisplayName("Provide meal from soup kitchen")]
+        public Boolean SoupKitchenCheckIn { get; set; }
     }
 }

@@ -11,7 +11,7 @@
 }
 else
 {
-    <h1>Client ID @Model.ClientID Details</h1>
+    <h1>Client ID @Model.ClientID</h1>
 }
 
 @using (Html.BeginForm("UpdateClient", "Client", FormMethod.Post, new { id = "frmSelectClient", @class = "form-horizontal" }))
@@ -26,7 +26,11 @@ else
     @Html.HiddenFor(model => model.oldLastName)
     @Html.HiddenFor(model => model.oldPhoneNumber)
     @Html.HiddenFor(model => model.Logs)
+    @Html.HiddenFor(model => model.ShelterServiceName)
+    @Html.HiddenFor(model => model.SoupKitchenServiceName)
+    @Html.HiddenFor(model => model.FoodPantryServiceName)
 
+    <h3 style='font-weight: bold;'>Details</h3>
     <div class="form-group">
         @Html.LabelFor(model => model.DescriptiveID, new { @class = "col-md-3", @for = "txtDescriptiveID" })
         <div class="col-md-9">
@@ -62,16 +66,11 @@ else
             @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
         </div>
     </div>
-    <div class="form-group">
-        @Html.LabelFor(model => model.LogEntry, new { @class = "col-md-3", @for = "txtLogEntry" })
-        <div class="col-md-9">
-            @Html.TextBoxFor(model => model.LogEntry, new { @class = "form-control", @id = "txtPhoneNumber" })
-            @Html.ValidationMessageFor(model => model.LogEntry, "", new { @class = "text-danger" })
-        </div>
-    </div>
-    <h1>Log</h1>
+    
     if (Model.Logs != null)
     {
+        <br />
+        <h3 style='font-weight: bold;'>Log</h3>
         <table class="table">
             <thead>
                 <tr>
@@ -97,44 +96,119 @@ else
         </table>
 
     }
+    <div class="form-group">
+        @Html.LabelFor(model => model.LogEntry, new { @class = "col-md-3", @for = "txtLogEntry" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.LogEntry, new { @class = "form-control", @id = "txtLogEntry" })
+            @Html.ValidationMessageFor(model => model.LogEntry, "", new { @class = "text-danger" })
+        </div>
+    </div>
 
-    <h3>Check-In</h3>
+    <br />
+    <h3 style='font-weight: bold;'>Bunk Check-In</h3>
+    if (Model.HasShelter) {
+        if (!Model.BunksAvailable)
+        {
+            <h4 style = "color:red;">No bunks available </h4>
+        }
+        else
+        {
     <table class="table">
         <thead>
             <tr>
-                @if (Model.MaleBunks > 0) {
+                @if (Model.MaleBunks > 0)
+                {
                     <th>Male Bunk</th>
                 }
-                @if (Model.FemaleBunks > 0) {
+                @if (Model.FemaleBunks > 0)
+                {
                     <th>Female Bunk</th>
                 }
-                @if (Model.MixedBunks > 0) {
+                @if (Model.MixedBunks > 0)
+                {
                     <th>Mixed Bunk</th>
                 }
             </tr>
         </thead>
         <tbody>
             <tr>
-                @if (Model.MaleBunks > 0) {
+                @if (Model.MaleBunks > 0)
+                {
                 <td>@Html.RadioButtonFor(model => model.selectedBunk, "MaleBunksAvailable")</td>
                 }
-                @if (Model.FemaleBunks > 0) {
+                @if (Model.FemaleBunks > 0)
+                {
                 <td>@Html.RadioButtonFor(model => model.selectedBunk, "FemaleBunksAvailable")</td>
                 }
-                @if (Model.MixedBunks > 0) {
-                <td>@Html.RadioButtonFor(model => model.selectedBunk, "MIxedBunksAvailable")</td>
+                @if (Model.MixedBunks > 0)
+                {
+                <td>@Html.RadioButtonFor(model => model.selectedBunk, "MixedBunksAvailable")</td>
                 }
             </tr>
         </tbody>
     </table>
+    <div class="form-group">
+        @Html.LabelFor(model => model.ShelterLogEntry, new { @class = "col-md-3", @for = "txtShelterLogEntry" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.ShelterLogEntry, new { @class = "form-control", @id = "ShelterLogEntry" })
+        </div>
+    </div>
+        }
+    } else {
+      < h4 style = "color:red;" > Site does not contain shelter</ h4 >
+     }
 
+    <br />
+    <h3 style='font-weight: bold;'>Food Pantry</h3>
+    if (Model.HasFoodPantry)
+                {
+        <div class="form-group">
+            @Html.LabelFor(model => model.FoodPantryCheckIn, new { @class = "col-md-3", @for = "txtFoodPantryLogCheckIn" })
+            <div class="col-md-9">
+                @Html.CheckBoxFor(model => model.FoodPantryCheckIn, "FoodPantryCheckIn")
+            </div>
+        </div>
 
+        <div class="form-group">
+            @Html.LabelFor(model => model.FoodPantryLogEntry, new { @class = "col-md-3", @for = "txtFoodPantryLogEntry" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.FoodPantryLogEntry, new { @class = "form-control", @id = "PantryLogEntry" })
+        </div>
+        </div>
+    }
+    else
+    {
+        <h4 style="color:red;">Site does not contain food pantry</h4>
+    }
+
+    <br />
+    <h3 style='font-weight: bold;'>Soup Kitchen</h3>
+    if (Model.HasSoupKitchen)
+    {
+        <div class="form-group">
+            @Html.LabelFor(model => model.SoupKitchenCheckIn, new { @class = "col-md-3", @for = "txtSoupKitchenCheckIn" })
+            <div class="col-md-9">
+                @Html.CheckBoxFor(model => model.SoupKitchenCheckIn, "SoupKitchenCheckIn")
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SoupKitchenLogEntry, new { @class = "col-md-3", @for = "txtSoupKitchenLogEntry" })
+            <div class="col-md-9">
+                @Html.TextBoxFor(model => model.SoupKitchenLogEntry, new { @class = "form-control", @id = "SoupKitchenLogEntry" })
+            </div>
+        </div>
+    }
+    else
+    {
+        <h4 style="color:red;">Site does not contain soup kitchen</h4>
+    }
     <div>
         <input type="submit" value="Save changes" class="btn btn-default" />
         @if (!String.IsNullOrWhiteSpace(Model.StatusMessage))
-        {
-            if (Model.StatusMessage == "Succesfully added!")
-            {
+{
+    if (Model.StatusMessage == "Succesfully added!")
+    {
                 <span class="text-success"><b> @Model.StatusMessage</b></span>
             }
             else
@@ -144,15 +218,16 @@ else
         }
     </div>
 }
-    
+
+
     @using (Html.BeginForm("AddToWaitlist", "Client", FormMethod.Post, new { id = "frmAddToWaitlist", @class = "form-horizontal" }))
     {
         @Html.AntiForgeryToken()
         @Html.HiddenFor(model => model.ClientID)
-
-        <h1>Waitlist</h1>
-        if (Model.Waitlist != null)
-        {
+        <br />
+        <h3 style='font-weight: bold;'>Family Room Waitlist</h3>
+        if (Model.Waitlist != null && Model.Waitlist.Count() != 0 )
+{
         <table class="table">
             <thead>
                 <tr>
@@ -164,7 +239,7 @@ else
             <tbody>
 
                 @foreach (Waitlist wt in Model.Waitlist)
-                {
+                   {
                     <tr>
                         <td>@wt.ClientID</td>
                         <td>@wt.SiteID</td>
@@ -176,23 +251,33 @@ else
         </table>
 
         }
+        else
+        {
+            <h4 style="color:red;">Client is not on any waitlists</h4>
+        }
         if (Model.AddClientToWaitlistAllowed)
         {
-            <input type="submit" value="Add to Waitlist" class="btn btn-default" />
-            if (!String.IsNullOrWhiteSpace(Model.StatusMessage))
+            if (Model.HasShelter)
             {
-                if (Model.StatusMessage == "Succesfully added to waitlist!")
+                <input type="submit" value="Add to Waitlist" class="btn btn-default" />
+                if (!String.IsNullOrWhiteSpace(Model.StatusMessage))
                 {
-                    <span class="text-success"><b> @Model.StatusMessage</b></span>
+                    if (Model.StatusMessage == "Succesfully added to waitlist!")
+                    {
+                        <span class="text-success"><b> @Model.StatusMessage</b></span>
+                    }
+                    else
+                    {
+                        <span class="text-danger"><b> @Model.StatusMessage</b></span>
+                    }
                 }
-                else
-                {
-                    <span class="text-danger"><b> @Model.StatusMessage</b></span>
-                }
+            }
+            else
+            {
+                <h4 style="color:red;">Site does not contain shelter</h4>
             }
         }
 
-        
     }
     <div>
         @Html.ActionLink("Back", "SearchClient", "Client")

@@ -175,7 +175,7 @@ namespace ASACS5.Controllers
                     queryResult = SqlHelper.ExecuteMultiSelect(querystring, 6);
                 }
                 // If less than 5 results found in query, display list. If not, display appropiate messages. 
-                if (queryResult == null)
+                if (queryResult == null || queryResult.Count == 0)
                 {
                     vm.StatusMessage = "No results found. Try search again.";
                 }
@@ -273,20 +273,66 @@ namespace ASACS5.Controllers
                     om.AddClientToWaitlistAllowed = false;
                 }
             }
-            
 
-            //Get Available bunks 
-            string sql4 = String.Format(
-                       "SELECT MaleBunksAvailable, FemaleBunksAVailable, MixedBunksAvailable " +
+            //Determine for current site provides services to client
+            object queryResult2 = null;
+
+            //Determine if food pantry exists for site
+            queryResult2 = SqlHelper.ExecuteScalar(String.Format("SELECT COUNT(SiteID) FROM foodpantry WHERE SiteID = {0}", SiteID.Value));
+            if (queryResult2 != null && int.Parse(queryResult2.ToString()) > 0)
+            {
+                om.HasFoodPantry = true;
+                sql = String.Format("SELECT Description FROM foodpantry WHERE SiteID = {0}", SiteID.Value);
+                result = SqlHelper.ExecuteSingleSelect(sql, 1);
+                om.FoodPantryServiceName = result[0].ToString();
+
+            }
+            //Determine if shelter exists for site
+            queryResult2 = SqlHelper.ExecuteScalar(String.Format("SELECT COUNT(SiteID) FROM shelter WHERE SiteID = {0}", SiteID.Value));
+            if (queryResult2 != null && int.Parse(queryResult2.ToString()) > 0)
+            {
+                om.HasShelter = true;
+                sql = String.Format("SELECT Description FROM shelter WHERE SiteID = {0}", SiteID.Value);
+                result = SqlHelper.ExecuteSingleSelect(sql, 1);
+                om.ShelterServiceName = result[0].ToString();
+            }
+
+            //Determine if soup kitchen exists for site
+            queryResult2 = SqlHelper.ExecuteScalar(String.Format("SELECT COUNT(SiteID) FROM soupkitchen WHERE SiteID = {0}", SiteID.Value));
+            if (queryResult2 != null && int.Parse(queryResult2.ToString()) > 0)
+            {
+                om.HasSoupKitchen = true;
+                sql = String.Format("SELECT Description FROM soupkitchen WHERE SiteID = {0}", SiteID.Value);
+                result = SqlHelper.ExecuteSingleSelect(sql, 1);
+                om.SoupKitchenServiceName = result[0].ToString();
+            }
+
+            //Get Available bunks
+            if (om.HasShelter)
+            {
+                string sql4 = String.Format(
+                       "SELECT Description, MaleBunksAvailable, FemaleBunksAvailable, MixedBunksAvailable " +
                        "FROM shelter WHERE SiteID = {0} ", vm.SiteID);
 
-            result = SqlHelper.ExecuteSingleSelect(sql4, 3);
-            if (result != null)
-            {
-                om.MaleBunks = int.Parse(result[0].ToString());
-                om.FemaleBunks = int.Parse(result[1].ToString());
-                om.MixedBunks = int.Parse(result[2].ToString());
+                result = SqlHelper.ExecuteSingleSelect(sql4, 4);
+
+                om.ShelterServiceName = result[0].ToString();
+                om.MaleBunks = int.Parse(result[1].ToString());
+                om.FemaleBunks = int.Parse(result[2].ToString());
+                om.MixedBunks = int.Parse(result[3].ToString());
+
+                // If at least one bunk is found display something within view
+                if (om.MaleBunks > 0 || om.FemaleBunks > 0 || om.MixedBunks > 0)
+                {
+                    om.BunksAvailable = true;
+                } else
+                {
+                    om.BunksAvailable = false;
+                }
+
+
             }
+
                 return View(om);
             
         }
@@ -369,16 +415,7 @@ namespace ASACS5.Controllers
 
             UpdateClientViewModel om = new UpdateClientViewModel();
 
-            // Get log list with new entry to display
-            sql = String.Format(
-                    "SELECT DateTimeStamp, ServiceName, SiteName, Description " +
-                       "FROM clientlogentry WHERE ClientID = {0} ", vm.ClientID);
-
-            List<object[]> result = SqlHelper.ExecuteMultiSelect(sql, 4);
-            if (result != null)
-            {
-                om.Logs = GetLogListFromQueryResponse(result);
-            }
+            
 
             
             if (vm.selectedBunk != null)
@@ -395,28 +432,79 @@ namespace ASACS5.Controllers
                 string checkInLogEntry = "Checked into ";
                 if (vm.selectedBunk == "MaleBunksAvailable")
                 {
-                    checkInLogEntry += "male bunk";
+                    checkInLogEntry += "male bunk. ";
 
                 }
                 else if (vm.selectedBunk == "FemaleBunksAvailable")
                 {
-                    checkInLogEntry += "female bunk";
+                    checkInLogEntry += "female bunk. ";
                 }
                 else
                 {
-                    checkInLogEntry += "mixed bunk";
+                    checkInLogEntry += "mixed bunk. ";
+                }
+
+                if (vm.ShelterLogEntry != null) {
+                    checkInLogEntry += String.Format("Additional Note: {0}", vm.ShelterLogEntry);
                 }
 
                 sql = String.Format(
-                    "INSERT INTO clientlogentry (ClientID, SiteName, Description) " +
-                    "VALUES ({0}, '{1}', '{2}'); ",
-                    vm.ClientID, vm.SiteName, checkInLogEntry
+                    "INSERT INTO clientlogentry (ClientID, ServiceName, SiteName, Description) " +
+                    "VALUES ({0}, '{1}', '{2}', '{3}'); ",
+                    vm.ClientID, vm.ShelterServiceName, vm.SiteName, checkInLogEntry
+                );
+
+                SqlHelper.ExecuteNonQuery(sql);
+
+
+            }
+
+            // Add log entry if check in for food pantry occured
+            if (vm.FoodPantryCheckIn)
+            {
+                string food_itemlog = "Provide Food Item(s). ";
+                if (vm.FoodPantryLogEntry != null)
+                {
+                    food_itemlog += String.Format("Additional Note: {0}", vm.FoodPantryLogEntry);
+                }
+                sql = String.Format(
+                    "INSERT INTO clientlogentry (ClientID, ServiceName, SiteName, Description) " +
+                    "VALUES ({0}, '{1}', '{2}', '{3}'); ",
+                    vm.ClientID, vm.FoodPantryServiceName, vm.SiteName, food_itemlog
+                );
+
+                SqlHelper.ExecuteNonQuery(sql);
+            }
+
+            // Add log entry if check in for soup kitchen occured
+            if (vm.SoupKitchenCheckIn)
+            {
+                string soupkitchenlog = "Provide a meal. ";
+                if (vm.SoupKitchenLogEntry != null)
+                {
+                    soupkitchenlog += String.Format("Additional Note: {0}", vm.SoupKitchenLogEntry);
+                }
+                sql = String.Format(
+                    "INSERT INTO clientlogentry (ClientID, ServiceName, SiteName, Description) " +
+                    "VALUES ({0}, '{1}', '{2}', '{3}'); ",
+                    vm.ClientID, vm.SoupKitchenServiceName, vm.SiteName, soupkitchenlog
                 );
 
                 SqlHelper.ExecuteNonQuery(sql);
             }
 
 
+
+            // Get log list with new entry( or entries) to display
+            sql = String.Format(
+                    "SELECT DateTimeStamp, ServiceName, SiteName, Description " +
+                       "FROM clientlogentry WHERE ClientID = {0} ", vm.ClientID);
+
+            List<object[]> result = SqlHelper.ExecuteMultiSelect(sql, 4);
+            if (result != null)
+            {
+                om.Logs = GetLogListFromQueryResponse(result);
+            }
             om.StatusMessage = "Succesfully updated!";
            
             return View(om);
@@ -464,6 +552,10 @@ namespace ASACS5.Controllers
             {
                 om.Waitlist = GetWaitListFromQueryResponse(result);
             }
+
+            // TODO : log waitlist activity?
+           
+
             om.StatusMessage = "Succesfully added to waitlist!";
             return View(om);
         }
@@ -524,5 +616,6 @@ namespace ASACS5.Controllers
 
             return response;
         }
+
     }
 }
