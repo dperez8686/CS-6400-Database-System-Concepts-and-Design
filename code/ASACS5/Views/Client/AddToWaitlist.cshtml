@@ -11,7 +11,7 @@
 }
 else
 {
-    <h1>Client ID @Model.ClientID Details</h1>
+    <h1>Client ID @Model.ClientID</h1>
 }
     
     @using (Html.BeginForm("AddToWaitlist", "Client", FormMethod.Post, new { id = "frmAddToWaitlist", @class = "form-horizontal" }))
@@ -19,7 +19,7 @@ else
         @Html.AntiForgeryToken()
         @Html.HiddenFor(model => model.ClientID)
 
-        <h1>Waitlist</h1>
+        <h4>Waitlist</h4>
         if (Model.Waitlist != null)
         {
         <table class="table">
@@ -45,7 +45,6 @@ else
         </table>
 
         }
-            <input type="submit" value="Add to Waitlist" class="btn btn-default" />
             if (!String.IsNullOrWhiteSpace(Model.StatusMessage))
             {
                 if (Model.StatusMessage == "Succesfully added to waitlist!")

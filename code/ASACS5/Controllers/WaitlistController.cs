@@ -26,8 +26,9 @@ namespace ASACS5.Controllers
 
             UpdateWaitlistViewModel vm = new UpdateWaitlistViewModel { SiteID = SiteID.Value };
 
-            // Determine if Site has Shelter first 
+            
             object queryResult = null;
+            // Determine if Site has Shelter first 
             queryResult = SqlHelper.ExecuteScalar(String.Format("SELECT COUNT(SiteID) FROM shelter WHERE SiteID = {0}", SiteID.Value));
             if (queryResult != null && int.Parse(queryResult.ToString()) > 0)
             {
@@ -38,6 +39,7 @@ namespace ASACS5.Controllers
                 vm.HasShelter = false;
                 return View(vm);
             }
+            // If Site has Shelter, display all clients and rankings from waitlist in ascending order.
             string sql = String.Format(
                        "SELECT ClientID, Ranking " +
                        "FROM waitlist WHERE SiteID = {0} ORDER BY RANKING ASC", SiteID);
@@ -108,6 +110,7 @@ namespace ASACS5.Controllers
             vm.ClientID = int.Parse(clientID);
             vm.SiteID = int.Parse(SiteID.ToString());
 
+            // Get Client and ranking list for site's waitlist for later modification
             string sql = String.Format(
                        "SELECT ClientID, Ranking " +
                        "FROM waitlist WHERE SiteID = {0} ORDER BY RANKING ASC", vm.SiteID);
@@ -116,11 +119,13 @@ namespace ASACS5.Controllers
             List<object[]> result = SqlHelper.ExecuteMultiSelect(sql, 2);
             List<Waitlist> current_Waitlist = GetWaitListFromQueryResponse(result);
 
+            // Get ranking for selected client 
             sql = String.Format("SELECT Ranking FROM waitlist WHERE ClientID = {0} AND SiteID = {1}", vm.ClientID, vm.SiteID);
             object result2 = SqlHelper.ExecuteScalar(sql);
             int ranking = int.Parse(result2.ToString());
 
             int count = 0;
+            // Shuffle around ranking based on direction that client is desired to go (up/down)
             foreach (Waitlist entry in current_Waitlist)
             {
                 current_Waitlist[count].oldRanking = current_Waitlist[count].Ranking;
@@ -146,6 +151,7 @@ namespace ASACS5.Controllers
                         current_Waitlist[count].Ranking += 1;
                     }
                 }
+                // Update to new ranking for every client
                 sql = String.Format("UPDATE waitlist SET Ranking = {0} WHERE ClientID = {1} AND SiteID = {2}", entry.Ranking, entry.ClientID, vm.SiteID);
                 SqlHelper.ExecuteNonQuery(sql);
                 count += 1;
@@ -157,6 +163,7 @@ namespace ASACS5.Controllers
             return View(vm);
         }
 
+        // Below is obsolete (I think) but for the sake of not breaking anything this late in the game we'll keep it here. 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Waitlist/MoveInWaitlist/{clientID}/{direction}")]
