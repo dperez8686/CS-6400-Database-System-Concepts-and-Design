@@ -662,7 +662,7 @@ INSERT INTO request (Username, ItemID, RequestedQuantity, FulfilledQuantity, Sta
 VALUES ('vol1', 71, 1, 0, 'Pending'),
        ('vol1', 74, 2, 0, 'Pending'),
        ('vol1', 78, 1, 0, 'Pending'),
-       ('vol1', 84, 1 0, 'Pending'),
+       ('vol1', 84, 1, 0, 'Pending'),
        ('vol1', 87, 1, 0, 'Pending'),
        ('vol1', 91, 1, 0, 'Pending'),
        ('vol1', 106, 2, 0, 'Pending'),
